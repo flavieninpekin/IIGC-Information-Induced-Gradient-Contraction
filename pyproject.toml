@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iigc"
+version = "0.1.0"
+description = "Common-basis kappa re-measurement across policy- and value-based families in MARL"
+requires-python = ">=3.10"
+dependencies = [
+    "gymnasium>=0.29.0",
+    "numpy>=1.24.0",
+    "stable-baselines3>=2.8.0",
+    "sb3-contrib>=2.8.0",
+    "torch>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0.0", "matplotlib"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

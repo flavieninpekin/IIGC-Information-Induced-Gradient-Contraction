@@ -1,0 +1,4 @@
+# Large runtime artifacts — do not commit
+models/
+logs/
+__pycache__/
