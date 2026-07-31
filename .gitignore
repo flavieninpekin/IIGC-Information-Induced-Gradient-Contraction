@@ -1,0 +1,11 @@
+# Reference copy of the public AAAI2027-510k-clear paper repo.
+# Kept locally for reference only; NOT part of this project.
+AAAI2027-510k-clear/
+AAAI2027-510k-clear.zip
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
