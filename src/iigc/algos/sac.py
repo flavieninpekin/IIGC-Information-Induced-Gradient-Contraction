@@ -5,8 +5,8 @@ import os, sys, json, time
 import numpy as np
 import torch
 
-from iigc.env.dqn_wrapper import FiveTenKMaskedEnv, MASK_DIM, MAX_ACTIONS
-from iigc.env.discrete_sac import DiscreteSAC
+from iigc.envs._510k.dqn_wrapper import FiveTenKMaskedEnv, MASK_DIM, MAX_ACTIONS
+from iigc.envs._510k.discrete_sac import DiscreteSAC
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 MODEL_DIR = os.path.join(ROOT, 'data', 'models', '510k_sac')

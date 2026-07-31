@@ -9,8 +9,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from iigc.env.game import Game, GameMode
-from iigc.env.obs_utils import obs_for_player, action_mask_for_player
+from iigc.envs._510k.game import Game, GameMode
+from iigc.envs._510k.obs_utils import obs_for_player, action_mask_for_player
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 MODEL_DIR = os.path.join(ROOT, 'data', 'models', '510k_reinforce_sp')

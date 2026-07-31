@@ -5,9 +5,9 @@ Shows κ monotonically increases with revealed information.
 import os, sys, time, numpy as np, torch, multiprocessing
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import SubprocVecEnv, VecMonitor
-from iigc.env.env_510k import FiveTenKEnv, MAX_ACTIONS
-from iigc.env.game import Game, GameMode
-from iigc.env.obs_utils import obs_for_player, action_mask_for_player
+from iigc.envs._510k.env import FiveTenKEnv, MAX_ACTIONS
+from iigc.envs._510k.game import Game, GameMode
+from iigc.envs._510k.obs_utils import obs_for_player, action_mask_for_player
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 MDIR = os.path.join(ROOT, 'data', 'models_reveal')

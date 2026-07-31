@@ -10,7 +10,7 @@ import os, sys, json, time, multiprocessing
 import numpy as np
 import torch
 
-from iigc.env.dqn_wrapper import FiveTenKMaskedEnv
+from iigc.envs._510k.dqn_wrapper import FiveTenKMaskedEnv
 from stable_baselines3 import DQN
 from stable_baselines3.common.vec_env import SubprocVecEnv, VecMonitor
 from stable_baselines3.common.callbacks import CheckpointCallback

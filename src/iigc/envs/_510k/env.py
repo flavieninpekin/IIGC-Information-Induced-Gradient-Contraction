@@ -17,10 +17,21 @@ MAX_ACTIONS = 300
 
 class FiveTenKEnv(gym.Env):
     """510K Gymnasium environment.
-    
-    Single-agent: the agent is always player 0. Other players use a random bot.
+
+    Single-agent: the agent controls player 0. Other players use a random bot
+    unless ``set_policy_bot()`` is called for self-play training.
+
+    Parameters
+    ----------
+    mode : str, optional
+        One of ``'single'``, ``'static'``, ``'dynamic'``, ``'obvious'``, ``'3p'``.
+        Default ``'single'``.
+    num_players : int, optional
+        Number of players (3 or 4). Default 4.
+    render_mode : str or None, optional
+        Render mode for ``render()``.
     """
-    
+
     metadata = {'render_modes': ['human', 'ansi']}
 
     def __init__(self, mode: str = 'single', num_players: int = 4,
@@ -35,7 +46,7 @@ class FiveTenKEnv(gym.Env):
 
         obs_dim = self.n_cards * 2 + 1 + 4 + 1 + 1 + 1
         if self.mode == GameMode.OBVIOUS:
-            obs_dim += 4  # teammate one-hot
+            obs_dim += 4
         self.obs_dim = obs_dim
         self.action_space = spaces.Discrete(MAX_ACTIONS)
         self.observation_space = spaces.Box(
@@ -46,11 +57,15 @@ class FiveTenKEnv(gym.Env):
 
         self.game: Optional[Game] = None
         self._bot_fn = self._random_bot
-        self._model_bot = None  # Optional[MaskablePPO] for self-play
+        self._model_bot = None
         self.history: List[dict] = []
 
     def set_policy_bot(self, model):
-        """Enable self-play: P1-P3 use the same policy as P0."""
+        """Enable self-play: opponents use the same policy as the agent.
+
+        *model* should have a ``predict(obs, action_masks=...)`` method
+        (e.g. a stable-baselines3 ``MaskablePPO`` instance).
+        """
         self._model_bot = model
 
     def _get_obs(self) -> np.ndarray:
@@ -89,11 +104,11 @@ class FiveTenKEnv(gym.Env):
     def _get_action_mask(self) -> np.ndarray:
         mask = np.zeros(MAX_ACTIONS, dtype=np.int64)
         if self.game is None or self.game.current_player != self.agent_id:
-            mask[0] = 1  # Only pass available
+            mask[0] = 1
             return mask
 
         valid = self.game.get_valid_actions(self.agent_id)
-        mask[0] = 1  # Pass is always available (if allowed)
+        mask[0] = 1
         for i, p in enumerate(valid):
             if i + 1 < MAX_ACTIONS:
                 mask[i + 1] = 1
@@ -102,7 +117,8 @@ class FiveTenKEnv(gym.Env):
     def _get_info(self) -> dict:
         return {'action_mask': self._get_action_mask()}
 
-    def reset(self, seed: Optional[int] = None, options: Optional[dict] = None) -> Tuple[np.ndarray, dict]:
+    def reset(self, seed: Optional[int] = None,
+              options: Optional[dict] = None) -> Tuple[np.ndarray, dict]:
         super().reset(seed=seed)
         if seed is not None:
             random.seed(seed)
@@ -111,7 +127,6 @@ class FiveTenKEnv(gym.Env):
         self.game = Game(mode=self.mode, num_players=self.num_players,
                          include_jokers=self.include_jokers)
 
-        # Auto-play until it's agent's turn
         while not self.game.is_over and self.game.current_player != self.agent_id:
             self._auto_play_next()
 
@@ -126,7 +141,6 @@ class FiveTenKEnv(gym.Env):
         pid = self.game.current_player
         assert pid == self.agent_id, f"Expected agent turn, got player {pid}"
 
-        # Execute agent action (fallback to auto-play if invalid)
         patterns = self.game.get_valid_actions(pid)
         valid_card_sets = [p.cards for p in patterns]
         action_taken = False
@@ -145,7 +159,6 @@ class FiveTenKEnv(gym.Env):
             elif self.game.can_pass(pid):
                 self.game.pass_turn(pid)
 
-        # Auto-play opponents until it's agent's turn again
         while not self.game.is_over and self.game.current_player != self.agent_id:
             self._auto_play_next()
 
@@ -170,7 +183,6 @@ class FiveTenKEnv(gym.Env):
 
     def _policy_bot_act(self, player_idx: int, actions: List[Pattern]) -> Pattern:
         obs = obs_for_player(self.game, player_idx)
-        # If the model expects Dict obs (e.g., MAPPO), build it
         from gymnasium import spaces as gspaces
         if isinstance(self._model_bot.observation_space, gspaces.Dict):
             global_obs = np.concatenate([

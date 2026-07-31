@@ -2,7 +2,7 @@
 import sys, os, numpy as np, torch
 
 from sb3_contrib import MaskablePPO
-from iigc.env.env_510k import FiveTenKEnv
+from iigc.envs._510k.env import FiveTenKEnv
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
@@ -48,31 +48,32 @@ def kappa_ppo(model, traj_A, traj_B):
     avg = (gA + gB) / 2.0
     return (torch.norm(avg)**2 / max((torch.norm(gA)**2 + torch.norm(gB)**2) / 2.0, 1e-10)).item()
 
-# SINGLE
-print('Loading PPO SINGLE...')
-m = MaskablePPO.load(r'C:\Users\Flavi\llmprojects\project3\models\510k_single_final.zip', device='cpu')
-env = FiveTenKEnv(mode='single')
-ta = rollout_ppo(m, env, 30); env.close()
-env2 = FiveTenKEnv(mode='single')
-tb = rollout_ppo(m, env2, 30); env2.close()
-ks = kappa_ppo(m, ta, tb)
-ra = np.mean([sum(rl) for _,_,rl in ta])
-rb = np.mean([sum(rl) for _,_,rl in tb])
-print(f'PPO SINGLE: κ={ks:.4f}  rA={ra:.2f}  rB={rb:.2f}')
+if __name__ == '__main__':
+    # SINGLE
+    print('Loading PPO SINGLE...')
+    m = MaskablePPO.load(os.path.join(ROOT, 'data', 'models', '510k_single_final.zip'), device='cpu')
+    env = FiveTenKEnv(mode='single')
+    ta = rollout_ppo(m, env, 30); env.close()
+    env2 = FiveTenKEnv(mode='single')
+    tb = rollout_ppo(m, env2, 30); env2.close()
+    ks = kappa_ppo(m, ta, tb)
+    ra = np.mean([sum(rl) for _,_,rl in ta])
+    rb = np.mean([sum(rl) for _,_,rl in tb])
+    print(f'PPO SINGLE: κ={ks:.4f}  rA={ra:.2f}  rB={rb:.2f}')
 
-# STATIC
-print('Loading PPO STATIC...')
-m2 = MaskablePPO.load(os.path.join(ROOT, 'data', 'models_selfplay', '510k_static_seed41_final.zip'), device='cpu')
-env = FiveTenKEnv(mode='static')
-ta = rollout_ppo(m2, env, 30); env.close()
-env2 = FiveTenKEnv(mode='static')
-tb = rollout_ppo(m2, env2, 30); env2.close()
-kt = kappa_ppo(m2, ta, tb)
-ra = np.mean([sum(rl) for _,_,rl in ta])
-rb = np.mean([sum(rl) for _,_,rl in tb])
-print(f'PPO STATIC s41: κ={kt:.4f}  rA={ra:.2f}  rB={rb:.2f}')
+    # STATIC
+    print('Loading PPO STATIC...')
+    m2 = MaskablePPO.load(os.path.join(ROOT, 'data', 'models_selfplay', '510k_static_seed41_final.zip'), device='cpu')
+    env = FiveTenKEnv(mode='static')
+    ta = rollout_ppo(m2, env, 30); env.close()
+    env2 = FiveTenKEnv(mode='static')
+    tb = rollout_ppo(m2, env2, 30); env2.close()
+    kt = kappa_ppo(m2, ta, tb)
+    ra = np.mean([sum(rl) for _,_,rl in ta])
+    rb = np.mean([sum(rl) for _,_,rl in tb])
+    print(f'PPO STATIC s41: κ={kt:.4f}  rA={ra:.2f}  rB={rb:.2f}')
 
-print(f'\n=== RESULT ===')
-print(f'SINGLE κ={ks:.4f}  STATIC κ={kt:.4f}')
-if ks > kt: print('SINGLE > STATIC: κ framework CONFIRMED')
-else: print('SINGLE <= STATIC: REVERSED (unexpected)')
+    print(f'\n=== RESULT ===')
+    print(f'SINGLE κ={ks:.4f}  STATIC κ={kt:.4f}')
+    if ks > kt: print('SINGLE > STATIC: κ framework CONFIRMED')
+    else: print('SINGLE <= STATIC: REVERSED (unexpected)')

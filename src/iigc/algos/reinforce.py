@@ -10,8 +10,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from iigc.env.dqn_wrapper import FiveTenKMaskedEnv, MASK_DIM, MAX_ACTIONS
-from iigc.env.discrete_sac import Actor  # reuse the masked actor network
+from iigc.envs._510k.dqn_wrapper import FiveTenKMaskedEnv, MASK_DIM, MAX_ACTIONS
+from iigc.envs._510k.discrete_sac import Actor  # reuse the masked actor network
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 MODEL_DIR = os.path.join(ROOT, 'data', 'models', '510k_reinforce')

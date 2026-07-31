@@ -25,25 +25,34 @@ IIGC/
 ```
 src/iigc/
 ├── __init__.py
-├── env/                     ← 环境定义（源自 project3/510k-env/env，import 改为相对路径）
-│   ├── __init__.py
-│   ├── card.py  game.py  patterns.py  scorer.py  obs_utils.py   ← 510K 规则引擎
-│   ├── env_510k.py          ← 510K Gym 环境（SINGLE/STATIC/DYNAMIC/OBVIOUS）
-│   ├── dqn_wrapper.py       ← 动作掩码 Q 网络 + TD-loss 梯度/kappa
-│   ├── discrete_sac.py      ← 离散 SAC（Actor + Critic×2），actor 梯度 kappa
-│   ├── features.py          ← 7 维行为特征（path_integral 需要）
-│   ├── toy_env.py           ← Toy Matching（HIDDEN/REVEALED）
-│   ├── partner_env.py       ← Partner 环境
-│   ├── mappo_env.py  mappo_policy.py   ← MAPPO（探索性，未用）
-│   └── bots/random_bot.py
-├── algos/                   ← 训练脚本（源自 project3/510k-env/train_510k_*.py）
+├── envs/                     ← 环境集合（每种环境一个子包，import 为 `iigc.envs._xxx`）
+│   ├── __init__.py           ← 统一导出：FiveTenKEnv, HiddenMatchingEnv, HiddenPartnerEnv ...
+│   ├── _510k/                ← 510K（合并 upstream `flavieninpekin/510k_env` + 原论文 env 包）
+│   │   ├── __init__.py       ← 导出 FiveTenKEnv/MAX_ACTIONS/Game/GameMode 等
+│   │   ├── card.py  game.py  patterns.py  scorer.py  obs_utils.py   ← 510K 规则引擎（两版相同）
+│   │   ├── env.py            ← 510K Gym 环境（upstream 清理版，SINGLE/STATIC/DYNAMIC/OBVIOUS）
+│   │   ├── pettingzoo.py     ← PettingZoo 多智能体 API（upstream 新增，可选依赖）
+│   │   ├── cli_demo.py       ← 人类对玩 CLI（upstream）
+│   │   ├── dqn_wrapper.py    ← 动作掩码 Q 网络 + FiveTenKMaskedEnv（本项目保留）
+│   │   ├── discrete_sac.py   ← 离散 SAC（Actor + Critic×2）+ actor 梯度 kappa（本项目）
+│   │   ├── features.py       ← 7 维行为特征（path_integral 需要）
+│   │   ├── mappo_env.py  mappo_policy.py   ← MAPPO（探索性，未用）
+│   │   └── bots/random_bot.py
+│   ├── _toy/                 ← Toy Matching（HIDDEN/REVEALED）
+│   │   ├── __init__.py
+│   │   └── toy_env.py
+│   ├── _partner/             ← Hidden Partner（HIDDEN/REVEALED）
+│   │   ├── __init__.py
+│   │   └── partner_env.py
+│   └── (未来 _overcooked/ 等主流环境，按需新增子包)
+├── algos/                    ← 训练脚本（源自 project3/510k-env/train_510k_*.py）
 │   ├── __init__.py
 │   ├── a2c.py  dqn.py  sac.py  reinforce.py  reinforce_sp.py
-└── metrics/                 ← 指标（源自 project3/510k-env/ 对应脚本）
+└── metrics/                  ← 指标（源自 project3/510k-env/ 对应脚本）
     ├── __init__.py
-    ├── kappa_ppo.py         ← PPO κ（需 data/models_selfplay/ 下的模型）
-    ├── continuous_reveal.py ← 连续 reveal 干预
-    └── path_integral.py     ← 行为路径积分
+    ├── kappa_ppo.py          ← PPO κ（脚本，需 data/models*/ 下的模型；有 __main__ 保护）
+    ├── continuous_reveal.py  ← 连续 reveal 干预
+    └── path_integral.py      ← 行为路径积分（有 __main__ 保护）
 ```
 
 ## experiments/ — 实验（按研究问题分层）
@@ -60,8 +69,10 @@ experiments/
 
 ## 约定
 
-- **import**：包内一律 `from iigc.env.xxx import ...`（已批量修复；原脚本的
-  `sys.path` hack 已移除）。运行前先 `pip install -e .`。
+- **import**：环境一律 `from iigc.envs._xxx.??? import ...`（如
+  `from iigc.envs._510k.env import FiveTenKEnv`）；算法/指标用
+  `from iigc.envs._510k.xxx import ...`。已移除原脚本的 `sys.path` hack。
+  运行前先 `pip install -e .`。
 - **数据路径**：脚本默认写 `data/models/<algo>`、`data/kappa/<algo>`、
   `data/logs/<algo>`（已从旧布局 `models_510k_*` 迁移）。
 - **未复制的内容**（需要时再从 project3 引入）：

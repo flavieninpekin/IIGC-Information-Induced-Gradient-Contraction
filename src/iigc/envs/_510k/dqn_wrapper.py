@@ -11,7 +11,7 @@ import torch.nn as nn
 import gymnasium as gym
 from gymnasium import spaces
 
-from .env_510k import FiveTenKEnv, MAX_ACTIONS
+from .env import FiveTenKEnv, MAX_ACTIONS
 from .game import GameMode
 
 MASK_DIM = MAX_ACTIONS  # 300
