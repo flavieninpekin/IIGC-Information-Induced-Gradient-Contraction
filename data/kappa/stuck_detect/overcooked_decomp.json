@@ -1,0 +1,82 @@
+{
+  "static_s41": {
+    "E_shared": 70.43158721923828,
+    "E_contrast": 70.43158721923828,
+    "sigma2": 22.39834976196289,
+    "E_total": 163.26152420043945,
+    "kappa_ep": 0.4314034648651694,
+    "kappa_mean": 0.4984149622220362,
+    "mode": "static",
+    "seed": 41
+  },
+  "static_s42": {
+    "E_shared": 93.38288116455078,
+    "E_contrast": 92.91944122314453,
+    "sigma2": 1034.695592880249,
+    "E_total": 1220.9979152679443,
+    "kappa_ep": 0.07648078673750904,
+    "kappa_mean": 0.4511332368196016,
+    "mode": "static",
+    "seed": 42
+  },
+  "static_s43": {
+    "E_shared": 110140.3046875,
+    "E_contrast": 110008.6640625,
+    "sigma2": 88055.58984375,
+    "E_total": 308204.55859375,
+    "kappa_ep": 0.3573610500442919,
+    "kappa_mean": 0.4963285327826043,
+    "mode": "static",
+    "seed": 43
+  },
+  "static_s44": {
+    "E_shared": 79.2968978881836,
+    "E_contrast": 79.22056579589844,
+    "sigma2": 3751.285400390625,
+    "E_total": 3909.802864074707,
+    "kappa_ep": 0.020281559107955174,
+    "kappa_mean": 0.3395384986583862,
+    "mode": "static",
+    "seed": 44
+  },
+  "dynamic_s41": {
+    "E_shared": 0.0,
+    "E_contrast": 0.0,
+    "sigma2": 0.0,
+    "E_total": 0.0,
+    "kappa_ep": 0.0,
+    "kappa_mean": 0.0,
+    "mode": "dynamic",
+    "seed": 41
+  },
+  "dynamic_s42": {
+    "E_shared": 0.0,
+    "E_contrast": 0.0,
+    "sigma2": 0.0,
+    "E_total": 0.0,
+    "kappa_ep": 0.0,
+    "kappa_mean": 0.0,
+    "mode": "dynamic",
+    "seed": 42
+  },
+  "dynamic_s43": {
+    "E_shared": 0.0,
+    "E_contrast": 0.0,
+    "sigma2": 0.0,
+    "E_total": 0.0,
+    "kappa_ep": 0.0,
+    "kappa_mean": 0.0,
+    "mode": "dynamic",
+    "seed": 43
+  },
+  "dynamic_s44": {
+    "E_shared": 0.0,
+    "E_contrast": 0.0,
+    "sigma2": 0.0,
+    "E_total": 0.0,
+    "kappa_ep": 0.0,
+    "kappa_mean": 0.0,
+    "mode": "dynamic",
+    "seed": 44
+  }
+}

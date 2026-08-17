@@ -1,0 +1,74 @@
+{
+  "dyn_no_mem_s41": {
+    "E_shared": 0.0,
+    "E_contrast": 0.0,
+    "sigma2": 0.0,
+    "E_total": 0.0,
+    "kappa_ep": 0.0,
+    "kappa_mean": 0.0,
+    "mode": "dynamic_no_mem",
+    "seed": 41,
+    "reward_chef": 0.0,
+    "reward_waiter": 0.0
+  },
+  "dyn_no_mem_s42": {
+    "E_shared": 0.0,
+    "E_contrast": 0.0,
+    "sigma2": 0.0,
+    "E_total": 0.0,
+    "kappa_ep": 0.0,
+    "kappa_mean": 0.0,
+    "mode": "dynamic_no_mem",
+    "seed": 42,
+    "reward_chef": 0.0,
+    "reward_waiter": 0.0
+  },
+  "dyn_no_mem_s43": {
+    "E_shared": 0.0,
+    "E_contrast": 0.0,
+    "sigma2": 0.0,
+    "E_total": 0.0,
+    "kappa_ep": 0.0,
+    "kappa_mean": 0.0,
+    "mode": "dynamic_no_mem",
+    "seed": 43,
+    "reward_chef": 0.0,
+    "reward_waiter": 0.0
+  },
+  "dyn_mem_s41": {
+    "E_shared": 0.0,
+    "E_contrast": 0.0,
+    "sigma2": 0.0,
+    "E_total": 0.0,
+    "kappa_ep": 0.0,
+    "kappa_mean": 0.0,
+    "mode": "dynamic_mem",
+    "seed": 41,
+    "reward_chef": 0.0,
+    "reward_waiter": 0.0
+  },
+  "dyn_mem_s42": {
+    "E_shared": 0.0,
+    "E_contrast": 0.0,
+    "sigma2": 0.0,
+    "E_total": 0.0,
+    "kappa_ep": 0.0,
+    "kappa_mean": 0.0,
+    "mode": "dynamic_mem",
+    "seed": 42,
+    "reward_chef": 0.0,
+    "reward_waiter": 0.0
+  },
+  "dyn_mem_s43": {
+    "E_shared": 0.0,
+    "E_contrast": 0.0,
+    "sigma2": 0.0,
+    "E_total": 0.0,
+    "kappa_ep": 0.0,
+    "kappa_mean": 0.0,
+    "mode": "dynamic_mem",
+    "seed": 43,
+    "reward_chef": 0.0,
+    "reward_waiter": 0.0
+  }
+}

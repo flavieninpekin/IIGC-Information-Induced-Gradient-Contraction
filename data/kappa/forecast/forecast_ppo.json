@@ -1,0 +1,156 @@
+[
+  {
+    "mode": "single",
+    "seed": 41,
+    "steps": 100000,
+    "kappa": 0.736120343208313,
+    "reward": 31.666666666666664
+  },
+  {
+    "mode": "single",
+    "seed": 41,
+    "steps": 200000,
+    "kappa": 0.7208831310272217,
+    "reward": 26.833333333333336
+  },
+  {
+    "mode": "single",
+    "seed": 41,
+    "steps": 300000,
+    "kappa": 0.6705616116523743,
+    "reward": 24.666666666666664
+  },
+  {
+    "mode": "single",
+    "seed": 41,
+    "steps": 400000,
+    "kappa": 0.8621762990951538,
+    "reward": 24.583333333333332
+  },
+  {
+    "mode": "static",
+    "seed": 41,
+    "steps": 100000,
+    "kappa": 0.5539975166320801,
+    "reward": 79.08333333333333
+  },
+  {
+    "mode": "static",
+    "seed": 41,
+    "steps": 200000,
+    "kappa": 0.5043968558311462,
+    "reward": 86.58333333333333
+  },
+  {
+    "mode": "static",
+    "seed": 41,
+    "steps": 300000,
+    "kappa": 0.5308821201324463,
+    "reward": 84.5
+  },
+  {
+    "mode": "static",
+    "seed": 41,
+    "steps": 400000,
+    "kappa": 0.5324264764785767,
+    "reward": 93.58333333333334
+  },
+  {
+    "mode": "static",
+    "seed": 41,
+    "steps": 500000,
+    "kappa": 0.48510926961898804,
+    "reward": 97.33333333333334
+  },
+  {
+    "mode": "static",
+    "seed": 41,
+    "steps": 600000,
+    "kappa": 0.6911899447441101,
+    "reward": 85.16666666666666
+  },
+  {
+    "mode": "static",
+    "seed": 41,
+    "steps": 700000,
+    "kappa": 0.16369111835956573,
+    "reward": 83.08333333333334
+  },
+  {
+    "mode": "static",
+    "seed": 41,
+    "steps": 800000,
+    "kappa": 0.5785319805145264,
+    "reward": 93.75
+  },
+  {
+    "mode": "static",
+    "seed": 41,
+    "steps": 900000,
+    "kappa": 0.27576062083244324,
+    "reward": 88.0
+  },
+  {
+    "mode": "static",
+    "seed": 41,
+    "steps": 1000000,
+    "kappa": 0.6130425333976746,
+    "reward": 84.16666666666666
+  },
+  {
+    "mode": "static",
+    "seed": 41,
+    "steps": "final",
+    "kappa": 0.5190852284431458,
+    "reward": 82.41666666666667
+  },
+  {
+    "mode": "dynamic",
+    "seed": 41,
+    "steps": 100000,
+    "kappa": 0.5129916071891785,
+    "reward": 80.41666666666666
+  },
+  {
+    "mode": "dynamic",
+    "seed": 41,
+    "steps": 200000,
+    "kappa": 0.49722304940223694,
+    "reward": 101.83333333333334
+  },
+  {
+    "mode": "dynamic",
+    "seed": 41,
+    "steps": 300000,
+    "kappa": 0.49066299200057983,
+    "reward": 75.75
+  },
+  {
+    "mode": "dynamic",
+    "seed": 41,
+    "steps": 400000,
+    "kappa": 0.5444518327713013,
+    "reward": 84.5
+  },
+  {
+    "mode": "dynamic",
+    "seed": 41,
+    "steps": 500000,
+    "kappa": 0.4160359799861908,
+    "reward": 87.25
+  },
+  {
+    "mode": "dynamic",
+    "seed": 41,
+    "steps": 600000,
+    "kappa": 0.5340186357498169,
+    "reward": 69.0
+  },
+  {
+    "mode": "static",
+    "seed": 42,
+    "steps": 100000,
+    "kappa": 0.41856029629707336,
+    "reward": 89.25
+  }
+]

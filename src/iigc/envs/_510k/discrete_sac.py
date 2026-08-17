@@ -198,6 +198,8 @@ class DiscreteSAC:
         self.actor.load_state_dict(ckpt['actor'])
         self.critic1.load_state_dict(ckpt['critic1'])
         self.critic2.load_state_dict(ckpt['critic2'])
+        self.target1.load_state_dict(self.critic1.state_dict())
+        self.target2.load_state_dict(self.critic2.state_dict())
 
     def actor_gradient(self, obs_batch, act_batch):
         """Policy gradient for a batch of (s,a) transitions (for kappa)."""
@@ -214,4 +216,29 @@ class DiscreteSAC:
         self.actor.zero_grad()
         loss.backward()
         gv = [p.grad.detach().clone().flatten() for p in self.actor.parameters() if p.grad is not None]
+        return torch.cat(gv) if gv else torch.zeros(1)
+
+    def critic_gradient(self, transitions):
+        """TD-loss gradient on the critic (for kappa), using the SAC soft target."""
+        obs_b = torch.FloatTensor(np.array([t[0] for t in transitions])).to(self.device)
+        act_b = torch.tensor([t[1] for t in transitions]).to(self.device)
+        rew_b = torch.tensor([t[2] for t in transitions], dtype=torch.float32).to(self.device)
+        nxt_b = torch.FloatTensor(np.array([t[3] for t in transitions])).to(self.device)
+        don_b = torch.tensor([float(t[4]) for t in transitions], dtype=torch.float32).to(self.device)
+
+        with torch.no_grad():
+            next_logits = self.actor(nxt_b)
+            next_probs = F.softmax(next_logits, dim=-1)
+            next_log_probs = F.log_softmax(next_logits, dim=-1)
+            q1_next = self.target1(nxt_b)
+            q2_next = self.target2(nxt_b)
+            q_next = torch.min(q1_next, q2_next)
+            v_next = (next_probs * (q_next - self.log_alpha.exp() * next_log_probs)).sum(dim=-1)
+            target = rew_b + (1 - don_b) * self.gamma * v_next
+
+        q1 = self.critic1(obs_b)[range(len(act_b)), act_b]
+        loss = F.mse_loss(q1, target)
+        self.critic1.zero_grad()
+        loss.backward()
+        gv = [p.grad.detach().clone().flatten() for p in self.critic1.parameters() if p.grad is not None]
         return torch.cat(gv) if gv else torch.zeros(1)
