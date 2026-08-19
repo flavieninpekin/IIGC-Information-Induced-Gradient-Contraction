@@ -1,0 +1,35 @@
+{
+  "static_s43": {
+    "E_shared": 103724.171875,
+    "E_contrast": 103797.90625,
+    "sigma2": 82415.19140625,
+    "E_total": 289937.26953125,
+    "kappa_ep": 0.35774694313253996,
+    "kappa_mean": 0.49653578043164925,
+    "grad_norm_mean": 429.95452880859375,
+    "ep_reward_mean": 172.1666717529297,
+    "ep_reward_std": 14.961200714111328
+  },
+  "dynamic_s47": {
+    "E_shared": 0.0,
+    "E_contrast": 0.0,
+    "sigma2": 0.0,
+    "E_total": 0.0,
+    "kappa_ep": 0.0,
+    "kappa_mean": 0.0,
+    "grad_norm_mean": 0.0,
+    "ep_reward_mean": 0.0,
+    "ep_reward_std": 0.0
+  },
+  "dynamic_s48": {
+    "E_shared": 0.0,
+    "E_contrast": 0.0,
+    "sigma2": 0.0,
+    "E_total": 0.0,
+    "kappa_ep": 0.0,
+    "kappa_mean": 0.0,
+    "grad_norm_mean": 0.0,
+    "ep_reward_mean": 0.0,
+    "ep_reward_std": 0.0
+  }
+}

@@ -1,0 +1,188 @@
+{
+  "static_s41": {
+    "E_shared": 26.4,
+    "E_contrast": 26.4,
+    "sigma2": 9.6,
+    "kappa_ep": 0.423,
+    "kappa_mean": null,
+    "kappa_mixed_free": 0.776
+  },
+  "static_s42": {
+    "E_shared": 426.1,
+    "E_contrast": 174.6,
+    "sigma2": 6707.3,
+    "kappa_ep": 0.058,
+    "kappa_mixed_free": 0.901
+  },
+  "static_s43": {
+    "E_shared": 1036.3,
+    "E_contrast": 875.6,
+    "sigma2": 12180.6,
+    "kappa_ep": 0.074,
+    "kappa_mixed_free": 0.867
+  },
+  "static_s44": {
+    "E_shared": 327025.6,
+    "E_contrast": 314190.5,
+    "sigma2": 103322.8,
+    "kappa_ep": 0.439,
+    "kappa_mixed_free": 0.987
+  },
+  "static_s45": {
+    "E_shared": 54.6,
+    "E_contrast": 54.6,
+    "sigma2": 16.9,
+    "kappa_ep": 0.433,
+    "kappa_mixed_free": 0.92
+  },
+  "static_s46": {
+    "E_shared": 62.8,
+    "E_contrast": 62.8,
+    "sigma2": 114.5,
+    "kappa_ep": 0.262,
+    "kappa_mixed_free": 0.973
+  },
+  "static_s47": {
+    "E_shared": 20.3,
+    "E_contrast": 20.3,
+    "sigma2": 17.4,
+    "kappa_ep": 0.35,
+    "kappa_mixed_free": 0.98
+  },
+  "static_s48": {
+    "E_shared": 69.9,
+    "E_contrast": 69.9,
+    "sigma2": 18.2,
+    "kappa_ep": 0.442,
+    "kappa_mixed_free": 0.849
+  },
+  "dynamic_s41": {
+    "E_shared": 14346.3,
+    "E_contrast": 6076.0,
+    "sigma2": 459758.7,
+    "kappa_ep": 0.03,
+    "kappa_mixed_free": 0.354
+  },
+  "dynamic_s42": {
+    "E_shared": 5200.8,
+    "E_contrast": 3657.8,
+    "sigma2": 455457.5,
+    "kappa_ep": 0.011,
+    "kappa_mixed_free": 0.261
+  },
+  "dynamic_s43": {
+    "E_shared": 2592.0,
+    "E_contrast": 592.6,
+    "sigma2": 414483.8,
+    "kappa_ep": 0.006,
+    "kappa_mixed_free": 0.134
+  },
+  "dynamic_s44": {
+    "E_shared": 1142.2,
+    "E_contrast": 4361.9,
+    "sigma2": 425453.4,
+    "kappa_ep": 0.003,
+    "kappa_mixed_free": 0.505
+  },
+  "dynamic_s45": {
+    "E_shared": 4137.8,
+    "E_contrast": 7444.0,
+    "sigma2": 471334.3,
+    "kappa_ep": 0.009,
+    "kappa_mixed_free": 0.67
+  },
+  "dynamic_s46": {
+    "E_shared": 4522.0,
+    "E_contrast": 9306.1,
+    "sigma2": 551549.7,
+    "kappa_ep": 0.008,
+    "kappa_mixed_free": 0.644
+  },
+  "dynamic_s47": {
+    "E_shared": 1999.3,
+    "E_contrast": 1241.4,
+    "sigma2": 341138.0,
+    "kappa_ep": 0.006,
+    "kappa_mixed_free": 0.382
+  },
+  "dynamic_s48": {
+    "E_shared": 5012.6,
+    "E_contrast": 7396.5,
+    "sigma2": 445074.7,
+    "kappa_ep": 0.011,
+    "kappa_mixed_free": 0.658
+  },
+  "mem_m4_s41": {
+    "E_shared": 4007.4,
+    "E_contrast": 3406.0,
+    "sigma2": 568637.1,
+    "kappa_ep": 0.007,
+    "kappa_mixed_free": 0.312
+  },
+  "mem_m4_s42": {
+    "E_shared": 14790.7,
+    "E_contrast": 6540.9,
+    "sigma2": 567032.2,
+    "kappa_ep": 0.025,
+    "kappa_mixed_free": 0.474
+  },
+  "mem_m4_s43": {
+    "E_shared": 2144.5,
+    "E_contrast": 6129.1,
+    "sigma2": 720361.2,
+    "kappa_ep": 0.003,
+    "kappa_mixed_free": 0.604
+  },
+  "mem_m8_s41": {
+    "E_shared": 4880.6,
+    "E_contrast": 4876.2,
+    "sigma2": 939974.8,
+    "kappa_ep": 0.005,
+    "kappa_mixed_free": 0.385
+  },
+  "mem_m8_s42": {
+    "E_shared": 12699.80859375,
+    "E_contrast": 5692.14013671875,
+    "sigma2": 1051258.28125,
+    "E_total": 1069650.2299804688,
+    "kappa_ep": 0.011872861088415688,
+    "kappa_mean": 0.3536278465750086,
+    "kappa_mixed_free": 0.7440327405929565
+  },
+  "mem_m8_s43": {
+    "E_shared": 8094.54052734375,
+    "E_contrast": 16780.416015625,
+    "sigma2": 945802.875,
+    "E_total": 970677.8315429688,
+    "kappa_ep": 0.008339059844888846,
+    "kappa_mean": 0.19918483301608533,
+    "kappa_mixed_free": 0.5487135052680969
+  },
+  "mem_m16_s41": {
+    "E_shared": 5470.83544921875,
+    "E_contrast": 8455.3388671875,
+    "sigma2": 1262444.4375,
+    "E_total": 1276370.6118164062,
+    "kappa_ep": 0.00428624366510068,
+    "kappa_mean": 0.15645748154751946,
+    "kappa_mixed_free": 0.5388462543487549
+  },
+  "mem_m16_s42": {
+    "E_shared": 17396.4296875,
+    "E_contrast": 12536.732421875,
+    "sigma2": 1494299.8125,
+    "E_total": 1524232.974609375,
+    "kappa_ep": 0.011413235363155881,
+    "kappa_mean": 0.3172321976100028,
+    "kappa_mixed_free": 0.4402060806751251
+  },
+  "mem_m16_s43": {
+    "E_shared": 10273.4365234375,
+    "E_contrast": 9261.359375,
+    "sigma2": 1419031.8125,
+    "E_total": 1438566.6083984375,
+    "kappa_ep": 0.007141439585390461,
+    "kappa_mean": 0.23789183617689003,
+    "kappa_mixed_free": 0.4775732755661011
+  }
+}

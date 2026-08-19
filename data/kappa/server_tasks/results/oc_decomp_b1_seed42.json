@@ -1,0 +1,18 @@
+{
+  "static": {
+    "E_shared": 418.2721252441406,
+    "E_contrast": 168.880859375,
+    "sigma2": 5977.810699462891,
+    "E_total": 6564.963684082031,
+    "kappa_ep": 0.06371278583891009,
+    "kappa_mean": 0.5918588948152541
+  },
+  "dynamic": {
+    "E_shared": 0.0,
+    "E_contrast": 0.0,
+    "sigma2": 0.0,
+    "E_total": 0.0,
+    "kappa_ep": 0.0,
+    "kappa_mean": 0.0
+  }
+}
