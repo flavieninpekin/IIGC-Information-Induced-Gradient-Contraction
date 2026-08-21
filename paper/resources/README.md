@@ -10,7 +10,9 @@
 | 文件 | 内容 | 写稿时的用途 |
 |---|---|---|
 | `narrative.md` | 论文骨架：候选标题、摘要草稿、贡献、章节结构、每节要填的证据 | 搭 Outline / 定叙事线 |
+| `storyline_clean.md` | 收窄后的干净主线（替代 narrative 的主线） | 定稿叙事 |
 | `evidence.md` | 三环境核心证据表（Toy 精确/采样、Overcooked、510K 场轴）+ 修正/阴性结果 | 直接抄进 Results/Tables |
+| `overcooked_slice.md` | Overcooked 受控切片：witness 验证 + 场轴（关系冲突的机械证明） | 机制/方法学证据 |
 | `theory.md` | 框架定义（保留—特异权衡）、奇偶分解引理、闭式判决（T1-T3）、开放项 | 写 Theory/Propositions |
 | `data_index.md` | 全部数据文件位置一览 | 复核引用、找原始数字 |
 

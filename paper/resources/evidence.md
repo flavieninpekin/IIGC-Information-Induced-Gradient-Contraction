@@ -100,6 +100,33 @@ static κ_ep 0.06-0.44、κ_mean≈0.50（能量门过）；dynamic 在 forced �
 > 上一篇跨算法 κ（`AAAI2027-510k-clear/data/kappa_summary.json`）：
 > A2C single 0.644 / dynamic 0.519（收缩），DQN single 0.797 / dynamic 0.917（反转）。
 
+## 4.5 Overcooked 受控切片（witness 机制验证）
+
+出处：`data/kappa/overcooked_slice/conflict_witnesses.json`、`witness_field_axis.json`。
+设计：固定场景（ready 汤在锅 + 洋葱 + 盘子），脚本化 deliver/cook 两个 option，
+角色信用奖励（chef=送餐得分、waiter=放洋葱信用）；状态/horizon/种子跨角色一致。
+witness = 两角色 argmax option 不同且 margin>δ。详见 `paper/resources/overcooked_slice.md`。
+
+**Witness 验证**（layout=asymmetric_advantages，H=80，δ=1.0）：
+
+| 指标 | 值 |
+|---|---|
+| 构造候选 → witness | **24/52（46%）** |
+| hidden obs 跨角色恒等 | **True** |
+| 自然随机状态 witness 率 | 0/30（0%） |
+
+典型 witness：chef→deliver（Q=20 vs 0）、waiter→cook（Q=6 vs 0）。
+
+**场轴（witness 上，H=40）**：
+
+| 场 | κ_mean | 说明 |
+|---|---|---|
+| value（TD/mean-seeking） | **0.941-1.000** | 值函数看不见角色 → chef/waiter 值梯度对齐（E_contrast≈0） |
+| reinforce / 期望-Q / hard | **N/A** | 冲突在 option 层面；原始动作 Q 平坦或 chef 侧≈0（见 `overcooked_slice.md` §5） |
+
+*原始级场轴在 witness 上不可测（三定义均退化）；原始级收缩由完整环境 rollout
+场轴展示（`oc_field_axis.json`：reinforce 0.015 vs value 0.98）。
+
 ## 5. 关键阴性/边界结果
 
 | 结果 | 证据 |

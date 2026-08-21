@@ -1,0 +1,663 @@
+{
+  "config": {
+    "horizon": 80,
+    "delta": 1.0,
+    "layout": "asymmetric_advantages"
+  },
+  "witnesses": [
+    {
+      "state_idx": 0,
+      "player0_pos": [
+        7,
+        1
+      ],
+      "player0_ori": [
+        0,
+        -1
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 1,
+      "best_first_waiter": 1
+    },
+    {
+      "state_idx": 1,
+      "player0_pos": [
+        7,
+        1
+      ],
+      "player0_ori": [
+        0,
+        1
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 1,
+      "best_first_waiter": 1
+    },
+    {
+      "state_idx": 2,
+      "player0_pos": [
+        7,
+        1
+      ],
+      "player0_ori": [
+        1,
+        0
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 1,
+      "best_first_waiter": 1
+    },
+    {
+      "state_idx": 3,
+      "player0_pos": [
+        7,
+        1
+      ],
+      "player0_ori": [
+        -1,
+        0
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 1,
+      "best_first_waiter": 1
+    },
+    {
+      "state_idx": 16,
+      "player0_pos": [
+        5,
+        2
+      ],
+      "player0_ori": [
+        0,
+        -1
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 1,
+      "best_first_waiter": 5
+    },
+    {
+      "state_idx": 17,
+      "player0_pos": [
+        5,
+        2
+      ],
+      "player0_ori": [
+        0,
+        1
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 1,
+      "best_first_waiter": 0
+    },
+    {
+      "state_idx": 18,
+      "player0_pos": [
+        5,
+        2
+      ],
+      "player0_ori": [
+        1,
+        0
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 1,
+      "best_first_waiter": 0
+    },
+    {
+      "state_idx": 19,
+      "player0_pos": [
+        5,
+        2
+      ],
+      "player0_ori": [
+        -1,
+        0
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 1,
+      "best_first_waiter": 0
+    },
+    {
+      "state_idx": 20,
+      "player0_pos": [
+        6,
+        2
+      ],
+      "player0_ori": [
+        0,
+        -1
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 3,
+      "best_first_waiter": 3
+    },
+    {
+      "state_idx": 22,
+      "player0_pos": [
+        6,
+        2
+      ],
+      "player0_ori": [
+        1,
+        0
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 3,
+      "best_first_waiter": 3
+    },
+    {
+      "state_idx": 23,
+      "player0_pos": [
+        6,
+        2
+      ],
+      "player0_ori": [
+        -1,
+        0
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 3,
+      "best_first_waiter": 3
+    },
+    {
+      "state_idx": 24,
+      "player0_pos": [
+        7,
+        2
+      ],
+      "player0_ori": [
+        0,
+        -1
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 3,
+      "best_first_waiter": 3
+    },
+    {
+      "state_idx": 25,
+      "player0_pos": [
+        7,
+        2
+      ],
+      "player0_ori": [
+        0,
+        1
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 3,
+      "best_first_waiter": 3
+    },
+    {
+      "state_idx": 26,
+      "player0_pos": [
+        7,
+        2
+      ],
+      "player0_ori": [
+        1,
+        0
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 3,
+      "best_first_waiter": 3
+    },
+    {
+      "state_idx": 40,
+      "player0_pos": [
+        5,
+        3
+      ],
+      "player0_ori": [
+        0,
+        -1
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 1,
+      "best_first_waiter": 0
+    },
+    {
+      "state_idx": 41,
+      "player0_pos": [
+        5,
+        3
+      ],
+      "player0_ori": [
+        0,
+        1
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 5,
+      "best_first_waiter": 0
+    },
+    {
+      "state_idx": 42,
+      "player0_pos": [
+        5,
+        3
+      ],
+      "player0_ori": [
+        1,
+        0
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 1,
+      "best_first_waiter": 0
+    },
+    {
+      "state_idx": 43,
+      "player0_pos": [
+        5,
+        3
+      ],
+      "player0_ori": [
+        -1,
+        0
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 1,
+      "best_first_waiter": 0
+    },
+    {
+      "state_idx": 44,
+      "player0_pos": [
+        6,
+        3
+      ],
+      "player0_ori": [
+        0,
+        -1
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 3,
+      "best_first_waiter": 3
+    },
+    {
+      "state_idx": 45,
+      "player0_pos": [
+        6,
+        3
+      ],
+      "player0_ori": [
+        0,
+        1
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 3,
+      "best_first_waiter": 3
+    },
+    {
+      "state_idx": 46,
+      "player0_pos": [
+        6,
+        3
+      ],
+      "player0_ori": [
+        1,
+        0
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 3,
+      "best_first_waiter": 3
+    },
+    {
+      "state_idx": 47,
+      "player0_pos": [
+        6,
+        3
+      ],
+      "player0_ori": [
+        -1,
+        0
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 3,
+      "best_first_waiter": 3
+    },
+    {
+      "state_idx": 48,
+      "player0_pos": [
+        7,
+        3
+      ],
+      "player0_ori": [
+        0,
+        -1
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 3,
+      "best_first_waiter": 3
+    },
+    {
+      "state_idx": 51,
+      "player0_pos": [
+        7,
+        3
+      ],
+      "player0_ori": [
+        -1,
+        0
+      ],
+      "chef_argmax": "deliver",
+      "waiter_argmax": "cook",
+      "Q": {
+        "chef": {
+          "deliver": 20.0,
+          "cook": 0.0
+        },
+        "waiter": {
+          "deliver": 0.0,
+          "cook": 6.0
+        }
+      },
+      "best_first_chef": 3,
+      "best_first_waiter": 3
+    }
+  ],
+  "crashes": [
+    {
+      "phase": "constructed",
+      "idx": 21,
+      "pos": [
+        6,
+        2
+      ]
+    },
+    {
+      "phase": "constructed",
+      "idx": 27,
+      "pos": [
+        7,
+        2
+      ]
+    },
+    {
+      "phase": "constructed",
+      "idx": 33,
+      "pos": [
+        2,
+        3
+      ]
+    },
+    {
+      "phase": "constructed",
+      "idx": 49,
+      "pos": [
+        7,
+        3
+      ]
+    },
+    {
+      "phase": "constructed",
+      "idx": 50,
+      "pos": [
+        7,
+        3
+      ]
+    }
+  ],
+  "constructed": {
+    "n_states": 52,
+    "n_witness": 24,
+    "n_crash": 5,
+    "witness_fraction": 0.46153846153846156
+  },
+  "sampled": {
+    "n_states": 30,
+    "n_witness": 0,
+    "witness_fraction": 0.0
+  },
+  "hidden_obs_identical": true
+}

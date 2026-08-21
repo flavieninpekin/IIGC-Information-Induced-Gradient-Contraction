@@ -1,0 +1,219 @@
+{
+  "mode": "dynamic-hidden",
+  "seed": 41,
+  "steps": 150000,
+  "episodes": 375,
+  "best_reward": 8.0,
+  "curve": [
+    {
+      "t": 5000,
+      "mean_recent": null,
+      "episode": 24,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 10000,
+      "mean_recent": null,
+      "episode": 37,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 15000,
+      "mean_recent": null,
+      "episode": 49,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 20000,
+      "mean_recent": null,
+      "episode": 62,
+      "ep_rew": 3.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 25000,
+      "mean_recent": null,
+      "episode": 74,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 30000,
+      "mean_recent": null,
+      "episode": 87,
+      "ep_rew": 3.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 35000,
+      "mean_recent": null,
+      "episode": 99,
+      "ep_rew": 3.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 40000,
+      "mean_recent": null,
+      "episode": 112,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 45000,
+      "mean_recent": null,
+      "episode": 124,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 50000,
+      "mean_recent": null,
+      "episode": 137,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 55000,
+      "mean_recent": null,
+      "episode": 149,
+      "ep_rew": 3.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 60000,
+      "mean_recent": null,
+      "episode": 162,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 65000,
+      "mean_recent": null,
+      "episode": 174,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 70000,
+      "mean_recent": null,
+      "episode": 187,
+      "ep_rew": 3.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 75000,
+      "mean_recent": null,
+      "episode": 199,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 80000,
+      "mean_recent": null,
+      "episode": 212,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 85000,
+      "mean_recent": null,
+      "episode": 224,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 90000,
+      "mean_recent": null,
+      "episode": 237,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 95000,
+      "mean_recent": null,
+      "episode": 249,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 100000,
+      "mean_recent": null,
+      "episode": 262,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 105000,
+      "mean_recent": null,
+      "episode": 274,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 110000,
+      "mean_recent": null,
+      "episode": 287,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 115000,
+      "mean_recent": null,
+      "episode": 299,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 120000,
+      "mean_recent": null,
+      "episode": 312,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 125000,
+      "mean_recent": null,
+      "episode": 324,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 130000,
+      "mean_recent": null,
+      "episode": 337,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 135000,
+      "mean_recent": null,
+      "episode": 349,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 140000,
+      "mean_recent": null,
+      "episode": 362,
+      "ep_rew": 3.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 145000,
+      "mean_recent": null,
+      "episode": 374,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    },
+    {
+      "t": 150000,
+      "mean_recent": null,
+      "episode": 375,
+      "ep_rew": 0.0,
+      "best_rew": 8.0
+    }
+  ]
+}
