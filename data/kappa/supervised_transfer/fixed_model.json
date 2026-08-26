@@ -1,0 +1,162 @@
+{
+  "mean_0.0": {
+    "0.01": [
+      {
+        "loss": "bce",
+        "scale": 0.01,
+        "kappa_mean": 0.9999999999999927,
+        "kappa_std": 2.8413902102441495e-15
+      },
+      {
+        "loss": "hinge",
+        "scale": 0.01,
+        "kappa_mean": 0.0,
+        "kappa_std": 0.0
+      },
+      {
+        "loss": "perceptron",
+        "scale": 0.01,
+        "kappa_mean": 0.9974574364431197,
+        "kappa_std": 0.0006099398546413968
+      },
+      {
+        "loss": "quadratic",
+        "scale": 0.01,
+        "kappa_mean": 1.0,
+        "kappa_std": 0.0
+      }
+    ],
+    "0.1": [
+      {
+        "loss": "bce",
+        "scale": 0.1,
+        "kappa_mean": 0.999999999999998,
+        "kappa_std": 1.6608877078071009e-15
+      },
+      {
+        "loss": "hinge",
+        "scale": 0.1,
+        "kappa_mean": 0.0,
+        "kappa_std": 0.0
+      },
+      {
+        "loss": "perceptron",
+        "scale": 0.1,
+        "kappa_mean": 0.9979065801733636,
+        "kappa_std": 0.0007629715818462555
+      },
+      {
+        "loss": "quadratic",
+        "scale": 0.1,
+        "kappa_mean": 1.0,
+        "kappa_std": 0.0
+      }
+    ],
+    "1.0": [
+      {
+        "loss": "bce",
+        "scale": 1.0,
+        "kappa_mean": 0.9999999999999993,
+        "kappa_std": 5.063396036227355e-16
+      },
+      {
+        "loss": "hinge",
+        "scale": 1.0,
+        "kappa_mean": 0.9908023953146801,
+        "kappa_std": 0.0032618998357685884
+      },
+      {
+        "loss": "perceptron",
+        "scale": 1.0,
+        "kappa_mean": 0.9966246730256418,
+        "kappa_std": 0.0014846571400496144
+      },
+      {
+        "loss": "quadratic",
+        "scale": 1.0,
+        "kappa_mean": 1.0,
+        "kappa_std": 0.0
+      }
+    ]
+  },
+  "mean_1.0": {
+    "0.01": [
+      {
+        "loss": "bce",
+        "scale": 0.01,
+        "kappa_mean": 1.0,
+        "kappa_std": 2.220446049250313e-16
+      },
+      {
+        "loss": "hinge",
+        "scale": 0.01,
+        "kappa_mean": 0.0,
+        "kappa_std": 0.0
+      },
+      {
+        "loss": "perceptron",
+        "scale": 0.01,
+        "kappa_mean": 0.3408738106047023,
+        "kappa_std": 0.14015966693237505
+      },
+      {
+        "loss": "quadratic",
+        "scale": 0.01,
+        "kappa_mean": 1.0,
+        "kappa_std": 0.0
+      }
+    ],
+    "0.1": [
+      {
+        "loss": "bce",
+        "scale": 0.1,
+        "kappa_mean": 0.9999999999999998,
+        "kappa_std": 2.0471501066083614e-16
+      },
+      {
+        "loss": "hinge",
+        "scale": 0.1,
+        "kappa_mean": 0.00026083236345448755,
+        "kappa_std": 0.0005141797396706594
+      },
+      {
+        "loss": "perceptron",
+        "scale": 0.1,
+        "kappa_mean": 0.36414956806826726,
+        "kappa_std": 0.14820386924797474
+      },
+      {
+        "loss": "quadratic",
+        "scale": 0.1,
+        "kappa_mean": 1.0,
+        "kappa_std": 0.0
+      }
+    ],
+    "1.0": [
+      {
+        "loss": "bce",
+        "scale": 1.0,
+        "kappa_mean": 0.9999999999999997,
+        "kappa_std": 3.3674731643402955e-16
+      },
+      {
+        "loss": "hinge",
+        "scale": 1.0,
+        "kappa_mean": 0.2940833881591775,
+        "kappa_std": 0.18149130115339196
+      },
+      {
+        "loss": "perceptron",
+        "scale": 1.0,
+        "kappa_mean": 0.19945204213478449,
+        "kappa_std": 0.08601649027611351
+      },
+      {
+        "loss": "quadratic",
+        "scale": 1.0,
+        "kappa_mean": 1.0,
+        "kappa_std": 0.0
+      }
+    ]
+  }
+}

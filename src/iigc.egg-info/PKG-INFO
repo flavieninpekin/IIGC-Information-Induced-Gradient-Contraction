@@ -1,0 +1,13 @@
+Metadata-Version: 2.4
+Name: iigc
+Version: 0.1.0
+Summary: Common-basis kappa re-measurement across policy- and value-based families in MARL
+Requires-Python: >=3.10
+Requires-Dist: gymnasium>=0.29.0
+Requires-Dist: numpy>=1.24.0
+Requires-Dist: stable-baselines3>=2.8.0
+Requires-Dist: sb3-contrib>=2.8.0
+Requires-Dist: torch>=2.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0.0; extra == "dev"
+Requires-Dist: matplotlib; extra == "dev"

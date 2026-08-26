@@ -35,10 +35,11 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')
 OUT_DIR = os.path.join(ROOT, 'data', 'kappa', 'toy_fields')
 os.makedirs(OUT_DIR, exist_ok=True)
 
-N_EPS = 30
+N_EPS = 200
 N_STEPS = 20
 SEED_A, SEED_B = 100, 200
 HIDDEN_INITS = 5
+STOCHASTIC = True  # pi-weighted protocol; False reproduces the deterministic artifact
 
 
 class PolicyNet(nn.Module):
@@ -117,25 +118,39 @@ def make_q_fn(revealed, assignment):
     return q_fn
 
 
+def kappa_components(gA, gB):
+    """E_shared / E_contrast / sigma2-free component split of kappa."""
+    gA = gA.detach()
+    gB = gB.detach()
+    m = (gA + gB) / 2.0
+    e_shared = float((m @ m).item())
+    e_contrast = float((((gA - gB) / 2.0) @ ((gA - gB) / 2.0)).item())
+    e_total = e_shared + e_contrast
+    k = e_shared / max(e_total, 1e-30)
+    return {'kappa': k, 'E_shared': e_shared, 'E_contrast': e_contrast,
+            'E_total': e_total}
+
+
 def measure(policy, revealed):
     env = HiddenMatchingEnv(revealed=revealed, n_steps=N_STEPS)
     agent = ToyAgent(policy)
 
     env.set_partner(0)
-    eps_a = rollout_episodes(agent, env, n_eps=N_EPS, base_seed=SEED_A)
+    eps_a = rollout_episodes(agent, env, n_eps=N_EPS, base_seed=SEED_A,
+                             stochastic=STOCHASTIC)
     env.set_partner(1)
-    eps_b = rollout_episodes(agent, env, n_eps=N_EPS, base_seed=SEED_B)
+    eps_b = rollout_episodes(agent, env, n_eps=N_EPS, base_seed=SEED_B,
+                             stochastic=STOCHASTIC)
     env.close()
 
     qA = make_q_fn(revealed, 'A')
     qB = make_q_fn(revealed, 'B')
     out = {}
     for name in FIELDS:
-        use_q = name in ('awr', 'softq', 'expq')
+        use_q = name in ('awr', 'softq', 'expq', 'softmaxq')
         gA = compute_grad(agent, field_loss(agent, eps_a, name, q_fn=qA if use_q else None))
         gB = compute_grad(agent, field_loss(agent, eps_b, name, q_fn=qB if use_q else None))
-        k, e = kappa_and_energy(gA, gB)
-        out[name] = {'kappa': k, 'energy': e}
+        out[name] = kappa_components(gA, gB)
     ra = np.mean([sum(t[2] for t in traj) for traj in eps_a])
     rb = np.mean([sum(t[2] for t in traj) for traj in eps_b])
     return out, ra, rb
@@ -144,7 +159,9 @@ def measure(policy, revealed):
 def summarize(fields_list):
     return {name: {'kappa_mean': np.mean([f[name]['kappa'] for f in fields_list]),
                    'kappa_std': np.std([f[name]['kappa'] for f in fields_list]),
-                   'energy': np.mean([f[name]['energy'] for f in fields_list])}
+                   'energy': np.mean([f[name]['E_total'] for f in fields_list]),
+                   'E_shared': np.mean([f[name]['E_shared'] for f in fields_list]),
+                   'E_contrast': np.mean([f[name]['E_contrast'] for f in fields_list])}
             for name in FIELDS}
 
 
@@ -162,7 +179,9 @@ def main():
     results['REVEALED'] = {'fields': out_r, 'rA': ra, 'rB': rb}
     print('\n--- REVEALED (trained policy) ---')
     for name in FIELDS:
-        print(f'  {name:10}: kappa={out_r[name]["kappa"]:.4f}  E={out_r[name]["energy"]:.2e}')
+        f = out_r[name]
+        print(f'  {name:10}: kappa={f["kappa"]:.4f}  E_sh={f["E_shared"]:.2e} '
+              f'E_co={f["E_contrast"]:.2e}')
     print(f'  reward: rA={ra:.2f} rB={rb:.2f}')
 
     hid = []
@@ -182,7 +201,7 @@ def main():
     for name in FIELDS:
         s = results['HIDDEN']['fields'][name]
         print(f'  {name:10}: kappa={s["kappa_mean"]:.4f} +/- {s["kappa_std"]:.4f}  '
-              f'E={s["energy"]:.2e}')
+              f'E_sh={s["E_shared"]:.2e}  E_co={s["E_contrast"]:.2e}')
     print(f'  reward: rA={results["HIDDEN"]["rA"]:.2f} rB={results["HIDDEN"]["rB"]:.2f}')
 
     with open(os.path.join(OUT_DIR, 'results.json'), 'w') as f:

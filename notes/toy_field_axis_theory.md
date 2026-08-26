@@ -135,3 +135,69 @@ n=6/级）：
 - 本笔记数据：`data/kappa/toy_fields/theory_toy.json`
 - 采样脚本（可复用）：`verify_theory_toy.py`
 - 交叉验证：`data/kappa/toy_fields/results.json`（run_toy_fields，κ+总能量）
+
+---
+
+## 6. 2026-08-22 重建与 T1/T3 最终判决（verify_theory_toy.py 曾丢失，已重建）
+
+> 旧 `verify_theory_toy.py` 脚本丢失，仅存结果 JSON。本次重建并交叉验证，
+> 修复了一个定义性错误。结果：`data/kappa/toy_fields/theory_toy2.json`。
+
+### 6.1 重建与验证（交叉检查通过）
+
+旧计算器的 "exact" 轨用的是 **CE-fit 目标**：
+
+```
+g_r = ∇_θ Σ_a log π(a) · w_r(a)          （无外层 π 权重，w 经 V 可微）
+```
+
+用这个定义，**14 个存储值全部精确复现**（awr baseline τ 扫描 7 值、
+nobase 7 值逐位相等）。但 CE-fit 目标 ≠ `fields.py`/`run_toy_fields.py` 的
+测量协议（π-加权期望 `E[-logπ(a)·w(a)]`）。两条轨在镜像带臂机上给出
+**不同** κ——这就是 T3 "分裂"的代数根源。
+
+### 6.2 已证实的闭式结果（framework π-加权定义）
+
+设 Q_A=(+r,−r)，Q_B=(−r,+r)（镜像），π=softmax(z)，w_B(a)=w_A(1−a)（swap）。
+
+**定理（swap 相消）**：对任意"仅依赖 Q 的权重"（elementwise），
+g_B = −g_A **精确成立**，κ ≡ 0：
+
+| 场 | w_r(a) | 依赖 π？ | 2 动作镜像下 κ |
+|---|---|---|---|
+| reinforce（无 baseline） | Q_r(a) | 否 | **0（精确）** |
+| expq | Q_r(a) | 否 | **0（精确）** |
+| awr（无 baseline） | exp(Q_r/τ) | 否 | **0（精确）** |
+| softmaxq（=gibbs 拨盘） | softmax(Q_r/τ) | 否 | **0（精确，所有 τ）** |
+| awr（带 baseline） | exp((Q_r−V_r)/τ) | 是（经 V） | >0 但随 τ 递减（0.50→0.001） |
+| softq | α logπ − Q_r | 是（熵项对称） | 随 α 单调升（0.000→0.991）✓ T2 |
+
+**推论**：
+1. **框架自己的 gibbs 定义（softmax(Q/τ) 权重）在 π-加权下 κ≡0**。
+   旧的"τ 单调升 0.081→0.898"只存在于 CE-fit 目标里，与测量协议不一致
+   → **E2 的 τ 拨盘不能归因于该场**（确认原 §2.4 的怀疑）。
+2. **拨盘不在 gibbs，在 softq 的 α**（T2 已是单调定理）。
+3. awr 的"抗收缩"（HIDDEN κ=0.561）只来自 **baseline 破坏 swap 对称**，
+   且强烈依赖 π（init 抽样）——0.561 不是稳定靶子（confirm 原 §3 第 4 条）。
+
+### 6.3 两条轨的区别（为什么旧的 "exact" 不能当靶子）
+
+| 轨 | 定义 | awr base κ(τ=1) | softmaxq κ(τ=1) |
+|---|---|---|---|
+| 测量协议（fields.py / run_toy_fields） | g=∇E_{π}[-logπ(a)w(a)] | ~0.07（π 依赖） | **0.000** |
+| 旧 exact（theory_toy.json） | g=∇Σ_a logπ(a)w(a)（CE-fit） | 0.2533 | 0.1314 |
+| 闭式框架（C.1 π-加权） | g=Σ_a π(a)∇logπ(a)w(a) | 0.0765 | **0.000** |
+
+- CE-fit 的外层 Σ 是均匀权重 → swap 不精确 → 出现 τ 拨盘 → 是**假象**。
+- π-加权 + elementwise Q 权重 → swap 精确相消 → κ≡0 → 是**定理**。
+
+### 6.4 结论与行动
+
+- **框架没死，且更强**：odd 场（纯 Q 权重）相消是精确定理；偶数修正
+  （baseline/熵）是唯一出路。T2（softq α）已是干净单调定理。
+- **T3 判决**：gibbs/softmaxq 拨盘在协议内不存在；E2 的 τ 数字必须从
+  论文里删掉或明确改写（E_{π_τ}[Q] 场另说，那是不同目标）。
+- **行动**：
+  1. `fields.py` 添加 `softmaxq` 场（框架定义），跑 Toy 场轴复核 κ=0.000
+  2. `run_toy_fields.py` 补记 E_shared/E_contrast/σ²（权衡图数据，B.4）
+  3. 论文中：awr 只报 κ(π) 分布；τ 拨盘改为 softq α 拨盘
