@@ -1,0 +1,189 @@
+{
+ "mode": "switch_hidden",
+ "arm": "softq",
+ "seed": 44,
+ "total_steps": 150000,
+ "final_eval": {
+  "return": 37.06,
+  "return_std": 0.9981983770774225,
+  "post_flip_reward": 0.75,
+  "pre_flip_reward": 1.0
+ },
+ "history": {
+  "steps": [
+   10240,
+   20160,
+   30080,
+   40000,
+   50240,
+   60160,
+   70080,
+   80000,
+   90240,
+   100160,
+   110080,
+   120000,
+   130240,
+   140160,
+   150080
+  ],
+  "eval": [
+   {
+    "return": 9.46,
+    "return_std": 15.559832903987111,
+    "post_flip_reward": 0.195,
+    "pre_flip_reward": 0.21666666666666665,
+    "steps": 10240
+   },
+   {
+    "return": 9.5,
+    "return_std": 1.4106735979665885,
+    "post_flip_reward": 0.2625,
+    "pre_flip_reward": 0.1733333333333333,
+    "steps": 20160
+   },
+   {
+    "return": 30.17,
+    "return_std": 4.62072505133123,
+    "post_flip_reward": 0.4,
+    "pre_flip_reward": 0.8677777777777778,
+    "steps": 30080
+   },
+   {
+    "return": 34.33,
+    "return_std": 2.7840797402373374,
+    "post_flip_reward": 0.47,
+    "pre_flip_reward": 0.9933333333333334,
+    "steps": 40000
+   },
+   {
+    "return": 36.8,
+    "return_std": 1.2489995996796797,
+    "post_flip_reward": 0.74875,
+    "pre_flip_reward": 0.9911111111111112,
+    "steps": 50240
+   },
+   {
+    "return": 37.06,
+    "return_std": 1.0753604047016052,
+    "post_flip_reward": 0.74875,
+    "pre_flip_reward": 1.0,
+    "steps": 60160
+   },
+   {
+    "return": 36.8,
+    "return_std": 1.2328828005937953,
+    "post_flip_reward": 0.75,
+    "pre_flip_reward": 0.9977777777777778,
+    "steps": 70080
+   },
+   {
+    "return": 36.84,
+    "return_std": 1.0268398122394748,
+    "post_flip_reward": 0.745,
+    "pre_flip_reward": 1.0,
+    "steps": 80000
+   },
+   {
+    "return": 36.49,
+    "return_std": 1.5296731677060953,
+    "post_flip_reward": 0.75125,
+    "pre_flip_reward": 0.9933333333333334,
+    "steps": 90240
+   },
+   {
+    "return": 36.92,
+    "return_std": 1.0361467077590893,
+    "post_flip_reward": 0.75,
+    "pre_flip_reward": 1.0,
+    "steps": 100160
+   },
+   {
+    "return": 37.09,
+    "return_std": 1.035326035604244,
+    "post_flip_reward": 0.74875,
+    "pre_flip_reward": 1.0,
+    "steps": 110080
+   },
+   {
+    "return": 37.08,
+    "return_std": 1.0166612021711068,
+    "post_flip_reward": 0.75,
+    "pre_flip_reward": 1.0,
+    "steps": 120000
+   },
+   {
+    "return": 36.87,
+    "return_std": 1.1760527199067226,
+    "post_flip_reward": 0.74875,
+    "pre_flip_reward": 0.9977777777777778,
+    "steps": 130240
+   },
+   {
+    "return": 37.01,
+    "return_std": 1.0197548725061332,
+    "post_flip_reward": 0.75,
+    "pre_flip_reward": 1.0,
+    "steps": 140160
+   },
+   {
+    "return": 36.91,
+    "return_std": 0.995941765365827,
+    "post_flip_reward": 0.75,
+    "pre_flip_reward": 1.0,
+    "steps": 150080
+   }
+  ],
+  "kappa": [
+   {
+    "kappa": 0.9425682593636922,
+    "e_shared": 0.0357913076877594,
+    "e_contrast": 0.0021808044984936714,
+    "steps": 20160
+   },
+   {
+    "kappa": 0.8708324970900472,
+    "e_shared": 0.02566147968173027,
+    "e_contrast": 0.0038062764797359705,
+    "steps": 40000
+   },
+   {
+    "kappa": 0.9718925466830272,
+    "e_shared": 6.909996591275558e-05,
+    "e_contrast": 1.9983938273071544e-06,
+    "steps": 60160
+   },
+   {
+    "kappa": 0.8663009203517857,
+    "e_shared": 9.842122381087393e-06,
+    "e_contrast": 1.5189672240012442e-06,
+    "steps": 80000
+   },
+   {
+    "kappa": 0.9963870167438186,
+    "e_shared": 3.736582584679127e-05,
+    "e_contrast": 1.3549163213610882e-07,
+    "steps": 100160
+   },
+   {
+    "kappa": 0.9911154920297606,
+    "e_shared": 4.135916969971731e-05,
+    "e_contrast": 3.707498024141387e-07,
+    "steps": 120000
+   },
+   {
+    "kappa": 0.9904361062976019,
+    "e_shared": 4.046977210236946e-06,
+    "e_contrast": 3.907860346430425e-08,
+    "steps": 140160
+   },
+   {
+    "kappa": 0.9984519287886332,
+    "e_shared": 2.7355416023056023e-05,
+    "e_contrast": 4.2413791589979155e-08,
+    "steps": 150080
+   }
+  ]
+ },
+ "adapt": null
+}

@@ -1,0 +1,189 @@
+{
+ "mode": "switch_revealed",
+ "arm": "awr",
+ "seed": 47,
+ "total_steps": 150000,
+ "final_eval": {
+  "return": 5.52,
+  "return_std": 5.096037676469828,
+  "post_flip_reward": 0.1825,
+  "pre_flip_reward": 0.12111111111111111
+ },
+ "history": {
+  "steps": [
+   10240,
+   20160,
+   30080,
+   40000,
+   50240,
+   60160,
+   70080,
+   80000,
+   90240,
+   100160,
+   110080,
+   120000,
+   130240,
+   140160,
+   150080
+  ],
+  "eval": [
+   {
+    "return": 8.73,
+    "return_std": 6.832795913826199,
+    "post_flip_reward": 0.14875,
+    "pre_flip_reward": 0.2477777777777778,
+    "steps": 10240
+   },
+   {
+    "return": 6.22,
+    "return_std": 6.025910719551029,
+    "post_flip_reward": 0.12375,
+    "pre_flip_reward": 0.17555555555555558,
+    "steps": 20160
+   },
+   {
+    "return": 5.06,
+    "return_std": 6.219035294963359,
+    "post_flip_reward": 0.07875,
+    "pre_flip_reward": 0.1622222222222222,
+    "steps": 30080
+   },
+   {
+    "return": 0.98,
+    "return_std": 6.264151977722125,
+    "post_flip_reward": -0.06375,
+    "pre_flip_reward": 0.06666666666666667,
+    "steps": 40000
+   },
+   {
+    "return": 6.45,
+    "return_std": 6.268771809533347,
+    "post_flip_reward": 0.065,
+    "pre_flip_reward": 0.2288888888888889,
+    "steps": 50240
+   },
+   {
+    "return": 3.38,
+    "return_std": 4.880122949270849,
+    "post_flip_reward": 0.09125,
+    "pre_flip_reward": 0.10666666666666666,
+    "steps": 60160
+   },
+   {
+    "return": 3.61,
+    "return_std": 4.786219802725319,
+    "post_flip_reward": 0.0825,
+    "pre_flip_reward": 0.11222222222222224,
+    "steps": 70080
+   },
+   {
+    "return": 4.87,
+    "return_std": 4.615528138794086,
+    "post_flip_reward": 0.10375,
+    "pre_flip_reward": 0.12,
+    "steps": 80000
+   },
+   {
+    "return": 5.92,
+    "return_std": 5.56,
+    "post_flip_reward": 0.16625,
+    "pre_flip_reward": 0.15,
+    "steps": 90240
+   },
+   {
+    "return": 7.62,
+    "return_std": 6.360471680622436,
+    "post_flip_reward": 0.19375,
+    "pre_flip_reward": 0.19555555555555557,
+    "steps": 100160
+   },
+   {
+    "return": 3.6,
+    "return_std": 5.535341001239219,
+    "post_flip_reward": 0.1275,
+    "pre_flip_reward": 0.09888888888888889,
+    "steps": 110080
+   },
+   {
+    "return": 5.0,
+    "return_std": 4.804164859785725,
+    "post_flip_reward": 0.145,
+    "pre_flip_reward": 0.09444444444444447,
+    "steps": 120000
+   },
+   {
+    "return": 8.15,
+    "return_std": 4.995748192213054,
+    "post_flip_reward": 0.18875,
+    "pre_flip_reward": 0.19555555555555557,
+    "steps": 130240
+   },
+   {
+    "return": 6.12,
+    "return_std": 5.457618528259373,
+    "post_flip_reward": 0.15375,
+    "pre_flip_reward": 0.1922222222222222,
+    "steps": 140160
+   },
+   {
+    "return": 5.11,
+    "return_std": 5.11741145502294,
+    "post_flip_reward": 0.1475,
+    "pre_flip_reward": 0.12,
+    "steps": 150080
+   }
+  ],
+  "kappa": [
+   {
+    "kappa": 0.4314215275455104,
+    "e_shared": 0.0013549154391512275,
+    "e_contrast": 0.0017856683116406202,
+    "steps": 20160
+   },
+   {
+    "kappa": 0.6515360031986044,
+    "e_shared": 0.006754245143383741,
+    "e_contrast": 0.003612403990700841,
+    "steps": 40000
+   },
+   {
+    "kappa": 0.43917027947172427,
+    "e_shared": 0.0058155064471066,
+    "e_contrast": 0.00742652453482151,
+    "steps": 60160
+   },
+   {
+    "kappa": 0.5430342312590014,
+    "e_shared": 0.008628415875136852,
+    "e_contrast": 0.0072608510963618755,
+    "steps": 80000
+   },
+   {
+    "kappa": 0.4459278040242919,
+    "e_shared": 0.010490047745406628,
+    "e_contrast": 0.01303404662758112,
+    "steps": 100160
+   },
+   {
+    "kappa": 0.6891586790327672,
+    "e_shared": 0.019441770389676094,
+    "e_contrast": 0.00876910611987114,
+    "steps": 120000
+   },
+   {
+    "kappa": 0.5402077799672298,
+    "e_shared": 0.01226858515292406,
+    "e_contrast": 0.01044227834790945,
+    "steps": 140160
+   },
+   {
+    "kappa": 0.48006092570866843,
+    "e_shared": 0.012510052882134914,
+    "e_contrast": 0.01354924961924553,
+    "steps": 150080
+   }
+  ]
+ },
+ "adapt": null
+}

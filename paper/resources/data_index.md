@@ -14,6 +14,8 @@
 | Overcooked baselines | `data/kappa/server_tasks/results/oc_baselines_b1*.json` | reward/grad_norm/κ 对比（n=8） |
 | Overcooked N-协议 | `data/kappa/server_tasks/results/oc_n_protocol.json` | 1/√N + 排序定理（seed41） |
 | 510K 场轴 | `data/kappa/server_tasks/results/510k_field_axis.json` | reinforce/value 场 κ，p∈{0,0.5,1}×n=6 |
+| O4 自适应实验 | `data/kappa/o4_adaptive/`（96 runs + aggregate.json） | 四目标场 × 关系翻转任务：行为差距、κ-行为解耦、部署再适应 |
+| O1 闭式验证 | `data/kappa/toy_fields/o1_closed_forms.json` | 命题 A/B/C 三路互证（闭式/autograd/MC） |
 | Overcooked 训练曲线（快照） | `data/logs/train_*.log`、checkpoints `data/models_overcooked/` | 400K/800K/1M 快照 |
 
 ## 本轮新增模型（GPU 重训，替换损坏）
@@ -47,17 +49,17 @@
 | 研究现状汇总 | `notes/research_status.md` |
 | 反转讨论 / 应用验证 / reveal 理论 | `notes/kappa_reversal_discussion.md`、`app_validation.md`、`reveal_theory.md` |
 
-## 复现脚本（临时，未入库）
+## 复现脚本（✅ 2026-08-26 已入库）
 
 | 脚本 | 作用 |
 |---|---|
-| `verify_theory_toy.py` | Toy 闭式（exact_kappa）+ 采样，T1-T3 |
-| `run_510k_field_axis.py` | 510K reinforce/value 场 κ（team 条件方差分解） |
-| `run_field_axis.py` | Overcooked reinforce/awr/value 场 κ（切换保持） |
-| `run_switch_kappa.py` | Overcooked 切换保持分解 + memory 干预 |
-| `verify_dynamic_learns.py` | dynamic 训练曲线验证 |
-| `repair_checkpoints.py` | SB3 checkpoint 修复（损坏 optimizer） |
-| `batch_train_v3.py` / `batch_train_mem.py` / `batch_train_reveal.py` | GPU 批量重训 |
+| `experiments/common_basis/toy/verify_theory_toy.py` | Toy 闭式（exact_kappa，π-加权协议）+ 采样，T1-T3（theory_toy2.json） |
+| `experiments/common_basis/toy/verify_theory_toy_v1_cefit.py` | 08-19 原版 CE-fit 轨计算器，仅复现 `theory_toy.json` |
+| `experiments/common_basis/server_tasks/run_510k_field_axis.py` | 510K reinforce/value 场 κ（team 条件方差分解） |
+| `experiments/common_basis/server_tasks/run_field_axis.py` | Overcooked reinforce/awr/value 场 κ（切换保持） |
+| `experiments/common_basis/server_tasks/run_switch_kappa.py` | Overcooked 切换保持分解 + memory 干预 |
+| `experiments/common_basis/server_tasks/verify_dynamic_learns.py` | dynamic 训练曲线验证 |
+| `experiments/common_basis/server_tasks/repair_checkpoints.py` | SB3 checkpoint 修复（损坏 optimizer） |
+| `experiments/common_basis/server_tasks/batch_train_{v3,mem,reveal}.py` | GPU 批量重训 |
 
-> ⚠️ 复现脚本目前在临时目录（`C:\Users\Flavi\AppData\Local\Temp\opencode\`），
-> 建议正式复现时移入 `experiments/` 并整理。
+> 其余 server_tasks 驱动脚本与说明见 `experiments/common_basis/server_tasks/README.md`。

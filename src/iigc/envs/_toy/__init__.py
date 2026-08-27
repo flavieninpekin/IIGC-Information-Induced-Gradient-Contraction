@@ -1,4 +1,4 @@
 """Toy Matching environment: minimal relational-aliasing bandit."""
-from .toy_env import HiddenMatchingEnv
+from .toy_env import HiddenMatchingEnv, AdaptiveHiddenMatchingEnv
 
-__all__ = ['HiddenMatchingEnv']
+__all__ = ['HiddenMatchingEnv', 'AdaptiveHiddenMatchingEnv']

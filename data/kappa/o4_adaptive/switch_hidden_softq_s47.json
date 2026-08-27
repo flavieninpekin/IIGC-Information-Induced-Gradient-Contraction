@@ -1,0 +1,189 @@
+{
+ "mode": "switch_hidden",
+ "arm": "softq",
+ "seed": 47,
+ "total_steps": 150000,
+ "final_eval": {
+  "return": 3.85,
+  "return_std": 12.028196040969735,
+  "post_flip_reward": -0.1475,
+  "pre_flip_reward": 0.34
+ },
+ "history": {
+  "steps": [
+   10240,
+   20160,
+   30080,
+   40000,
+   50240,
+   60160,
+   70080,
+   80000,
+   90240,
+   100160,
+   110080,
+   120000,
+   130240,
+   140160,
+   150080
+  ],
+  "eval": [
+   {
+    "return": 5.24,
+    "return_std": 19.373755443898844,
+    "post_flip_reward": 0.19625,
+    "pre_flip_reward": -0.031111111111111117,
+    "steps": 10240
+   },
+   {
+    "return": -3.6,
+    "return_std": 18.577405631572997,
+    "post_flip_reward": 0.21375,
+    "pre_flip_reward": -0.40444444444444444,
+    "steps": 20160
+   },
+   {
+    "return": 19.8,
+    "return_std": 19.91983935678197,
+    "post_flip_reward": -0.04625,
+    "pre_flip_reward": 1.0,
+    "steps": 30080
+   },
+   {
+    "return": 10.18,
+    "return_std": 16.134670743464213,
+    "post_flip_reward": -0.02,
+    "pre_flip_reward": 0.42111111111111116,
+    "steps": 40000
+   },
+   {
+    "return": -0.01,
+    "return_std": 0.14106735979665888,
+    "post_flip_reward": 0.01,
+    "pre_flip_reward": -0.01,
+    "steps": 50240
+   },
+   {
+    "return": 12.31,
+    "return_std": 11.720234639289437,
+    "post_flip_reward": -0.13,
+    "pre_flip_reward": 0.5633333333333332,
+    "steps": 60160
+   },
+   {
+    "return": 6.72,
+    "return_std": 14.919839141224008,
+    "post_flip_reward": 0.12375,
+    "pre_flip_reward": 0.2,
+    "steps": 70080
+   },
+   {
+    "return": 17.22,
+    "return_std": 19.965760691744254,
+    "post_flip_reward": -0.15,
+    "pre_flip_reward": 0.99,
+    "steps": 80000
+   },
+   {
+    "return": 15.82,
+    "return_std": 19.66945855889277,
+    "post_flip_reward": -0.09,
+    "pre_flip_reward": 0.86,
+    "steps": 90240
+   },
+   {
+    "return": 14.77,
+    "return_std": 19.588443021332758,
+    "post_flip_reward": -0.23375,
+    "pre_flip_reward": 0.96,
+    "steps": 100160
+   },
+   {
+    "return": 13.55,
+    "return_std": 18.293646438039627,
+    "post_flip_reward": 0.00125,
+    "pre_flip_reward": 0.5911111111111111,
+    "steps": 110080
+   },
+   {
+    "return": 17.21,
+    "return_std": 19.974881726808796,
+    "post_flip_reward": -0.16,
+    "pre_flip_reward": 1.0,
+    "steps": 120000
+   },
+   {
+    "return": 16.79,
+    "return_std": 19.973880444220146,
+    "post_flip_reward": -0.1775,
+    "pre_flip_reward": 1.0,
+    "steps": 130240
+   },
+   {
+    "return": 16.59,
+    "return_std": 19.960759003605048,
+    "post_flip_reward": -0.18625,
+    "pre_flip_reward": 1.0,
+    "steps": 140160
+   },
+   {
+    "return": 4.82,
+    "return_std": 13.070868372070771,
+    "post_flip_reward": -0.01375,
+    "pre_flip_reward": 0.24666666666666667,
+    "steps": 150080
+   }
+  ],
+  "kappa": [
+   {
+    "kappa": 0.8560915245469086,
+    "e_shared": 0.011820199899375439,
+    "e_contrast": 0.0019869685638695955,
+    "steps": 20160
+   },
+   {
+    "kappa": 0.44020003959406867,
+    "e_shared": 0.050909943878650665,
+    "e_contrast": 0.06474189460277557,
+    "steps": 40000
+   },
+   {
+    "kappa": 0.989564496478697,
+    "e_shared": 0.8851292133331299,
+    "e_contrast": 0.00933417584747076,
+    "steps": 60160
+   },
+   {
+    "kappa": 0.9921464103820485,
+    "e_shared": 6.52586022624746e-05,
+    "e_contrast": 5.165712195775995e-07,
+    "steps": 80000
+   },
+   {
+    "kappa": 0.9988244930928443,
+    "e_shared": 0.00021956009732093662,
+    "e_contrast": 2.583981597581442e-07,
+    "steps": 100160
+   },
+   {
+    "kappa": 0.9554149549181553,
+    "e_shared": 7.725489922449924e-06,
+    "e_contrast": 3.6051488905286533e-07,
+    "steps": 120000
+   },
+   {
+    "kappa": 0.537567246668781,
+    "e_shared": 9.457511964683363e-07,
+    "e_contrast": 8.135658049468475e-07,
+    "steps": 140160
+   },
+   {
+    "kappa": 0.998904626668873,
+    "e_shared": 0.00213901256211102,
+    "e_contrast": 2.3455866084987065e-06,
+    "steps": 150080
+   }
+  ]
+ },
+ "adapt": null
+}

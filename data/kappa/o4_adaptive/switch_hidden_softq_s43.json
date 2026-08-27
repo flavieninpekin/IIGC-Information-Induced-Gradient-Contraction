@@ -1,0 +1,189 @@
+{
+ "mode": "switch_hidden",
+ "arm": "softq",
+ "seed": 43,
+ "total_steps": 150000,
+ "final_eval": {
+  "return": 20.0,
+  "return_std": 0.0,
+  "post_flip_reward": 0.5,
+  "pre_flip_reward": 0.5555555555555555
+ },
+ "history": {
+  "steps": [
+   10240,
+   20160,
+   30080,
+   40000,
+   50240,
+   60160,
+   70080,
+   80000,
+   90240,
+   100160,
+   110080,
+   120000,
+   130240,
+   140160,
+   150080
+  ],
+  "eval": [
+   {
+    "return": 19.92,
+    "return_std": 0.44,
+    "post_flip_reward": 0.535,
+    "pre_flip_reward": 0.5188888888888888,
+    "steps": 10240
+   },
+   {
+    "return": 19.94,
+    "return_std": 0.4431703961232068,
+    "post_flip_reward": 0.5125,
+    "pre_flip_reward": 0.54,
+    "steps": 20160
+   },
+   {
+    "return": 19.95,
+    "return_std": 0.4213074886588179,
+    "post_flip_reward": 0.43375,
+    "pre_flip_reward": 0.6122222222222222,
+    "steps": 30080
+   },
+   {
+    "return": 19.97,
+    "return_std": 0.24310491562286435,
+    "post_flip_reward": 0.45,
+    "pre_flip_reward": 0.6,
+    "steps": 40000
+   },
+   {
+    "return": 20.0,
+    "return_std": 0.0,
+    "post_flip_reward": 0.565,
+    "pre_flip_reward": 0.4977777777777777,
+    "steps": 50240
+   },
+   {
+    "return": 20.0,
+    "return_std": 0.0,
+    "post_flip_reward": 0.415,
+    "pre_flip_reward": 0.6311111111111111,
+    "steps": 60160
+   },
+   {
+    "return": 19.98,
+    "return_std": 0.19899748742132398,
+    "post_flip_reward": 0.495,
+    "pre_flip_reward": 0.5599999999999999,
+    "steps": 70080
+   },
+   {
+    "return": 20.0,
+    "return_std": 0.0,
+    "post_flip_reward": 0.45,
+    "pre_flip_reward": 0.6,
+    "steps": 80000
+   },
+   {
+    "return": 19.98,
+    "return_std": 0.19899748742132398,
+    "post_flip_reward": 0.5,
+    "pre_flip_reward": 0.5555555555555556,
+    "steps": 90240
+   },
+   {
+    "return": 19.99,
+    "return_std": 0.14106735979665888,
+    "post_flip_reward": 0.49,
+    "pre_flip_reward": 0.5644444444444443,
+    "steps": 100160
+   },
+   {
+    "return": 19.97,
+    "return_std": 0.24310491562286438,
+    "post_flip_reward": 0.54,
+    "pre_flip_reward": 0.5199999999999999,
+    "steps": 110080
+   },
+   {
+    "return": 19.98,
+    "return_std": 0.19899748742132398,
+    "post_flip_reward": 0.53375,
+    "pre_flip_reward": 0.5244444444444444,
+    "steps": 120000
+   },
+   {
+    "return": 20.0,
+    "return_std": 0.0,
+    "post_flip_reward": 0.545,
+    "pre_flip_reward": 0.5155555555555555,
+    "steps": 130240
+   },
+   {
+    "return": 19.98,
+    "return_std": 0.19899748742132398,
+    "post_flip_reward": 0.55,
+    "pre_flip_reward": 0.5111111111111111,
+    "steps": 140160
+   },
+   {
+    "return": 20.0,
+    "return_std": 0.0,
+    "post_flip_reward": 0.46,
+    "pre_flip_reward": 0.591111111111111,
+    "steps": 150080
+   }
+  ],
+  "kappa": [
+   {
+    "kappa": 0.5601559020188974,
+    "e_shared": 0.00016340534784831107,
+    "e_contrast": 0.00012830870400648564,
+    "steps": 20160
+   },
+   {
+    "kappa": 0.971213052238939,
+    "e_shared": 0.0011463103583082557,
+    "e_contrast": 3.397686668904498e-05,
+    "steps": 40000
+   },
+   {
+    "kappa": 0.724856042267266,
+    "e_shared": 7.694040959904669e-07,
+    "e_contrast": 2.9205369855844765e-07,
+    "steps": 60160
+   },
+   {
+    "kappa": 0.8903071165252451,
+    "e_shared": 2.9434104362735525e-06,
+    "e_contrast": 3.626514626375865e-07,
+    "steps": 80000
+   },
+   {
+    "kappa": 0.6468716013347143,
+    "e_shared": 1.1517574876052095e-06,
+    "e_contrast": 6.287465339482878e-07,
+    "steps": 100160
+   },
+   {
+    "kappa": 0.778900208674556,
+    "e_shared": 8.310030534630641e-05,
+    "e_contrast": 2.3588978365296498e-05,
+    "steps": 120000
+   },
+   {
+    "kappa": 0.7367974588934475,
+    "e_shared": 1.7718943126965314e-05,
+    "e_contrast": 6.329651114356238e-06,
+    "steps": 140160
+   },
+   {
+    "kappa": 0.9487637272656562,
+    "e_shared": 0.007813874632120132,
+    "e_contrast": 0.0004219741967972368,
+    "steps": 150080
+   }
+  ]
+ },
+ "adapt": null
+}

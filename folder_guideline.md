@@ -64,7 +64,11 @@ experiments/
     │   └── why_value_reverses.md   ← 反转机制设计（源自 project3/paper）
     ├── sac_actor_critic/    ← 实验1：SAC actor/critic 分离 κ
     ├── interpolation/       ← 实验2：AWR / 温度 / DPG 插值谱
-    └── replay_mix/          ← 实验3：DQN replay 关系混合消融
+    ├── replay_mix/          ← 实验3：DQN replay 关系混合消融
+    ├── performance/         ← O4 关系自适应性能实验（run_toy_adaptive.py）
+    ├── toy/                 ← Toy 闭式验证群（verify_*.py；O1 命题 A/B/C 在
+    │                          verify_closed_forms_o1.py）
+    └── server_tasks/        ← GPU 重训与场轴测量正式脚本（2026-08-26 入库）
 ```
 
 ## 约定

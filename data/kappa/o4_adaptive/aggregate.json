@@ -1,0 +1,353 @@
+{
+ "n_runs": 96,
+ "summary": {
+  "static_hidden|awr": {
+   "n_seeds": 8,
+   "return": [
+    3.6925000000000003,
+    1.2342583805670513,
+    8
+   ],
+   "post_flip_reward": null,
+   "pre_flip_reward": null,
+   "final_kappa": [
+    0.6010135122248388,
+    0.06796573137400083,
+    8
+   ],
+   "adapt_auc": [
+    5.5595,
+    1.68205164902865,
+    8
+   ],
+   "adapt_early": [
+    5.27875,
+    1.5831727440491132,
+    8
+   ],
+   "adapt_final": [
+    6.0025,
+    2.6332002867233633,
+    8
+   ],
+   "adapt_steps_to_32": null
+  },
+  "static_hidden|reinforce": {
+   "n_seeds": 8,
+   "return": [
+    13.450000000000001,
+    2.2749340649785874,
+    8
+   ],
+   "post_flip_reward": null,
+   "pre_flip_reward": null,
+   "final_kappa": [
+    0.5834906313824884,
+    0.1982551760808451,
+    8
+   ],
+   "adapt_auc": [
+    17.148,
+    1.3008243540155606,
+    8
+   ],
+   "adapt_early": [
+    17.46625,
+    1.340241932451003,
+    8
+   ],
+   "adapt_final": [
+    17.36,
+    1.382316895650198,
+    8
+   ],
+   "adapt_steps_to_32": null
+  },
+  "static_hidden|softq": {
+   "n_seeds": 8,
+   "return": [
+    21.112499999999997,
+    21.227858906399394,
+    8
+   ],
+   "post_flip_reward": null,
+   "pre_flip_reward": null,
+   "final_kappa": [
+    0.5887432670380981,
+    0.19330716717509186,
+    8
+   ],
+   "adapt_auc": [
+    35.8785,
+    8.412625496835098,
+    8
+   ],
+   "adapt_early": [
+    32.45125,
+    14.237731944993907,
+    8
+   ],
+   "adapt_final": [
+    39.9975,
+    0.006614378277662511,
+    8
+   ],
+   "adapt_steps_to_32": [
+    9080.0,
+    5980.100333606452,
+    8
+   ]
+  },
+  "static_hidden|td": {
+   "n_seeds": 8,
+   "return": [
+    38.8775,
+    0.32279056677666346,
+    8
+   ],
+   "post_flip_reward": null,
+   "pre_flip_reward": null,
+   "final_kappa": [
+    0.2980111253167828,
+    0.14148824359065568,
+    8
+   ],
+   "adapt_auc": [
+    39.9725,
+    0.07275816105427586,
+    8
+   ],
+   "adapt_early": [
+    39.93125,
+    0.18189540263568965,
+    8
+   ],
+   "adapt_final": [
+    40.0,
+    0.0,
+    8
+   ],
+   "adapt_steps_to_32": [
+    6080.0,
+    0.0,
+    8
+   ]
+  },
+  "switch_hidden|awr": {
+   "n_seeds": 8,
+   "return": [
+    5.02625,
+    2.020816279996774,
+    8
+   ],
+   "post_flip_reward": [
+    0.039375,
+    0.046012905798264905,
+    8
+   ],
+   "pre_flip_reward": [
+    0.13708333333333333,
+    0.05825109944387104,
+    8
+   ],
+   "final_kappa": [
+    0.5747047643787517,
+    0.07765815801395642,
+    8
+   ],
+   "adapt_auc": null,
+   "adapt_early": null,
+   "adapt_final": null,
+   "adapt_steps_to_32": null
+  },
+  "switch_hidden|reinforce": {
+   "n_seeds": 8,
+   "return": [
+    9.4775,
+    5.1278351913843725,
+    8
+   ],
+   "post_flip_reward": [
+    0.18156250000000002,
+    0.15697177045172805,
+    8
+   ],
+   "pre_flip_reward": [
+    0.2273611111111111,
+    0.2445775758045282,
+    8
+   ],
+   "final_kappa": [
+    0.42635649396212905,
+    0.18495897998751318,
+    8
+   ],
+   "adapt_auc": null,
+   "adapt_early": null,
+   "adapt_final": null,
+   "adapt_steps_to_32": null
+  },
+  "switch_hidden|softq": {
+   "n_seeds": 8,
+   "return": [
+    28.622500000000002,
+    11.80822250594898,
+    8
+   ],
+   "post_flip_reward": [
+    0.57703125,
+    0.29237974123720933,
+    8
+   ],
+   "pre_flip_reward": [
+    0.8038888888888889,
+    0.2586091717315991,
+    8
+   ],
+   "final_kappa": [
+    0.9382479044617008,
+    0.09066402018782722,
+    8
+   ],
+   "adapt_auc": null,
+   "adapt_early": null,
+   "adapt_final": null,
+   "adapt_steps_to_32": null
+  },
+  "switch_hidden|td": {
+   "n_seeds": 8,
+   "return": [
+    36.9725,
+    0.058683472971527866,
+    8
+   ],
+   "post_flip_reward": [
+    0.75,
+    0.0,
+    8
+   ],
+   "pre_flip_reward": [
+    1.0,
+    0.0,
+    8
+   ],
+   "final_kappa": [
+    0.05810018880002528,
+    0.04464685685587269,
+    8
+   ],
+   "adapt_auc": null,
+   "adapt_early": null,
+   "adapt_final": null,
+   "adapt_steps_to_32": null
+  },
+  "switch_revealed|awr": {
+   "n_seeds": 8,
+   "return": [
+    7.067500000000001,
+    3.629895831838704,
+    8
+   ],
+   "post_flip_reward": [
+    0.1434375,
+    0.09452130629519463,
+    8
+   ],
+   "pre_flip_reward": [
+    0.17152777777777778,
+    0.09114656745736101,
+    8
+   ],
+   "final_kappa": [
+    0.528435545900537,
+    0.09458161402384997,
+    8
+   ],
+   "adapt_auc": null,
+   "adapt_early": null,
+   "adapt_final": null,
+   "adapt_steps_to_32": null
+  },
+  "switch_revealed|reinforce": {
+   "n_seeds": 8,
+   "return": [
+    16.65375,
+    1.6444979287004282,
+    8
+   ],
+   "post_flip_reward": [
+    0.41015625,
+    0.06252636162801654,
+    8
+   ],
+   "pre_flip_reward": [
+    0.40986111111111106,
+    0.03603597953417743,
+    8
+   ],
+   "final_kappa": [
+    0.609528892272344,
+    0.11865050806157115,
+    8
+   ],
+   "adapt_auc": null,
+   "adapt_early": null,
+   "adapt_final": null,
+   "adapt_steps_to_32": null
+  },
+  "switch_revealed|softq": {
+   "n_seeds": 8,
+   "return": [
+    39.993750000000006,
+    0.006959705453537897,
+    8
+   ],
+   "post_flip_reward": [
+    0.9996875000000001,
+    0.0005412658773652627,
+    8
+   ],
+   "pre_flip_reward": [
+    1.0,
+    0.0,
+    8
+   ],
+   "final_kappa": [
+    0.8456145136359262,
+    0.18249040380213594,
+    8
+   ],
+   "adapt_auc": null,
+   "adapt_early": null,
+   "adapt_final": null,
+   "adapt_steps_to_32": null
+  },
+  "switch_revealed|td": {
+   "n_seeds": 8,
+   "return": [
+    39.875,
+    0.33071891388307384,
+    8
+   ],
+   "post_flip_reward": [
+    0.984375,
+    0.04133986423538423,
+    8
+   ],
+   "pre_flip_reward": [
+    1.0,
+    0.0,
+    8
+   ],
+   "final_kappa": [
+    0.05639346813297968,
+    0.06026023685358959,
+    8
+   ],
+   "adapt_auc": null,
+   "adapt_early": null,
+   "adapt_final": null,
+   "adapt_steps_to_32": null
+  }
+ }
+}
