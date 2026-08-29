@@ -10,7 +10,6 @@ V2. Mixture = geometric-mean projection (KL Pythagorean identity):
     and the mixed gradient equals the entropy channel pi_b(ell_b - lbar).
 V3. kappa as Fisher-metric / infinitesimal-KL ratio:
     kappa_F = (g_hat^T F g_hat) / E[(g_r^T F g_r)],  F = diag(pi) - pi pi^T;
-    on the tangent space F g = diag(pi) g, and
     kappa_F = lim_{eps->0} KL(pi || pi + eps*g_hat) / E[KL(pi || pi + eps*g_r)].
 V4. Forward-KL field: g_r = grad_z KL(pi_r* || pi) = pi - pi_r*; mixture
     gradient = pi - p-weighted arithmetic mean; mirror closed form.
@@ -48,11 +47,17 @@ def grad_kl_fwd(z, pi_star):
 
 
 def fisher_kappa(gs, p, pi):
-    """kappa_F = (g_hat^T F g_hat) / E_r[(g_r^T F g_r)]; F g = diag(pi) g on tangent."""
+    """Compute kappa in the categorical Fisher metric.
+
+    The logit-space Fisher matrix is F = diag(pi) - pi pi^T.  Gradients are
+    shift-invariant (their entries sum to zero), but pi^T g is not generally
+    zero, so the rank-one term must be retained.
+    """
     gs = np.asarray(gs)
     ghat = np.asarray(p) @ gs
-    num = np.sum(pi * ghat ** 2)
-    den = np.mean([np.sum(pi * g ** 2) for g in gs])
+    fisher = np.diag(pi) - np.outer(pi, pi)
+    num = float(ghat @ fisher @ ghat)
+    den = float(np.mean([g @ fisher @ g for g in gs]))
     return num / den if den > 1e-300 else 0.0
 
 
