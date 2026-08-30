@@ -1,6 +1,6 @@
 # Gradient Survival under Hidden Group-Symmetric Heterogeneity: Exact Cancellation, Direction Dependence, and Interference
 
-**Draft v0.5 — for opinion gathering (2026-08-26). All numbers are from verified
+**Draft v0.6 — for opinion gathering (2026-08-26). All numbers are from verified
 experiments; data provenance listed in the Appendix table. Formal proofs of the
 general-group statements are in progress; Z2/S3 instances are verified to
 machine precision.**
@@ -212,6 +212,38 @@ gradient contains only components invariant under the induced representation
 of G; survival decomposes by irreducible representations with closed-form
 coefficients; 2D irreps enable direction dependence and interference. Z2 and
 S3 are the verified instances. The general proof is in progress.
+
+### 3.8 Partial reveal: kappa(p) is monotone (Prop 10)
+
+A natural information knob is the *reveal probability* p: with probability p
+the observation carries the condition identity, else it is hidden. In the
+mirror bandit with three policy states (hidden / revealed-A / revealed-B),
+condition-conditioned gradients split as g_r(p) = (1−p)g_r^hid + p·g_r^rev,
+and the mirror gives g_A^hid = −g_B^hid exactly. With block-orthogonal
+parameters:
+
+    κ(p) = p²‖m_rev‖² / ( p²·E_rev + (1−p)²·E_hid ),
+    dκ/dp = 2‖m_rev‖²E_hid·p(1−p) / D² ≥ 0,
+
+so κ is *strictly increasing on (0,1) — no peak, no valley*; κ(0) = 0,
+κ(1) = ‖m_rev‖²/E_rev (= 1/2 exactly for block-orthogonal revealed states,
+since the two revealed blocks are mutually orthogonal). The shared-network
+variant (no block orthogonality) is still monotone numerically (0 → 0.136
+over 21 p-levels). Closed form vs autograd: 5.6e-17.
+
+*Connection to an earlier abandoned experiment.* In our companion empirical
+study, a 21-level reveal grid over the agent's teammate visibility produced a
+statistically flat κ(p) ≈ 0.5 and a spurious "valley" at 75% reveal that died
+under n=6 (ANOVA p = 0.759). The monotonicity theorem explains both: in the
+clean mirror regime the valley is *impossible* by this proposition, and the
+flatness at 0.5 was a mixed-protocol noise artifact plus weak condition
+driver in that environment. The abandoned experiment is thus not a null
+result against the framework but a measurement of a curve whose shape the
+framework predicts in closed form.
+
+*KL reading.* κ(p) is the infinitesimal-KL-movement ratio (§3.7 Prop 6);
+the reveal theorem says the information → gradient-KL-movement curve is
+monotone, with maximal gain at p = 1/2 (dκ/dp ∝ p(1−p)).
 
 ### 3.7 KL formalization (verified to machine precision)
 
