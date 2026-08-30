@@ -245,6 +245,21 @@ framework predicts in closed form.
 the reveal theorem says the information → gradient-KL-movement curve is
 monotone, with maximal gain at p = 1/2 (dκ/dp ∝ p(1−p)).
 
+*Reconciliation with the earlier flat curve.* Our companion empirical study
+(510K, 21 reveal levels × 6 seeds) measured a statistically flat
+κ(p) ≈ 0.5 with a spurious "valley" at 75% that died under n=6 (ANOVA
+p = 0.759). The flatness has two causes, both documented separately: the
+mixed measurement protocol collapses every κ to the orthogonal-noise value
+0.5 (per-episode variance ≈ 60× the signal; protocol-artifact analysis), and
+in 510K the team-assignment relation is a weak behavioral driver (sensitivity
+probes 0.008–0.017), so even full reveal barely changes the gradient
+structure. In the clean mirror regime neither obstruction exists, and κ(p) is
+the monotone curve predicted above. The abandoned experiment is therefore not
+a null result: measured with the wrong instrument in a weak-driver
+environment, it is the *empirical evidence for why κ(p) is unreadable there*;
+the toy measurement is what the theory predicts. In the paper we show both
+curves side by side.
+
 ### 3.7 KL formalization (verified to machine precision)
 
 The Euclidean definition of κ hides a metric fact: under softmax
