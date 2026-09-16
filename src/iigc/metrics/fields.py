@@ -1,31 +1,42 @@
-"""Gradient fields for kappa measurement on a common basis.
+"""Gradient fields and kappa measurement protocols.
 
-Every field is the gradient of a scalar objective w.r.t. the SAC actor
-parameters (theta), computed on the SAME rollouts. Only the objective changes,
-so kappa differences are attributable to the field, not to the network, data,
-or relations.
+Each field is a gradient of a specified scalar objective with respect to the
+actor parameters. The fields are measurement definitions, not a universal
+mode-seeking/mean-seeking ordering. In particular, ``awr`` deliberately keeps
+the policy-dependent baseline in the autograd graph; detached AWR is a
+different field and should not share this name in a paper.
 
-Fields (mode-seeking -> mean-seeking):
-  - reinforce : return-weighted grad log pi(a_taken)    [hard mode-seeking]
-  - awr       : advantage-weighted grad log pi(a_taken) [intermediate]
-  - softq     : SAC actor loss grad                      [soft]
-  - expq      : expected-Q grad sum_a pi(a) Q(a)         [mean-seeking]
-  - softmaxq  : softmax(Q/tau)-weighted grad log pi     [framework gibbs dial]
-  - gibbs(tau): pi_tau = softmax(logits/tau), grad E[Q]  (tau -> 0 mode,
-                tau -> inf mean)
+``softmaxq`` uses a Q-dependent, elementwise weight. ``gibbs_expq`` is kept
+separate because it differentiates E[Q] under a temperature-scaled policy and
+is not the same objective as ``softmaxq``.
 """
 import numpy as np
 import torch
 import torch.nn.functional as F
 
+from iigc.metrics.kappa import condition_decomposition
+
 FIELDS = ['reinforce', 'awr', 'softq', 'expq', 'softmaxq']
 
 
 def kappa_and_energy(gA, gB):
-    avg = (gA + gB) / 2.0
-    e = (torch.norm(gA) ** 2 + torch.norm(gB) ** 2) / 2.0
-    k = (torch.norm(avg) ** 2 / max(e, 1e-10)).item()
-    return k, e.item()
+    """Compatibility wrapper for two equally weighted condition gradients."""
+    return kappa_from_gradients([gA, gB])
+
+
+def kappa_from_gradients(gradients, weights=None):
+    """Compute bounded mixture-reference kappa from condition gradients.
+
+    For condition gradients ``g_i`` and normalized nonnegative weights ``p_i``
+    this returns ``||sum_i p_i g_i||^2 / sum_i p_i ||g_i||^2``.
+    Episode noise must be handled before calling this function; it is not
+    folded into the structural denominator.
+    """
+    if not gradients:
+        raise ValueError("gradients must not be empty")
+
+    result = condition_decomposition(gradients, weights)
+    return result["kappa_mix"], result["E_mixture"]
 
 
 def rollout_episodes(model, env, n_eps=30, base_seed=0, stochastic=False):
@@ -94,6 +105,7 @@ def loss_reinforce(model, episodes):
 
 
 def loss_awr(model, episodes, tau=1.0, q_fn=None):
+    """AWR-like field with a differentiable policy-dependent baseline."""
     trans = _flatten(episodes)
     act_b = torch.tensor([t[1] for t in trans]).to(model.device)
     _, probs, log_probs, q = _probs_logits_q(model, [t[0] for t in trans], q_fn)
@@ -105,6 +117,7 @@ def loss_awr(model, episodes, tau=1.0, q_fn=None):
 
 
 def loss_softq(model, episodes, q_fn=None):
+    """SAC actor objective with detached Q values."""
     trans = _flatten(episodes)
     _, probs, log_probs, q = _probs_logits_q(model, [t[0] for t in trans], q_fn)
     alpha = model.log_alpha.exp().detach()
