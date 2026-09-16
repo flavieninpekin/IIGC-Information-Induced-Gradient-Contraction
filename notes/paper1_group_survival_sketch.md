@@ -1,5 +1,10 @@
 # Paper-1 骨架：隐藏群对称异质性下的梯度幸存定理（草创）
 
+> **Superseded interpretation (2026-09-16):** the later K-way control shows
+> that the direction/interference effects are not S3 or non-abelian-specific.
+> Treat the S3-specific language and the softq dynamical section below as
+> historical until rewritten under the canonical registry.
+
 > 状态：**草创（2026-08-26）**。目标：把已验证的 Z₂ 奇偶结果（命题 A/B/C）
 > 推广为任意对称群的表示分解定理，使"κ 的机制"从初等观察升级为一般原理。
 > 本文档 = 数学骨架 + 待证引理清单 + 与已有结果的收编关系 + 查新记录。

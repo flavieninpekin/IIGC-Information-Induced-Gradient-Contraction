@@ -1,5 +1,9 @@
 # κ 反转：定义性问题还是真实的行为差异？
 
+> **Historical discussion:** this note contains the original PG/value framing.
+> The current paper should use the narrower hidden-condition audit in
+> `paper/ICLR2027_READINESS.md`.
+
 > 关于 policy-based 与 value-based 两类算法在 κ（梯度保留率）上的反转现象
 > 的讨论笔记。2026-07-31。
 

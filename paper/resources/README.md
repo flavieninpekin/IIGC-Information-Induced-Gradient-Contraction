@@ -1,9 +1,15 @@
 # paper/resources — 新论文素材（IIGC 机制篇）
 
+> **Source-of-truth warning:** this directory contains both current and
+> historical material. Before using any number or claim, check
+> `paper/ICLR2027_READINESS.md`. The readiness file defines the canonical kappa
+> denominator, the status of the Fisher/KL material, and which deterministic or
+> CE-fit results are obsolete.
+
 > 目的：把分散在 `notes/`、`data/`、`experiments/` 的结论与数字收编成论文
 > 可直接使用的素材。**所有数字都带出处**（data/xxx.json 或 notes/xxx.md），
 > 写稿时直接引用，不改数字。
-> 最后更新：2026-08-19。
+> 最后更新：2026-08-19；投稿口径文件更新于 2026-09-16。
 
 ## 目录
 
@@ -14,6 +20,7 @@
 | `evidence.md` | 三环境核心证据表（Toy 精确/采样、Overcooked、510K 场轴）+ 修正/阴性结果 | 直接抄进 Results/Tables |
 | `overcooked_slice.md` | Overcooked 受控切片：witness 验证 + 场轴（关系冲突的机械证明） | 机制/方法学证据 |
 | `theory.md` | 框架定义（保留—特异权衡）、奇偶分解引理、闭式判决（T1-T3）、开放项 | 写 Theory/Propositions |
+| `canonical_theory.md` | Current definitions and corrected theory only | Primary source for the revised Theory section |
 | `data_index.md` | 全部数据文件位置一览 | 复核引用、找原始数字 |
 
 ## 数据源速查（原始）

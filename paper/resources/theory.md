@@ -1,5 +1,12 @@
 # 理论框架（theory）
 
+> **Definition warning (2026-09-16):** this is a derivation notebook, not a
+> final theory section. In particular, use the claim registry for the metric
+> denominator and do not import the Fisher/KL or softq-dynamics sections without
+> rechecking them.
+>
+> The corrected theory is now in `paper/resources/canonical_theory.md`.
+
 > 承接 `notes/theory_program.md` C.0-C.5 与 `notes/toy_field_axis_theory.md`。
 > 本文是论文 Theory 节的素材：定义、引理、闭式判决、开放项。
 > 最后更新：2026-08-19。

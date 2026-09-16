@@ -1,5 +1,9 @@
 # IIGC 研究梳理 — 上一篇论文结果 + 当前实验进展
 
+> **Historical status (2026-09-16):** this file records the research process and
+> contains superseded field-axis and protocol claims. Use
+> `paper/ICLR2027_READINESS.md` as the current submission registry.
+
 > 本文件是研究现状的集中整理，帮助理清"上一篇文章已经知道什么"和
 > "我们现在在测什么、得到了什么"。
 > 最后更新：2026-07-31。

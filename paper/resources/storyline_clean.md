@@ -1,5 +1,9 @@
 # 干净故事线（storyline_clean）
 
+> **Needs definition sync (2026-09-16):** this is a historical narrative draft.
+> Its field-axis numbers mix structural and episode-noise estimates. Use the
+> claim registry before putting any of them into a submission.
+
 > 替代 `narrative.md` 的主线（该文件保留作草稿）。基于 2026-08-19 审查：
 > 原故事线有三处不清（隐藏加强承诺不成立、κ_ep/κ_mean 混用、线程过多），
 > 此处收窄成一条自洽主线。最后更新：2026-08-19。

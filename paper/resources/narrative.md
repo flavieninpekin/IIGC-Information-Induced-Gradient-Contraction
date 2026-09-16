@@ -1,5 +1,9 @@
 # 论文骨架（narrative）
 
+> **HISTORICAL OUTLINE (2026-09-16):** this outline predates the canonical
+> definition registry and still frames the work as a universal PG/value
+> reversal. Use `paper/ICLR2027_READINESS.md` for the current thesis.
+
 > 承接上一篇 AAAI 2027（`AAAI2027-510k-clear`，现象篇：IIGC + κ + 反转作为边界）。
 > 本篇（机制篇）回答其开放问题：**反转的机制是什么？**
 > 最后更新：2026-08-19。

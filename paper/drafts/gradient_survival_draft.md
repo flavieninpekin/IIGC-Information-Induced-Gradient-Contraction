@@ -1,5 +1,9 @@
 # Gradient Survival under Hidden Group-Symmetric Heterogeneity: Exact Cancellation, Direction Dependence, and Interference
 
+> **ARCHIVED DRAFT (2026-09-16):** not submission-ready and not the source of
+> truth. This draft still contains superseded S3-only, softq-dynamics, and
+> Fisher/KL claims. Use `paper/ICLR2027_READINESS.md` before reusing text.
+
 **Draft v0.6 — for opinion gathering (2026-08-26). All numbers are from verified
 experiments; data provenance listed in the Appendix table. Formal proofs of the
 general-group statements are in progress; Z2/S3 instances are verified to

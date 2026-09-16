@@ -1,5 +1,9 @@
 # 理论纲领与行动清单 — 2026-08-19
 
+> **Historical plan (2026-09-16):** several entries below predate the K-way,
+> stochastic-protocol, and O4 decisions. Do not use its old field labels or
+> deadlines as current claims; see `paper/ICLR2027_READINESS.md`.
+
 > 目的：一份文件终结"太散、抓不住"。三个部分：
 > **A** 生死簿（什么死了、什么活着）→ **B** 今天就按的运行键 → **C** 理论推导任务书（自足，可单独拿去推）。
 > 证据数字全部注明出处文件，推导时直接对照。

@@ -1,5 +1,23 @@
 # 数据索引（data_index）
 
+> 这是溯源索引，不是当前 claim registry。决定哪些数字可以进入投稿时，先看
+> `paper/ICLR2027_READINESS.md`。历史 CE-fit、deterministic 和旧 Toy 表仍保留，
+> 但不默认属于当前主证据。
+
+## Canonical 入口（2026-09-16 起）
+
+| 内容 | 路径 | 说明 |
+|---|---|---|
+| 指标实现 | `src/iigc/metrics/kappa.py` | `condition_decomposition` / `episode_decomposition` / `measurement_metadata`；`kappa_mix` 为唯一主指标 |
+| 修正理论 | `paper/resources/canonical_theory.md` | 与代码一致的命题与限定（softq 方向、Fisher/KL 范围、噪声分解） |
+| 修正记录 | `notes/paper1_propositions_corrections.md` | 历史命题的逐条作废/修正说明 |
+| K-way 数据（刷新） | `data/kappa/toy_fields/kway_geometry.json` | `kappa_mix` 主键 + `_metadata`；K=2/3/4 方向与干涉 |
+| Z2 闭式（刷新） | `data/kappa/toy_fields/o1_closed_forms.json` | `_metadata` + 命题 A/B/C 三路互证 |
+| K=3 几何（刷新） | `data/kappa/toy_fields/s3_survival.json` | 方向扫描与 softq 干涉，按 `kappa_mix` 口径 |
+| 结构指标结果汇总 | `notes/canonical_metric_results.md` | Toy/Overcooked/510K 的 `kappa_mix` 数字与旧口径对照 |
+| 510K paired 结果 | `data/kappa/server_tasks/results/510k_field_axis.json` | 新键 `s<seed>_paired`；旧键未配对，勿混用 |
+| Overcooked 分量回填 | `oc_field_axis.json` / `oc_switch_kappa.json` | 由 `backfill_kappa_mix.py` 从已存分量补 `kappa_mix` |
+
 > 论文所有数字的原始出处。复核引用时从这里进。最后更新：2026-08-19。
 
 ## 本轮新证据（新论文核心）
@@ -35,7 +53,7 @@
 | E1 actor/critic | `data/kappa/common_basis_sac_split/results.json` | SAC 场分离（n=2） |
 | E2 插值谱 | `data/kappa/common_basis_interp/results.json` | reinforce<awr<softq/expq + gibbs τ |
 | Cross-transfer | `data/kappa/cross_transfer/results.json` | 训练×测试 2×2 |
-| Toy 场轴（旧） | `data/kappa/toy_fields/results.json` | reinforce 0/awr 0.561/softq 0.068/expq 0 |
+| Toy 场测量（stochastic，当前文件） | `data/kappa/toy_fields/results.json` | 当前随机协议结果；旧 `0.561`/`0.068` field-axis 数字是历史/伪影，不用于 Results |
 | 510K stuck_detect | `data/kappa/stuck_detect/` | forced_decomp/sensitivity/memory_eval |
 | 能量分解 A/B/C | `data/kappa/variance_decomp/` | accuracy/compactness/scale/ranking_flip |
 
