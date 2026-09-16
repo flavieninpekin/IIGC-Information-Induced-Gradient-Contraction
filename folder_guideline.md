@@ -85,3 +85,12 @@ experiments/
   - 已训练模型（在 project3/models_* 与参考目录中，可手动拷入 `data/models/` 复用）
 - **参考材料**：`AAAI2027-510k-clear/` 与 `AAAI2027-510k-clear.zip` 已被
   gitignore，仅供查阅，不属于本项目。
+
+## 投稿整理（2026-09-16）
+
+- 当前投稿口径、公式定义、证据优先级和 blocker 只以
+  `paper/ICLR2027_READINESS.md` 为准。
+- `notes/` 与 `paper/drafts/` 保留研究过程和历史版本；复制数字到论文前必须
+  先对照投稿口径文件。
+- 新实验必须记录梯度定义、条件权重、分母、rollout 协议、参数空间、seed 和
+  code revision，避免 `kappa_mean`、`kappa_ep` 与历史 CE-fit 轨混用。

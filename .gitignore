@@ -9,3 +9,13 @@ __pycache__/
 .venv/
 venv/
 .env
+
+# LaTeX build artifacts (keep .bbl: it is part of a portable source bundle)
+paper/submission/**/*.aux
+paper/submission/**/*.blg
+paper/submission/**/*.log
+paper/submission/**/*.out
+paper/submission/**/*.synctex.gz
+paper/submission/**/*.fls
+paper/submission/**/*.fdb_latexmk
+paper/submission/**/main*.txt
