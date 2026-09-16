@@ -1,4 +1,12 @@
 {
+  "_metadata": {
+    "kappa_schema": "mixture-v1",
+    "gradient_definition": "canonical expected-sampled gradient",
+    "condition_weights": "equal_two_conditions",
+    "rollout_protocol": "analytic_and_monte_carlo",
+    "parameter_space": "euclidean",
+    "noise_treatment": "noise_validated"
+  },
   "definition": "canonical expected-sampled grad (matches fields.py)",
   "validation": {
     "awr_closed_vs_autograd_max_abs_err": 9.159339953157541e-16,
