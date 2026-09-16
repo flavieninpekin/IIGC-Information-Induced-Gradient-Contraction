@@ -25,6 +25,7 @@ import engine  # noqa: E402
 from stable_baselines3 import PPO  # noqa: E402
 from iigc.envs._overcooked.overcooked_v3_env import OvercookedV3Env, PARTNER_TYPES  # noqa: E402
 from iigc.envs._overcooked.overcooked_memory_env import OvercookedMemoryEnv  # noqa: E402
+from iigc.metrics.kappa import episode_decomposition, measurement_metadata  # noqa: E402
 
 CHKPT = r"C:\Users\Flavi\AppData\Local\Temp\opencode\chkpt_clean"
 OUT = r"C:\Users\Flavi\opencode\IIGC\data\kappa\server_tasks\results\oc_switch_kappa.json"
@@ -82,19 +83,9 @@ def collect(model, env, partner, n):
 
 
 def components(gA, gB):
-    muA = gA.mean(0); muB = gB.mean(0)
-    mu = (muA + muB) / 2.0
-    E_shared = mu.norm().pow(2).item()
-    E_contrast = ((muA - muB) / 2.0).norm().pow(2).item()
-    varA = (gA - muA).norm(dim=1).pow(2).mean().item()
-    varB = (gB - muB).norm(dim=1).pow(2).mean().item()
-    sigma2 = (varA + varB) / 2.0
-    E_total = E_shared + E_contrast + sigma2
-    k_ep = E_shared / E_total if E_total > 0 else 0.0
-    denom = E_shared + E_contrast + sigma2 / gA.shape[0]
-    k_mean = E_shared / denom if denom > 0 else 0.0
-    return dict(E_shared=E_shared, E_contrast=E_contrast, sigma2=sigma2,
-                E_total=E_total, kappa_ep=k_ep, kappa_mean=k_mean)
+    result = episode_decomposition([gA, gB])
+    result['E_total'] = result['E_mixture'] + result['sigma2']
+    return result
 
 
 def mixed_kappa(model, env, n=2 * N_EPS, seed=7):
@@ -117,9 +108,15 @@ def mixed_kappa(model, env, n=2 * N_EPS, seed=7):
 
 
 def main():
-    out = {}
+    out = {
+        "_metadata": measurement_metadata(
+            "episode reinforce gradient by start partner",
+            "equal_two_conditions", "stochastic_policy_switch_preserving",
+            "euclidean", "episode_noise_separate")
+    }
     if os.path.exists(OUT):
-        out = json.load(open(OUT))
+        previous = json.load(open(OUT))
+        out.update(previous)
 
     def measure(key, model, env):
         if key in out:

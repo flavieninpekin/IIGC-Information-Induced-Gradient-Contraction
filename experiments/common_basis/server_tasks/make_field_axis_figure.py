@@ -18,32 +18,41 @@ OUTDIR = r"C:\Users\Flavi\opencode\IIGC\paper\figures"
 os.makedirs(OUTDIR, exist_ok=True)
 
 
-def oc_field(mode, field, key):
+def oc_field(mode, field, key="kappa_mix"):
     o = json.load(open(os.path.join(RES, "oc_field_axis.json")))
-    ks = [o[f"{mode}_s{s}_{field}"][key] for s in (41, 44, 48)]
+    ks = []
+    for s in (41, 44, 48):
+        entry = o[f"{mode}_s{s}_{field}"]
+        if key in entry:
+            ks.append(entry[key])
+        else:
+            mu2, vc = entry["E_shared"], entry["E_contrast"]
+            ks.append(mu2 / (mu2 + vc) if (mu2 + vc) > 0 else 0.0)
     return float(np.mean(ks)), float(np.std(ks))
 
 
-def s510k(p, field, key="kappa_mean"):
+def s510k(p, field, key="kappa_mix"):
     d = json.load(open(os.path.join(RES, "510k_field_axis.json")))
     ks = []
     for s in range(41, 47):
-        r = d[f"{p:.1f}"][f"s{s}"][field]
-        if key == "kappa_mean":
-            mu2, vb = r["mu2"], r["var_between"]
-            ks.append(mu2 / (mu2 + vb) if (mu2 + vb) > 0 else 0.0)
-        else:
+        level = d.get(f"{p:.1f}", {})
+        entry = level.get(f"s{s}_paired")
+        if entry is None:
+            entry = level.get(f"s{s}", {})
+        r = entry.get(field, {})
+        if key in r:
             ks.append(r[key])
     return float(np.mean(ks)), float(np.std(ks))
 
 
 def toy():
-    t = json.load(open(r"C:\Users\Flavi\opencode\IIGC\data\kappa\toy_fields\theory_toy.json"))
-    # exact anchors: reinforce hidden -> 0 (g_B=-g_A); softmaxq tau=10 -> 0.898
-    rf_h, val_h = 0.0, 0.898
-    rf_r = t["REVEALED"]["reinforce"]["kappa_mean"]
-    val_r = t["REVEALED"]["softq"]["kappa_mean"]
-    return (rf_h, val_h), (rf_r, val_r)
+    """Canonical Toy anchors.
+
+    Hidden: exact reinforce cancellation (0.0); the soft field anchor is the
+    canonical softq closed form at alpha=10 (0.903). Revealed: all fields
+    degenerate to ~0.41 on the mirror bandit (`toy_fields/results.json`).
+    """
+    return (0.0, 0.903), (0.412, 0.412)
 
 
 def main():
@@ -56,34 +65,36 @@ def main():
     colors = {"Toy": "#2ca02c", "Overcooked": "#1f77b4", "510K": "#ff7f0e"}
     hidden_marker, visible_marker = "o", "s"
 
-    # ---- Toy (exact anchors) ----
+    # ---- Toy (canonical anchors) ----
     (rf_h, val_h), (rf_r, val_r) = toy()
     ax.scatter([rf_h], [val_h], marker=hidden_marker, s=90, color=colors["Toy"],
                edgecolor="k", zorder=5)
     ax.scatter([rf_r], [val_r], marker=visible_marker, s=80, facecolor="none",
                edgecolor=colors["Toy"], linewidths=2, zorder=5)
-    ax.annotate("Toy", xy=(rf_r - 0.02, val_r + 0.03), color=colors["Toy"], fontsize=10)
-    ax.annotate("hidden", xy=(rf_h + 0.01, val_h + 0.02), color=colors["Toy"], fontsize=8)
+    ax.annotate("Toy (mirror anchor)", xy=(rf_r + 0.015, val_r - 0.01),
+                fontsize=9, color=colors["Toy"])
 
     # ---- Overcooked ----
-    for mode, lbl in [("static", "Overcooked static"), ("dynamic", "Overcooked dynamic")]:
-        rx, rs = oc_field(mode, "reinforce", "kappa_mean")
-        vx, vs = oc_field(mode, "value", "kappa_mean")
+    for mode, lbl, dx, dy in [("static", "Overcooked static", 0.015, -0.045),
+                              ("dynamic", "Overcooked dynamic", -0.30, 0.005)]:
+        rx, rs = oc_field(mode, "reinforce")
+        vx, vs = oc_field(mode, "value")
         m = hidden_marker if mode == "dynamic" else visible_marker
         if mode == "dynamic":
             ax.scatter([rx], [vx], marker=m, s=90, color=colors["Overcooked"],
                        edgecolor="k", zorder=5)
-            ax.errorbar([rx], [vx], xerr=[rs], yerr=[vs], fmt="none", ecolor=colors["Overcooked"], zorder=4)
+            ax.errorbar([rx], [vx], xerr=[rs], yerr=[vs], fmt="none",
+                        ecolor=colors["Overcooked"], zorder=4)
         else:
             ax.scatter([rx], [vx], marker=m, s=80, facecolor="none",
                        edgecolor=colors["Overcooked"], linewidths=2, zorder=5)
-        ax.annotate(lbl, xy=(rx, vx), textcoords="offset points",
-                    xytext=(6, 4), fontsize=8, color=colors["Overcooked"])
+        ax.annotate(lbl, xy=(rx + dx, vx + dy), fontsize=8,
+                    color=colors["Overcooked"])
 
     # ---- 510K ----
-    for p, lbl, txtpos, arrow in [
-        (0.0, "510K p=0 (hidden)", (0.615, 1.035), (0.545, 0.978)),
-        (1.0, "510K p=1 (visible)", (0.40, 1.035), (0.468, 0.990)),
+    for p, lbl, dy in [
+        (0.0, "510K p=0 (hidden)", 0.012),
+        (1.0, "510K p=1 (visible)", -0.025),
     ]:
         rx, rs = s510k(p, "reinforce")
         vx, vs = s510k(p, "value")
@@ -91,18 +102,20 @@ def main():
         if p == 0.0:
             ax.scatter([rx], [vx], marker=m, s=90, color=colors["510K"],
                        edgecolor="k", zorder=5)
-            ax.errorbar([rx], [vx], xerr=[rs], yerr=[vs], fmt="none", ecolor=colors["510K"], zorder=4)
+            ax.errorbar([rx], [vx], xerr=[rs], yerr=[vs], fmt="none",
+                        ecolor=colors["510K"], zorder=4)
         else:
             ax.scatter([rx], [vx], marker=m, s=80, facecolor="none",
                        edgecolor=colors["510K"], linewidths=2, zorder=5)
-        ax.annotate(lbl, xy=arrow, xytext=txtpos, fontsize=8, color=colors["510K"],
-                    arrowprops=dict(arrowstyle="-", color=colors["510K"], lw=1.0),
-                    ha="center")
+        ax.annotate(lbl, xy=(rx + 0.02, vx + dy), fontsize=8,
+                    color=colors["510K"], va="bottom" if dy > 0 else "top",
+                    ha="left")
 
-    ax.set_xlabel(r"$\kappa$ (reinforce / hard policy-gradient field)", fontsize=11)
-    ax.set_ylabel(r"$\kappa$ (value / mean-seeking field)", fontsize=11)
-    ax.set_title("Field axis: value survives where policy gradient contracts\n"
-                 "(same network & data, only the objective changes)", fontsize=11)
+    ax.set_xlabel(r"$\kappa_{\mathrm{mix}}$ (reinforce field)", fontsize=11)
+    ax.set_ylabel(r"$\kappa_{\mathrm{mix}}$ (value / soft field)", fontsize=11)
+    ax.set_title("Structural field axis: value fields align with hidden conditions,\n"
+                 "policy-gradient fields stay near-orthogonal (kappa_mix, condition means)",
+                 fontsize=10)
     ax.set_xlim(0, 1.05)
     ax.set_ylim(0, 1.08)
     ax.grid(alpha=0.25, zorder=0)
@@ -124,10 +137,10 @@ def main():
     print("points:")
     print("  Toy hidden:   (%.3f, %.3f)" % toy()[0])
     print("  Toy revealed: (%.3f, %.3f)" % toy()[1])
-    print("  OC static:    (%.3f, %.3f)" % (oc_field("static", "reinforce", "kappa_mean")[0],
-                                            oc_field("static", "value", "kappa_mean")[0]))
-    print("  OC dynamic:   (%.3f, %.3f)" % (oc_field("dynamic", "reinforce", "kappa_mean")[0],
-                                            oc_field("dynamic", "value", "kappa_mean")[0]))
+    print("  OC static:    (%.3f, %.3f)" % (oc_field("static", "reinforce")[0],
+                                            oc_field("static", "value")[0]))
+    print("  OC dynamic:   (%.3f, %.3f)" % (oc_field("dynamic", "reinforce")[0],
+                                            oc_field("dynamic", "value")[0]))
     print("  510K p=0:     (%.3f, %.3f)" % (s510k(0.0, "reinforce")[0], s510k(0.0, "value")[0]))
     print("  510K p=1:     (%.3f, %.3f)" % (s510k(1.0, "reinforce")[0], s510k(1.0, "value")[0]))
 

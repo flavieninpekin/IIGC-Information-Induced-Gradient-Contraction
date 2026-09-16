@@ -3,7 +3,7 @@
 For each witness state s and each role r, compute per-primitive-action Q_r(s,a)
 by: first primitive action a, then the role's best-option script (deliver under
 chef, cook under waiter) for the remaining horizon, under the role-credit reward.
-Then the expected-Q (expq, mean-seeking) gradient field is
+Then the expected-Q (expq) gradient field is
 
     g_r(s) = sum_a pi(a) grad_log_pi(a) * Q_r(s,a)
 
@@ -30,6 +30,8 @@ import torch.nn.functional as F
 import torch._dynamo  # noqa: F401
 
 from overcooked_ai_py.mdp.actions import Action
+
+from iigc.metrics.kappa import condition_decomposition
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import verify_conflict_witness as V  # noqa: E402
@@ -164,12 +166,10 @@ def main():
     def agg_kappa(store):
         gA = np.stack([g for g in store["gA"] if g.size == store["gA"][0].size])
         gB = np.stack([g for g in store["gB"] if g.size == store["gB"][0].size])
-        muA, muB = gA.mean(0), gB.mean(0)
-        mu = (muA + muB) / 2.0
-        E_shared = float(np.linalg.norm(mu) ** 2)
-        E_contrast = float(np.linalg.norm((muA - muB) / 2.0) ** 2)
-        k_mean = E_shared / (E_shared + E_contrast) if (E_shared + E_contrast) > 0 else 0.0
-        return {"kappa_mean": k_mean, "E_shared": E_shared, "E_contrast": E_contrast}
+        result = condition_decomposition([gA, gB])
+        return {"kappa_mix": result["kappa_mix"],
+                "E_shared": result["E_shared"],
+                "E_contrast": result["E_contrast"]}
 
     result = {}
     for name in ("expq", "hard", "value"):
@@ -177,7 +177,7 @@ def main():
     print("=== aggregated across witness states ===", flush=True)
     for name in ("expq", "hard", "value"):
         r = result[name]
-        print(f"  {name:6s} kappa_mean={r['kappa_mean']:.3f} "
+        print(f"  {name:6s} kappa_mix={r['kappa_mix']:.3f} "
               f"E_shared={r['E_shared']:.2f} E_contrast={r['E_contrast']:.2f}", flush=True)
 
     out = {"config": {"layout": args.layout, "horizon": args.horizon,

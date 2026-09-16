@@ -20,6 +20,8 @@ import os
 import numpy as np
 import torch
 
+from iigc.metrics.kappa import condition_decomposition
+
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 OUT_DIR = os.path.join(ROOT, "data", "kappa", "compromise_training")
@@ -83,17 +85,17 @@ def initial_kappa(logits, p, alpha):
             loss = (pi * (alpha * torch.log(pi) - q)).sum()
         grads.append(torch.autograd.grad(loss, z)[0].detach().numpy())
     gs = np.asarray(grads).reshape(K, -1)
+    canonical = condition_decomposition(gs, p)
     mixed = np.asarray(p) @ gs
     uniform_energy = np.mean(np.sum(gs * gs, axis=1))
-    mixture_energy = np.sum(np.asarray(p)[:, None] * gs * gs)
     return {
-        "E_shared": float(mixed @ mixed),
+        "E_shared": canonical["E_shared"],
         "E_uniform": float(uniform_energy),
-        "E_mixture": float(mixture_energy),
+        "E_mixture": canonical["E_mixture"],
+        "kappa_mix": canonical["kappa_mix"],
         "kappa_uniform_ref": float((mixed @ mixed) /
                                     max(uniform_energy, 1e-300)),
-        "kappa_mixture_ref": float((mixed @ mixed) /
-                                    max(mixture_energy, 1e-300)),
+        "kappa_mixture_ref": canonical["kappa_mix"],
         "mixed_gradient_norm": float(np.linalg.norm(mixed)),
     }
 
@@ -144,7 +146,7 @@ def summarize(rows):
         "mixed_gradient_norm_initial": stats(
             [r["initial_kappa"]["mixed_gradient_norm"] for r in rows]),
         "kappa_mixture_initial": stats(
-            [r["initial_kappa"]["kappa_mixture_ref"] for r in rows]),
+            [r["initial_kappa"]["kappa_mix"] for r in rows]),
     }
 
 

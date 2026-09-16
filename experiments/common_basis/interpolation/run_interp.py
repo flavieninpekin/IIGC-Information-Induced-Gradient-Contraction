@@ -1,19 +1,10 @@
-"""Experiment 2: interpolation spectrum on a common measurement basis.
+"""Experiment 2: historical interpolation measurements.
 
-Same actor parameters theta, same rollouts, same relations — only the
-objective that defines the gradient changes.
-
-Fields (mode-seeking -> mean-seeking):
-  - reinforce : return-weighted grad log pi(a_taken)        [hard mode-seeking]
-  - awr       : advantage-weighted grad log pi(a_taken)     [intermediate]
-  - softq     : SAC actor loss grad                          [soft, alpha-tuned]
-  - expq      : expected-Q grad sum_a pi(a) Q(a)             [mean-seeking]
-  - gibbs sweep: pi_tau ~ softmax(logits/tau); grad of E[Q]; tau -> inf is
-    mean-seeking (uniform over actions), tau -> 0 is mode-seeking (argmax).
-
-Prediction: kappa grows as the field becomes more mean-seeking (averages over
-actions) and contracts as it becomes mode-seeking (commits to the best action
-per relation assignment). The SINGLE vs DYNAMIC gap should shrink with tau.
+The same checkpoint is measured with several actor objectives. These results
+are protocol-sensitive: rollouts below are deterministic argmax rollouts, so
+they must not be presented as a clean stochastic gradient-retention spectrum.
+The ``gibbs`` sweep is ``grad E_{softmax(logits/tau)}[Q]`` and is distinct from
+the Q-weighted ``softmaxq`` field.
 """
 import os, json
 import numpy as np
@@ -22,6 +13,7 @@ import torch.nn.functional as F
 
 from iigc.envs._510k.dqn_wrapper import FiveTenKMaskedEnv, MASK_DIM, MAX_ACTIONS
 from iigc.envs._510k.discrete_sac import DiscreteSAC
+from iigc.metrics.kappa import condition_decomposition
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 MODEL_DIR = os.path.join(ROOT, 'data', 'models', '510k_sac')
@@ -36,10 +28,9 @@ TAUS = [0.2, 0.5, 1.0, 2.0, 5.0]
 
 
 def kappa_and_energy(gA, gB):
-    avg = (gA + gB) / 2.0
-    e = (torch.norm(gA) ** 2 + torch.norm(gB) ** 2) / 2.0
-    k = (torch.norm(avg) ** 2 / max(e, 1e-10)).item()
-    return k, e.item()
+    """Compatibility wrapper around the canonical mixture-reference kappa."""
+    result = condition_decomposition([gA, gB])
+    return result['kappa_mix'], result['E_mixture']
 
 
 def rollout_episodes(model, env, n_eps=N_EPS, base_seed=0):

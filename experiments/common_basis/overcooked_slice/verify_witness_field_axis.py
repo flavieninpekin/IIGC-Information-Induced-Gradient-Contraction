@@ -5,11 +5,12 @@ witness state computes, under the SAME policy and SAME hidden observation, the
 relation-conditioned gradients for role=chef vs role=waiter, for two fields:
 
   reinforce : grad sum_t log pi(a_t) * r_t(role-credit)   [hard policy-gradient]
-  value     : grad sum_t V(s_t)                            [mean-seeking / TD-like]
+  value     : grad sum_t V(s_t)                            [value diagnostic]
 
 Role only changes the partner behavior and the credit reward; obs is identical
-(hidden). Prediction: reinforce field CONFLICTS (low kappa) at witness states,
-value field ALIGNS (kappa ~ 1) because the value function cannot see the role.
+(hidden). The value field is expected to align because the value function cannot
+see the role. The reinforce entry is a witness-level option diagnostic, not a
+claim about a clean primitive-action policy-gradient contraction.
 
 Usage: python verify_witness_field_axis.py [--horizon 40] [--n-seed 40]
 Results: data/kappa/overcooked_slice/witness_field_axis.json
@@ -35,6 +36,7 @@ from overcooked_ai_py.mdp.overcooked_mdp import (
 )
 
 from iigc.envs._overcooked.partner_agents import ChefAgent, WaiterAgent
+from iigc.metrics.kappa import episode_decomposition
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import verify_conflict_witness as V  # noqa: E402  (DetChefAgent/DetWaiterAgent, RoleCreditEnv)
@@ -147,18 +149,9 @@ def rebuild_witness_states(rc, witness_meta):
 
 
 def components(gA, gB):
-    muA, muB = gA.mean(0), gB.mean(0)
-    mu = (muA + muB) / 2.0
-    E_shared = mu.norm().pow(2).item()
-    E_contrast = ((muA - muB) / 2.0).norm().pow(2).item()
-    varA = (gA - muA).norm(dim=1).pow(2).mean().item()
-    varB = (gB - muB).norm(dim=1).pow(2).mean().item()
-    sigma2 = (varA + varB) / 2.0
-    E_total = E_shared + E_contrast + sigma2
-    k_ep = E_shared / E_total if E_total > 0 else 0.0
-    k_mean = E_shared / (E_shared + E_contrast) if (E_shared + E_contrast) > 0 else 0.0
-    return dict(E_shared=E_shared, E_contrast=E_contrast, sigma2=sigma2,
-                E_total=E_total, kappa_ep=k_ep, kappa_mean=k_mean)
+    result = episode_decomposition([gA, gB])
+    result["E_total"] = result["E_mixture"] + result["sigma2"]
+    return result
 
 
 def main():
@@ -207,9 +200,9 @@ def main():
         all_val["gB"].append(vB.mean(0))
         c = per_state[si]
         print(f"  s{si} {st.players[0].position}: "
-              f"reinforce kappa={c['reinforce']['kappa_mean']:.3f} "
+              f"reinforce kappa_mix={c['reinforce']['kappa_mix']:.3f} "
               f"(ep={c['reinforce']['kappa_ep']:.3f}) | "
-              f"value kappa={c['value']['kappa_mean']:.3f} "
+              f"value kappa_mix={c['value']['kappa_mix']:.3f} "
               f"(ep={c['value']['kappa_ep']:.3f})", flush=True)
 
     # aggregate: stack per-state condition-mean gradients -> overall kappa
@@ -221,7 +214,7 @@ def main():
     print("=== aggregated across witness states ===", flush=True)
     for name in ("reinforce", "value"):
         c = agg[name]
-        print(f"  {name:9s} kappa_mean={c['kappa_mean']:.3f} "
+        print(f"  {name:9s} kappa_mix={c['kappa_mix']:.3f} "
               f"kappa_ep={c['kappa_ep']:.3f} "
               f"E_shared={c['E_shared']:.1f} E_contrast={c['E_contrast']:.1f} "
               f"sigma2={c['sigma2']:.1f}", flush=True)

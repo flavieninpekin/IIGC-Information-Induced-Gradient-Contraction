@@ -1,20 +1,10 @@
-"""Experiment 1: SAC actor/critic split kappa under a common measurement basis.
+"""Historical SAC actor/critic field measurements.
 
-Same SAC model, same rollouts, same relations — only the gradient-defining
-objective changes:
-
-  - actor  : SAC actor loss  (soft mode-seeking policy gradient)
-  - critic : TD-loss gradient (mean-seeking value regression)
-
-Prediction (from `design/why_value_reverses.md` + `notes/`):
-  - kappa_actor  contracts under hidden relations  (SINGLE > DYNAMIC)
-  - kappa_critic does not contract (DYNAMIC >= SINGLE), because the TD target
-    is aggregate-consistent across relations
-  - the actor-vs-critic gap is the signal that kappa is a function of the
-    update field, not of the algorithm family.
-
-Energy gate: kappa is only meaningful when gradient energy E is non-zero.
-Reported alongside kappa.
+The actor and critic fields live in different parameter spaces and are not
+directly comparable in magnitude. The critic measurement is a TD-loss field,
+not a universal ``mean-seeking`` field. The deterministic rollout protocol
+also requires the caveat recorded in ``notes/rollout_protocol_artifact.md``.
+Energy is reported as a validity diagnostic for each field.
 """
 import os, json
 import numpy as np
@@ -22,6 +12,7 @@ import torch
 
 from iigc.envs._510k.dqn_wrapper import FiveTenKMaskedEnv, MASK_DIM, MAX_ACTIONS
 from iigc.envs._510k.discrete_sac import DiscreteSAC
+from iigc.metrics.kappa import condition_decomposition
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 MODEL_DIR = os.path.join(ROOT, 'data', 'models', '510k_sac')
@@ -35,10 +26,9 @@ SEED_A, SEED_B = 1000, 2000
 
 
 def kappa_and_energy(gA, gB):
-    avg = (gA + gB) / 2.0
-    e = (torch.norm(gA) ** 2 + torch.norm(gB) ** 2) / 2.0
-    k = (torch.norm(avg) ** 2 / max(e, 1e-10)).item()
-    return k, e.item()
+    """Compatibility wrapper around the canonical mixture-reference kappa."""
+    result = condition_decomposition([gA, gB])
+    return result['kappa_mix'], result['E_mixture']
 
 
 def rollout(model, env, n_eps=N_EPS, base_seed=0):
@@ -81,11 +71,11 @@ def run():
             obs_a = [t[0] for t in ta]; act_a = [t[1] for t in ta]
             obs_b = [t[0] for t in tb]; act_b = [t[1] for t in tb]
 
-            # actor field (soft mode-seeking)
+            # Actor diagnostic field; do not infer a universal geometry label.
             k_actor, e_actor = kappa_and_energy(
                 sac.actor_gradient(obs_a, act_a), sac.actor_gradient(obs_b, act_b))
 
-            # critic field (TD / mean-seeking)
+            # Critic TD-loss field in a different parameter space.
             k_critic, e_critic = kappa_and_energy(
                 sac.critic_gradient(ta), sac.critic_gradient(tb))
 

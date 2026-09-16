@@ -10,9 +10,9 @@ checks three facts:
 3. Softq channels can interfere for K=2 as well as K=3 when the condition
    mixture is asymmetric.
 
-Two normalizations are reported. ``kappa_uniform_ref`` uses the historical
-uniform reference energy and may exceed one for an asymmetric mixture.
-``kappa_mixture_ref`` uses the actual mixture energy and is bounded by one.
+The primary normalization is ``kappa_mix``, using the actual mixture energy
+and bounded by one. ``kappa_uniform_ref`` is retained only for compatibility
+with historical files and may exceed one for an asymmetric mixture.
 
 Output: data/kappa/toy_fields/kway_geometry.json
 """
@@ -21,6 +21,8 @@ import os
 
 import numpy as np
 import torch
+
+from iigc.metrics.kappa import condition_decomposition, measurement_metadata
 
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
@@ -58,21 +60,20 @@ def expected_grads(z, k, field, alpha=1.0):
 
 
 def kappa_values(grads, p):
-    """Return shared/contrast energies under two denominator conventions."""
+    """Return canonical mixture kappa plus the historical normalization."""
     grads = np.asarray(grads, dtype=float)
     p = np.asarray(p, dtype=float)
-    mixed = p @ grads
-    shared = float(mixed @ mixed)
+    canonical = condition_decomposition(grads, p)
+    shared = canonical["E_shared"]
     uniform_energy = float(np.mean(np.sum(grads * grads, axis=1)))
-    mixture_energy = float(np.sum(p[:, None] * grads * grads))
-    contrast = float(np.sum(p[:, None] * (grads - mixed) ** 2))
     return {
         "E_shared": shared,
-        "E_contrast_p": contrast,
+        "E_contrast_p": canonical["E_contrast"],
         "E_uniform": uniform_energy,
-        "E_mixture": mixture_energy,
+        "E_mixture": canonical["E_mixture"],
+        "kappa_mix": canonical["kappa_mix"],
         "kappa_uniform_ref": shared / max(uniform_energy, 1e-300),
-        "kappa_mixture_ref": shared / max(mixture_energy, 1e-300),
+        "kappa_mixture_ref": canonical["kappa_mix"],
     }
 
 
@@ -112,7 +113,7 @@ def summarize_direction_test(z, k, distance=0.45, n=200, seed=41):
     grads = expected_grads(z, k, "expq")
     values = [kappa_values(grads, p) for p in points]
     uniform = np.asarray([x["kappa_uniform_ref"] for x in values])
-    mixture = np.asarray([x["kappa_mixture_ref"] for x in values])
+    mixture = np.asarray([x["kappa_mix"] for x in values])
     return {
         "k": k,
         "l1_distance": distance,
@@ -141,6 +142,9 @@ def alpha_scan(z, p, k, alphas):
 def main():
     z = np.array([0.5, -0.2, -0.3, -0.1])
     out = {
+        "_metadata": measurement_metadata(
+            "exact expected logit gradient", "per_result", "analytic", "euclidean"
+        ),
         "setup": "K-way matching bandit with exact expected logit gradients",
         "validation": {},
         "uniform_cancellation": {},
@@ -185,13 +189,13 @@ def main():
     for k in (2, 3, 4):
         row = out["uniform_cancellation"][str(k)]
         print(f"K={k}: expq uniform kappa="
-              f"{row['expq']['kappa_mixture_ref']:.3e}; "
+              f"{row['expq']['kappa_mix']:.3e}; "
               f"softq alpha=1="
-              f"{row['softq_alpha1']['kappa_mixture_ref']:.4f}")
+              f"{row['softq_alpha1']['kappa_mix']:.4f}")
     for name, rows in out["alpha_scans"].items():
-        best = min(rows, key=lambda x: x["kappa_mixture_ref"])
+        best = min(rows, key=lambda x: x["kappa_mix"])
         print(f"{name}: min mixture-ref kappa="
-              f"{best['kappa_mixture_ref']:.6f} at alpha={best['alpha']:.4g}")
+              f"{best['kappa_mix']:.6f} at alpha={best['alpha']:.4g}")
     print("saved:", OUT)
 
 

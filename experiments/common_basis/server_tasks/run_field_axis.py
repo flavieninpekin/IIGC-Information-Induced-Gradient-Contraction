@@ -1,13 +1,11 @@
-"""Field-axis kappa on Overcooked fresh models (common basis).
+"""Overcooked field measurements on switching-preserving rollouts.
 
-Same network, same switching-preserving rollouts, only the gradient objective
-changes:
-  - reinforce : grad sum_t log pi(a_t) * G_t           (hard mode-seeking)
-  - awr       : grad sum_t log pi(a_t) * exp(adv_t/tau) (advantage-weighted)
-  - value     : grad sum_t V(s_t)                       (mean-seeking / TD-like)
-
-Within each field we compare static vs dynamic kappa. Prediction: value field
-shows HIGH dynamic kappa (reversal recreated on a common basis).
+The ``value`` entry is the diagnostic field ``-sum_t V(s_t)``. It is not a TD
+residual and should not be labelled as a universal mean-seeking field. The
+script keeps the checkpoint, environment, and measurement protocol fixed while
+changing the field definition; each field's rollout batch is collected
+separately with the same seed schedule, rather than being literally shared
+episode tensors.
 """
 import json
 import os
@@ -23,6 +21,7 @@ sys.path.insert(0, r"C:\Users\Flavi\opencode\IIGC\src")
 
 from stable_baselines3 import PPO  # noqa: E402
 from iigc.envs._overcooked.overcooked_v3_env import OvercookedV3Env, PARTNER_TYPES  # noqa: E402
+from iigc.metrics.kappa import episode_decomposition, measurement_metadata  # noqa: E402
 
 CHKPT = r"C:\Users\Flavi\AppData\Local\Temp\opencode\chkpt_clean"
 OUT = r"C:\Users\Flavi\opencode\IIGC\data\kappa\server_tasks\results\oc_field_axis.json"
@@ -109,19 +108,9 @@ def collect(model, env, partner, field, n=N_EPS):
 
 
 def components(gA, gB):
-    muA = gA.mean(0); muB = gB.mean(0)
-    mu = (muA + muB) / 2.0
-    E_shared = mu.norm().pow(2).item()
-    E_contrast = ((muA - muB) / 2.0).norm().pow(2).item()
-    varA = (gA - muA).norm(dim=1).pow(2).mean().item()
-    varB = (gB - muB).norm(dim=1).pow(2).mean().item()
-    sigma2 = (varA + varB) / 2.0
-    E_total = E_shared + E_contrast + sigma2
-    k_ep = E_shared / E_total if E_total > 0 else 0.0
-    denom = E_shared + E_contrast + sigma2 / gA.shape[0]
-    k_mean = E_shared / denom if denom > 0 else 0.0
-    return dict(E_shared=E_shared, E_contrast=E_contrast, sigma2=sigma2,
-                E_total=E_total, kappa_ep=k_ep, kappa_mean=k_mean)
+    result = episode_decomposition([gA, gB])
+    result['E_total'] = result['E_mixture'] + result['sigma2']
+    return result
 
 
 def main():
@@ -129,6 +118,10 @@ def main():
     out = {}
     if os.path.exists(OUT):
         out = json.load(open(OUT))
+    out.setdefault("_metadata", measurement_metadata(
+        "reinforce/awr/value per-episode field gradient",
+        "equal_two_conditions", "stochastic_policy_switch_preserving",
+        "euclidean", "episode_noise_separate"))
     for mode in ("static", "dynamic"):
         for s in (41, 44, 48):
             fp = os.path.join(CHKPT, f"overcookedv3_{mode}_seed{s}_final.zip")
@@ -143,7 +136,7 @@ def main():
                 gB = collect(model, env, "waiter", field)
                 comp = components(gA, gB)
                 out[key] = comp
-                print(f"{mode} s{s} {field:9s}: kappa_ep={comp['kappa_ep']:.3f} "
+                print(f"{mode} s{s} {field:9s}: kappa_mix={comp['kappa_mix']:.3f} "
                       f"E_shared={comp['E_shared']:10.1f} sigma2={comp['sigma2']:12.1f}",
                       flush=True)
             env.close()

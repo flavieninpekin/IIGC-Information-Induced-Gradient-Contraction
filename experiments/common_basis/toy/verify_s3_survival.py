@@ -1,5 +1,4 @@
-"""S3 survival test: does a 3-condition (non-abelian-representation) bandit
-reveal structure invisible in the Z2 mirror bandit?
+"""Three-condition matching-bandit geometry check.
 
 Setup: 3 hidden conditions i in {0,1,2}, 3 actions, softmax policy pi(z),
 analytic Q_i(a) = r*(2*[a==i] - 1)  ("match your partner", S3-permutation
@@ -11,7 +10,9 @@ symmetric). Canonical expected gradients (matches fields.py semantics):
   softq     : g_i = grad sum_a pi(a)(alpha log pi(a) - Q_i(a))
 
 Mixture over conditions p (the training distribution of the hidden variable);
-kappa(p) = ||E_i g_i||^2 / E_i ||g_i||^2   (uniform reference over conditions).
+the primary score is the bounded mixture-reference kappa
+||sum_i p_i g_i||^2 / sum_i p_i ||g_i||^2.
+The historical uniform-reference score is not used as the primary metric.
 
 Hand-derived closed form (expq):
   g_i[b]  = 2 r pi_b (delta_ib - pi_i)
@@ -19,13 +20,9 @@ Hand-derived closed form (expq):
   kappa_closed(p, pi) = sum_b pi_b^2 (p_b - <p,pi>)^2
                         / E_i sum_b pi_b^2 (delta_ib - pi_i)^2
 
-THE QUESTION (Paper-1 death clause): in Z2 there is only ONE direction of
-asymmetry away from the uniform mixture, so kappa depends on |amplitude| only.
-In S3 the simplex of mixtures is 2-dimensional: two asymmetric distributions
-EQUIDISTANT from uniform may excite the 2D standard representation differently.
-If kappa differs across such directions (beyond noise) => genuine S3-only
-structure => Paper 1 stands. If kappa is direction-invariant => the framework
-collapses to "orthogonal components average out" => stop loss.
+The geometry question is whether a condition simplex of dimension at least two
+has direction-dependent survival at fixed distance from uniform. This is a
+K-way simplex effect, not evidence for a non-abelian or S3-only phenomenon.
 
 Output: data/kappa/toy_fields/s3_survival.json
 """
@@ -76,13 +73,11 @@ def expected_grad(z, i, field, alpha=0.2):
 
 
 def kappa_mix(z, p, field, alpha=0.2):
-    """kappa(p) = ||sum_i p_i g_i||^2 / E_i ||g_i||^2.
-    Numerator uses the ACTUAL training mixture p over hidden conditions;
-    denominator references uniform condition energy."""
+    """Bounded mixture-reference kappa for the actual condition distribution."""
     gs = np.stack([expected_grad(z, i, field, alpha) for i in range(N_COND)])
     m = np.asarray(p) @ gs
     es = float(m @ m)
-    e_tot = float((gs ** 2).sum(axis=1).mean())
+    e_tot = float(np.sum(np.asarray(p)[:, None] * gs ** 2))
     return es / max(e_tot, 1e-300)
 
 
@@ -95,14 +90,14 @@ def kappa_expq_closed(z, p):
     for i in range(N_COND):
         d = np.eye(N_COND)[i] - pi[i]
         den_parts.append(float(np.sum(pi ** 2 * d ** 2)))
-    den = float(np.mean(den_parts))
+    den = float(np.asarray(p) @ np.asarray(den_parts))
     return num / max(den, 1e-300)
 
 
 def kappa_softq_closed(z, p, alpha):
     """Two-channel closed form.
-    Per-condition: g_i[b] = pi_b [ alpha(l_b - lbar) + 2R(delta_ib - pi_i) ]
-    Mixture:       g_p[b] = pi_b [ alpha(l_b - lbar) + 2R(p_b - <p,pi>) ]
+    Per-condition: g_i[b] = pi_b [ alpha(l_b - lbar) - 2R(delta_ib - pi_i) ]
+    Mixture:       g_p[b] = pi_b [ alpha(l_b - lbar) - 2R(p_b - <p,pi>) ]
     (sign convention irrelevant). The alpha-channel (policy-intrinsic,
     direction l - <pi,l>) and the mixture-channel (direction p - <p,pi>)
     live in the SAME 2D tangent space => they interfere; the observed
@@ -119,11 +114,11 @@ def kappa_softq_closed(z, p, alpha):
     for i in range(N_COND):
         dvec = alpha * (ell - lbar) - 2 * R * (np.eye(N_COND)[i] - pi[i])
         den_parts.append(float(np.sum(pi ** 2 * dvec ** 2)))
-    return num / max(float(np.mean(den_parts)), 1e-300)
+    return num / max(float(np.asarray(p) @ np.asarray(den_parts)), 1e-300)
 
 
 def main():
-    out = {'setup': 'S3 3-condition matching bandit, canonical expected grads',
+    out = {'setup': 'K=3 matching bandit, canonical expected grads',
            'validation': {}, 'symmetric_design': {}, 'direction_test': {},
            'softq_scan': {}, 'heatmap': {}}
 
@@ -188,8 +183,8 @@ def main():
             for f in ['reinforce', 'expq', 'softq']))
     out['direction_test'] = {
         'pi': pi_fix.tolist(), 'note': ('fixed-L1-direction sweep on the '
-        'condition simplex; S3-only structure exists iff relative_spread is '
-        'materially nonzero (Z2 has a single direction, spread undefined)'),
+        'condition simplex; direction dependence is a K-way geometry effect, '
+        'not an S3-only or non-abelian claim'),
         'results': dirs}
 
     # --- 4. softq alpha scan at a fixed asymmetric mixture ---

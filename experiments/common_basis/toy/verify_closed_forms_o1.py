@@ -38,6 +38,8 @@ import os
 import numpy as np
 import torch
 
+from iigc.metrics.kappa import measurement_metadata
+
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 OUT = os.path.join(ROOT, 'data', 'kappa', 'toy_fields', 'o1_closed_forms.json')
 
@@ -192,7 +194,10 @@ def mc_kappa(delta, r, field, n=400_000, tau=1.0, alpha=1.0, seed=0):
 
 # ----------------------------------------------------------------------------
 def main():
-    out = {'definition': 'canonical expected-sampled grad (matches fields.py)',
+    out = {'_metadata': measurement_metadata(
+               'canonical expected-sampled gradient', 'equal_two_conditions',
+               'analytic_and_monte_carlo', 'euclidean', 'noise_validated'),
+           'definition': 'canonical expected-sampled grad (matches fields.py)',
            'validation': {}, 'softq': {}, 'awr': {}, 'cancellation': {}}
 
     # --- route agreement: closed vs autograd, machine precision ---

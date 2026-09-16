@@ -15,6 +15,7 @@ import torch
 
 from sb3_contrib import MaskablePPO
 from iigc.envs._510k.env import FiveTenKEnv
+from iigc.metrics.kappa import episode_decomposition
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 MODEL_DIR = os.path.join(ROOT, 'data', 'models_reveal')
@@ -76,7 +77,12 @@ def episode_gradient(model, env):
 
 
 def variance_decomp(ep_grads, ep_teams):
-    """Var_between (team contrast) and Var_within (sigma^2) decomposition."""
+    """Canonical team-conditioned decomposition.
+
+    Uses the shared ``episode_decomposition`` implementation so that
+    ``kappa_mix``, ``kappa_ep``, and the noise terms have the same definitions
+    as everywhere else in the repository.
+    """
     g_by_team = {}
     for g, t in zip(ep_grads, ep_teams):
         g_by_team.setdefault(int(t), []).append(g)
@@ -84,31 +90,26 @@ def variance_decomp(ep_grads, ep_teams):
     if len(g_by_team) < 2:
         return {}
 
-    team_mus, team_vars, n_t = {}, {}, {}
-    for t, gs in g_by_team.items():
-        gs_t = torch.stack(gs)
-        team_mus[t] = gs_t.mean(0)
-        team_vars[t] = (gs_t - team_mus[t]).norm(dim=1).pow(2).mean().item()
-        n_t[t] = len(gs)
-
-    total_n = sum(n_t.values())
-    mu_global = sum(mu * n_t[t] / total_n for t, mu in team_mus.items())
-
-    var_between = sum(
-        (mu - mu_global).norm().pow(2).item() * n_t[t] / total_n
-        for t, mu in team_mus.items()
-    )
-    var_within = sum(v * n_t[t] / total_n for t, v in team_vars.items())
-    allg = torch.cat([torch.stack(g_by_team[t]) for t in g_by_team])
-    var_total = (allg - mu_global).norm(dim=1).pow(2).mean().item()
-    mu2 = mu_global.norm().pow(2).item()
-    k_ep = mu2 / (mu2 + var_total) if (mu2 + var_total) > 0 else float('nan')
+    ordered = sorted(g_by_team)
+    groups = [torch.stack(g_by_team[t]) for t in ordered]
+    counts = [len(g_by_team[t]) for t in ordered]
+    total_n = sum(counts)
+    weights = [c / total_n for c in counts]
+    canonical = episode_decomposition(groups, weights)
     return {
-        'mu2': mu2, 'var_total': var_total,
-        'var_between': var_between, 'var_within': var_within,
-        'var_sum': var_between + var_within, 'kappa_ep': k_ep,
-        'consistency': abs(var_total - (var_between + var_within)),
-        'n_team': n_t,
+        'mu2': canonical['E_shared'],
+        'var_total': canonical['E_contrast'] + canonical['sigma2'],
+        'var_between': canonical['E_contrast'],
+        'var_within': canonical['sigma2'],
+        'var_sum': canonical['E_contrast'] + canonical['sigma2'],
+        'E_shared': canonical['E_shared'],
+        'E_contrast': canonical['E_contrast'],
+        'E_mixture': canonical['E_mixture'],
+        'sigma2': canonical['sigma2'],
+        'kappa_mix': canonical['kappa_mix'],
+        'kappa_mean_surrogate': canonical['kappa_mean_surrogate'],
+        'kappa_ep': canonical['kappa_ep'],
+        'n_team': dict(zip(ordered, counts)),
     }
 
 
@@ -144,14 +145,16 @@ def measure_model(fp, n_eps=N_EPS):
         'kappa_ep': decom.get('kappa_ep'), 'energy_ep': decom.get('mu2'),
         'var_between': decom.get('var_between'), 'var_within': decom.get('var_within'),
         'var_total': decom.get('var_total'), 'var_sum': decom.get('var_sum'),
-        'consistency': decom.get('consistency'), 'n_team': decom.get('n_team'),
+        'kappa_mix_per_team': decom.get('kappa_mix'),
+        'kappa_mean_surrogate': decom.get('kappa_mean_surrogate'),
+        'n_team': decom.get('n_team'),
         'avg_reward': avg_r,
     }
 
 
 def main():
     results = {}
-    hdr = f'{"lvl seed":>10} {"k_mix":>7} {"k_ep":>7} {"mu2":>9} {"var_b":>10} {"var_w":>10} {"consist":>8} {"r":>7}'
+    hdr = f'{"lvl seed":>10} {"k_mix":>7} {"k_ep":>7} {"mu2":>9} {"var_b":>10} {"var_w":>10} {"r":>7}'
     print(hdr)
     for level in REVEAL_LEVELS:
         for seed in SEEDS:
@@ -166,12 +169,12 @@ def main():
                   f'{row.get("energy_ep") or 0:>9.2e} '
                   f'{row.get("var_between") or 0:>10.2e} '
                   f'{row.get("var_within") or 0:>10.2e} '
-                  f'{row.get("consistency") or 0:>8.1e} '
                   f'{row["avg_reward"]:>7.2f}')
 
     print(f'\n{"="*60}\nSUMMARY (mean over seeds)')
     for level in REVEAL_LEVELS:
-        keys = ['kappa_mix', 'kappa_ep', 'var_between', 'var_within', 'consistency']
+        keys = ['kappa_mix', 'kappa_ep', 'var_between', 'var_within',
+                'kappa_mix_per_team', 'kappa_mean_surrogate']
         vals = {k: [] for k in keys}
         for s in results.get(level, {}).values():
             for k in keys:
@@ -186,7 +189,6 @@ def main():
             if vals['var_between']:
                 print(f'    var_between   = {np.mean(vals["var_between"]):.2e}')
                 print(f'    var_within    = {np.mean(vals["var_within"]):.2e}')
-                print(f'    consistency   = {np.mean(vals["consistency"]):.2e}')
 
     with open(os.path.join(OUT_DIR, 'results.json'), 'w') as f:
         json.dump(results, f, indent=2, default=float)

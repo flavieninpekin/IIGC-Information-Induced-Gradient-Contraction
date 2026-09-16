@@ -15,6 +15,7 @@ import torch
 from stable_baselines3 import PPO
 from iigc.envs._overcooked.overcooked_v3_env import OvercookedV3Env
 from iigc.envs._overcooked.overcooked_memory_env import OvercookedMemoryEnv
+from iigc.metrics.kappa import episode_decomposition
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 MODEL_DIR = os.path.join(ROOT, 'data', 'models_overcooked')
@@ -59,20 +60,9 @@ def collect(model, env, partner, n_eps=N_EPS, base_seed=100):
 
 
 def components(gA, gB):
-    muA = gA.mean(0); muB = gB.mean(0)
-    mu = (muA + muB) / 2.0
-    E_shared = mu.norm().pow(2).item()
-    E_contrast = ((muA - muB) / 2.0).norm().pow(2).item()
-    varA = (gA - muA).norm(dim=1).pow(2).mean().item()
-    varB = (gB - muB).norm(dim=1).pow(2).mean().item()
-    sigma2 = (varA + varB) / 2.0
-    E_total = E_shared + E_contrast + sigma2
-    k_ep = E_shared / E_total if E_total > 0 else 0.0
-    N = gA.shape[0]
-    denom = E_shared + E_contrast + sigma2 / N
-    k_mean = E_shared / denom if denom > 0 else 0.0
-    return dict(E_shared=E_shared, E_contrast=E_contrast, sigma2=sigma2,
-                E_total=E_total, kappa_ep=k_ep, kappa_mean=k_mean)
+    result = episode_decomposition([gA, gB])
+    result['E_total'] = result['E_mixture'] + result['sigma2']
+    return result
 
 
 def main():
@@ -94,7 +84,7 @@ def main():
                  reward_waiter=r_w)
         results[f'dyn_no_mem_s{seed}'] = c
         print(f'{"dyn_no_mem":>18} {r_c:>7.1f} {r_w:>8.1f} '
-              f'{c["E_shared"]:>9.2f} {c["kappa_mean"]:>7.4f} {c["E_total"]:>9.2f}')
+              f'{c["E_shared"]:>9.2f} {c["kappa_mix"]:>7.4f} {c["E_total"]:>9.2f}')
         env.close()
 
     # intervention: dynamic + memory
@@ -112,7 +102,7 @@ def main():
                  reward_waiter=r_w)
         results[f'dyn_mem_s{seed}'] = c
         print(f'{"dyn_mem_m4":>18} {r_c:>7.1f} {r_w:>8.1f} '
-              f'{c["E_shared"]:>9.2f} {c["kappa_mean"]:>7.4f} {c["E_total"]:>9.2f}')
+              f'{c["E_shared"]:>9.2f} {c["kappa_mix"]:>7.4f} {c["E_total"]:>9.2f}')
         env.close()
 
     with open(os.path.join(OUT_DIR, 'overcooked_memory_eval.json'), 'w') as f:
