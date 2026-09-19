@@ -1,9 +1,17 @@
-\begin{thebibliography}{7}
+\begin{thebibliography}{8}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Aroyo et~al.(2023)Aroyo, Taylor, Diaz, Homan, Parr, Serapio-Garcia,
+  Wang, and Ghosh]{arroyo2023dices}
+Lora Aroyo, Alex Taylor, Mark Diaz, Christopher Homan, Alicia Parr, Greg
+  Serapio-Garcia, Ding Wang, and Gaurang Ghosh.
+\newblock Dices dataset: Diversity in conversational ai evaluation for safety.
+\newblock In \emph{Advances in Neural Information Processing Systems: Datasets
+  and Benchmarks Track}, 2023.
 
 \bibitem[Chakraborty et~al.(2024)Chakraborty, Qiu, Yuan, Koppel, Huang,
   Manocha, Bedi, and Wang]{chakraborty2024maxmin}

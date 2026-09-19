@@ -33,28 +33,33 @@ and the Limits of Kappa}
 \maketitle
 
 \begin{abstract}
-Training data is often a mixture of hidden conditions: annotator groups with
-conflicting preferences, clients with different objectives, teammates with
-unobserved roles. When a single model is trained on the mixture, the update is
-an average of condition-specific gradients, and part of the signal can cancel
-before it reaches the weights. We study when this cancellation is exact, when
-it is partial, and how it must be measured. On a mirror bandit we prove that
-elementwise, parameter-independent weight fields cancel exactly under the
-symmetric hidden mixture, and we derive an exact closed form for the soft-Q
-field. On a $K$-way matching bandit we show that uniform mixtures cancel for
-every $K$ and that direction dependence first appears once the condition
-simplex has dimension at least two; the entropy and mixture channels of the
-soft-Q field can also interfere. A measurement audit shows that deterministic
-rollouts can turn the retention score into a weight ratio, and that
-episode-noise readouts can differ by an order of magnitude from the structural
-score. Refreshed measurements under one bounded definition across a hidden
-matching task, Overcooked, and a card-game environment show that value fields
-align with hidden conditions (structurally up to $0.999$) while
-policy-gradient fields remain near-orthogonal (around $0.5$); the effect is
-real but about twice, not thirty times. Finally, retention does not predict
-task performance: a TD field with the lowest measured retention achieves the
-best return in a switching task. Condition-gradient auditing must separate
-cancellation, alignment, and noise before any optimizer-level intervention.
+Learning systems often average gradients over hidden conditions: annotator
+groups with conflicting preferences, clients with different objectives,
+teammates with unobserved roles. It is unclear when such averaging merely
+aggregates useful signal and when it systematically suppresses it. We ask what
+survives the averaging, and how to measure it. We show that gradient
+cancellation is governed by more than the presence of hidden heterogeneity. In
+an analytically tractable mirror model, elementwise parameter-independent
+weight fields cancel exactly under a symmetric condition mixture, while a
+field with a differentiable baseline retains a nonzero component. For $K$-way
+mixtures, retention depends on the direction of the condition mixture in the
+probability simplex even at fixed distance from uniform, and
+objective-induced gradient channels can interfere, making retention
+non-monotone in the entropy weight. We separate these structural effects from
+finite-sample noise with a measurement protocol: deterministic rollouts can
+collapse retention into a weight ratio, and episode-noise readouts can
+understate structural retention by an order of magnitude. Under a single
+bounded definition, value fields align with hidden conditions in Overcooked
+and 510K while policy-gradient fields remain near-orthogonal (about
+$1.9\times$, not the $30$--$65\times$ suggested by noisy readouts). A
+controlled capacity experiment shows that severe cancellation can coexist with
+poor worst-condition performance; in contrast, on a real three-group
+preference dataset the condition-contrast energy is dominated by item-level
+noise and group-conditioned capacity yields no gain. In a switching task,
+retention need not predict return when the measured condition is not the
+variable the task relies on. Retention is a structural audit of the specified
+condition signal, not a general performance metric, and it indicates when
+condition-aware capacity is likely worth its cost.
 \end{abstract}
 
 \section{Introduction}
@@ -92,41 +97,48 @@ data}, not of the optimizer. We therefore fix the measurement basis: same
 network, same rollout distribution, same condition definition, and change only
 the scalar objective whose gradient defines the field.
 
+\paragraph{Thesis.}
+When hidden conditions are averaged, what survives is determined not only by
+symmetry between conditions, but by the geometry of the condition mixture and
+by the objective-induced structure of the gradient field. The results below
+are chapters of that one question.
+
 \paragraph{Contributions.}
 \begin{enumerate}
-\item \textbf{Exact cancellation criteria.} For the mirror bandit, any
-  elementwise, parameter-independent weight field satisfies
-  $\E[g_B]=-\E[g_A]$, hence zero shared gradient under the symmetric mixture.
-  The same normalization yields exact cancellation for $K$-way matching
-  mixtures at every $K$. We state the boundaries: these are statements about
-  expected gradients on the stated model, not about arbitrary neural
-  environments.
-\item \textbf{Objective-dependent alignment with exact formulas.} We give a
-  closed form for the soft-Q field,
-  $\kmix = \Delta^2/(\Delta^2+4r^2)$ with
+\item \textbf{Structure: which fields survive, and why.}
+  (a) For the mirror bandit, any elementwise, parameter-independent weight
+  field satisfies $\E[g_B]=-\E[g_A]$, hence zero shared gradient under the
+  symmetric mixture; the same normalization cancels $K$-way matching mixtures
+  at every $K$. (b) The soft-Q field has an exact closed form,
+  $\kmix=\Delta^2/(\Delta^2+4r^2)$ with
   $\Delta=\alpha\log(\rho/(1-\rho))$, verified against autograd to machine
-  precision, and we isolate the advantage-weighted field with a
-  differentiable baseline as the only policy-gradient-style field that
-  survives the symmetric mixture, through an implicit even coupling.
-\item \textbf{$K$-way geometry.} Uniform mixtures cancel for $K=2,3,4$;
-  direction dependence at fixed distance from uniform appears at $K\ge 3$; and
-  entropy and mixture channels interfere with a computable minimum. These are
-  properties of the condition simplex, not of a non-abelian group.
-\item \textbf{Measurement audit.} Deterministic rollouts reduce the retention
-  score to a single-action weight ratio on the mirror model; a measured
-  example gives $0.633$ where the correct protocol gives $0.001$.
-  Episode-noise scores can be an order of magnitude below structural scores,
-  so both must be reported.
-\item \textbf{Refreshed real-environment evidence.} Under one bounded
-  structural definition, value fields align strongly with hidden conditions
+  precision. (c) The advantage-weighted field with a differentiable baseline
+  is the only policy-gradient-style field that survives the symmetric mixture,
+  through an implicit even coupling. (d) Direction dependence appears at
+  $K\ge 3$, and entropy and mixture channels interfere with a computable
+  minimum. These are properties of the condition simplex, not of a
+  non-abelian group.
+\item \textbf{Measurement: what a retention score can and cannot be.}
+  The bounded mixture-reference retention separates structural retention from
+  episode noise. Deterministic rollouts reduce the score to a single-action
+  weight ratio on the mirror model ($0.633$ where the correct protocol gives
+  $0.001$), and episode-noise readouts can sit an order of magnitude below
+  structural scores. Two fields must be compared on the same episode batch,
+  and condition-contrast energy must be read against within-condition noise
+  before a conclusion is drawn.
+\item \textbf{Boundaries: when the audit recommends capacity.}
+  Under one bounded definition, value fields align with hidden conditions
   (Overcooked dynamic $0.999$, 510K $0.95$--$0.98$) while policy-gradient
-  fields remain near-orthogonal (about $0.51$--$0.53$). The gap is about
-  $1.9\times$, not the $30$--$65\times$ implied by noise-dominated readouts.
-\item \textbf{A boundary result.} Retention is not a performance score. In a
-  switching task, the TD field has the lowest measured retention and the
-  highest return, while a high-retention soft-Q field performs worse. We
-  explain the decoupling by variable mismatch and use it to scope the
-  diagnostic.
+  fields remain near-orthogonal (about $0.51$--$0.53$); the gap is about
+  $1.9\times$, not the $30$--$65\times$ implied by noisy readouts. A
+  controlled capacity experiment shows that severe cancellation with contrast
+  energy dominating noise is fixed by condition-aware capacity (worst
+  condition $0.003$ to $1.97$), whereas a real three-group preference dataset
+  with contrast dominated by item-level noise gains nothing from conditional
+  capacity. A switching task shows retention need not predict return when the
+  measured condition differs from the variable the task relies on. The audit
+  recommends intervention only when low retention coincides with contrast
+  energy above noise and a task-relevant condition.
 \end{enumerate}
 
 \section{Related Work}
@@ -491,6 +503,50 @@ strong & conditional, $\alpha{=}0$ & $1.991$ & $1.933$ & — \\
 \end{center}
 \end{table}
 
+\subsection{Real three-group preference data}
+\label{sec:exp-dices}
+
+To test whether the audit extends beyond RL bandits, we use DICES-350
+\citep{arroyo2023dices}: 350 adversarial conversations, each rated by all 123
+raters, with rater demographics; the dataset is released under CC BY 4.0. We
+treat a demographic attribute as the hidden condition, use
+the binary perceived-harm judgment (\texttt{Yes} vs \texttt{No},
+\texttt{Unsure} dropped), split by \texttt{item\_id} (245 train / 105 test
+items), and fit a TF-IDF plus logistic model shared across raters. Three
+seeds; the shared model reaches $0.73$ train accuracy. Table~\ref{tab:dices}
+reports the audit and the capacity comparison.
+
+\begin{table}[t]
+\caption{DICES-350 supervised check (three seeds). The race axis carries the
+strongest condition signal, but its contrast energy is dominated by
+within-group item noise, and conditional capacity yields no held-out gain.}
+\label{tab:dices}
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+Axis (groups) & $\kmix$ & $E_{\mathrm{contrast}}$ & $\sigma^2$ &
+shared / cond.\ avg--worst \\
+\midrule
+race (3) & $0.116\pm0.025$ & $0.0020$ & $0.0113$ & $0.656/0.609$ / $0.654/0.607$ \\
+age (3) & $0.033\pm0.005$ & $0.0003$ & $0.0064$ & $0.640/0.623$ / $0.638/0.624$ \\
+gender (2) & $0.001\pm0.000$ & $0.0005$ & $0.0035$ & $0.641/0.623$ / $0.640/0.625$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+On the race axis, the contrast energy is about six times smaller than the
+within-group item noise ($E_{\mathrm{contrast}}/\sigma^2\approx0.17$), and
+group-conditioned models do not improve average or worst-group accuracy. The
+audit therefore predicts that this is not a capacity problem, and the
+held-out comparison confirms it. This complements the bandit capacity
+experiment: there, contrast dominates noise and condition-aware capacity
+raises the worst condition from $0.003$ to $1.97$; here, contrast is
+noise-dominated and conditional capacity buys nothing. Caveats:
+\texttt{Q\_overall} is perceived harm, not objective harm; \texttt{Unsure}
+labels are dropped; the model is a linear bag-of-ngrams classifier, and no
+group-DRO or reweighting baseline is included.
+
 \subsection{Retention is not a performance score}
 \label{sec:exp-o4}
 
@@ -531,7 +587,11 @@ differentiable-baseline exception; (iii) $K$-way direction dependence and
 channel interference as geometry; (iv) protocol and noise separation as
 methodology; (v) structural alignment of value fields versus
 near-orthogonality of policy-gradient fields in two environments; and (vi)
-decoupling from performance. We explicitly do not claim that value methods are
+decoupling from performance. The operational reading is a conditional rule:
+when retention is low, contrast energy exceeds within-condition noise, and the
+measured condition is the variable the task relies on, condition-aware
+capacity is the intervention; when any of the three fails, the audit
+recommends no intervention. We explicitly do not claim that value methods are
 universally better, that policy-gradient fields always vanish, that direction
 dependence is group-specific, that retention predicts return, or that memory
 or entropy interventions fix cancellation.
@@ -545,12 +605,12 @@ counts (three seeds for the Overcooked field axis). The value field is the
 diagnostic $-\sum V$, not a TD residual; its alignment is a property of the
 fitted value function on the measured distribution. The 510K environment has
 weak relational drive and is used as a supporting measurement, not as the
-primary demonstration. No real-world heterogeneity dataset is included; a
-natural next step is a three-group data setting with a shared model and a
-condition-aware routing baseline, reporting average and worst-group metrics.
-The finite-sample analysis reports a deterministic surrogate; a
-high-probability guarantee for the ratio estimator would require an explicit
-distributional assumption.
+primary demonstration. The real-data check uses a single dataset (DICES-350),
+a linear TF-IDF model, and binary perceived-harm labels; it includes no
+conditional-routing, group-DRO, or reweighting baseline, and replication on a
+second dataset is left to future work. The finite-sample analysis reports a
+deterministic surrogate; a high-probability guarantee for the ratio estimator
+would require an explicit distributional assumption.
 
 \subsection*{Reproducibility statement}
 
@@ -612,19 +672,21 @@ errors (\texttt{verify\_closed\_forms\_o1.py}).
 \caption{Provenance of the main-text numbers.}
 \label{tab:provenance}
 \begin{center}
-\begin{tabular}{ll}
+\small
+\begin{tabular}{p{0.36\linewidth}p{0.58\linewidth}}
 \toprule
 Result & File or script \\
 \midrule
-Cancellation, soft-Q and AWR closed forms & \texttt{data/kappa/toy\_fields/o1\_closed\_forms.json} \\
-$K$-way cancellation, direction, interference & \texttt{data/kappa/toy\_fields/kway\_geometry.json} \\
-Protocol audit (deterministic vs stochastic) & \texttt{data/kappa/toy\_fields/det\_vs\_stoch.json} \\
-Overcooked field axis & \texttt{data/kappa/server\_tasks/results/oc\_field\_axis.json} \\
-Overcooked switch and memory protocol & \texttt{data/kappa/server\_tasks/results/oc\_switch\_kappa.json} \\
-510K paired protocol & \texttt{data/kappa/server\_tasks/results/510k\_field\_axis.json} \\
-Shared vs conditional capacity & \texttt{data/kappa/compromise\_training/results.json} \\
-Switching-task decoupling & \texttt{data/kappa/o4\_adaptive/aggregate.json} \\
-Canonical metric implementation & \texttt{src/iigc/metrics/kappa.py} \\
+Cancellation, soft-Q and AWR closed forms & \path{data/kappa/toy_fields/o1_closed_forms.json} \\
+$K$-way cancellation, direction, interference & \path{data/kappa/toy_fields/kway_geometry.json} \\
+Protocol audit (deterministic vs stochastic) & \path{data/kappa/toy_fields/det_vs_stoch.json} \\
+Overcooked field axis & \path{data/kappa/server_tasks/results/oc_field_axis.json} \\
+Overcooked switch and memory protocol & \path{data/kappa/server_tasks/results/oc_switch_kappa.json} \\
+510K paired protocol & \path{data/kappa/server_tasks/results/510k_field_axis.json} \\
+Shared vs conditional capacity & \path{data/kappa/compromise_training/results.json} \\
+Switching-task decoupling & \path{data/kappa/o4_adaptive/aggregate.json} \\
+DICES-350 supervised check & \path{data/kappa/dices350/audit.json} \\
+Canonical metric implementation & \path{src/iigc/metrics/kappa.py} \\
 \bottomrule
 \end{tabular}
 \end{center}

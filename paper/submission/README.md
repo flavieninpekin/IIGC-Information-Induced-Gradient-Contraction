@@ -44,8 +44,16 @@ pdflatex main.tex
 pdflatex main.tex
 ```
 
-Last verified build: 9 pages total (main text ends before the references;
-references and appendix are excluded from the 9-page limit).
+Last verified build: 10 pages total; references start on page 9, so the main
+text stays within the 9-page limit (references and appendix do not count).
+
+The real-data check in Section 5.5 uses DICES-350. The CSV is downloaded from
+the public dataset repository into `data/external/dices/` (gitignored, not
+redistributed). To regenerate the audit numbers:
+
+```text
+python experiments/common_basis/supervised/run_dices_group_audit.py
+```
 
 ## Before submitting
 

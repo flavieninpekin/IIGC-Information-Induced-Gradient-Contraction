@@ -1,37 +1,42 @@
 # Auditing Gradient Retention under Hidden Conditions: Exact Cancellation, Objective-Dependent Alignment, and the Limits of Kappa
 
-> Canonical draft v1 (2026-09-16). All numbers are taken from the refreshed
-> canonical-metric results (`notes/canonical_metric_results.md`); no claim from
-> the archived drafts is reused without re-verification. Definitions match
+> Canonical draft v2 (2026-09-16). Revision after external review: one thesis
+> with three parts (structure / measurement / boundaries), rewritten abstract,
+> and a real three-group supervised check (DICES-350). All numbers are taken
+> from `notes/canonical_metric_results.md`; definitions match
 > `paper/resources/canonical_theory.md` and `src/iigc/metrics/kappa.py`.
 
 ---
 
 ## Abstract
 
-Training data is often a mixture of hidden conditions: annotator groups with
-conflicting preferences, clients with different objectives, teammates with
-unobserved roles. When a single model is trained on the mixture, the update is
-an average of condition-specific gradients, and part of the signal can cancel
-before it reaches the weights. We study when this cancellation is exact, when
-it is partial, and how it must be measured. On a mirror bandit we prove that
-elementwise, parameter-independent weight fields cancel exactly under the
-symmetric hidden mixture, and we derive an exact closed form for the soft-Q
-field. On a K-way matching bandit we show that uniform mixtures cancel for
-every K, that direction dependence first appears once the condition simplex
-has dimension at least two, and that entropy and mixture channels interfere.
-We then show, on a measurement audit, that deterministic rollouts can turn the
-retention score into a weight ratio, and that episode-noise readouts can differ
-by an order of magnitude from the structural score. Refreshed measurements
-under one bounded definition across a hidden-matching task, Overcooked, and a
-card-game environment show that value fields align with hidden conditions
-(structurally up to 0.999) while policy-gradient fields remain near-orthogonal
-(around 0.5); the effect is real but about twice, not thirty times. Finally,
-kappa does not predict task performance: a TD field with the lowest measured
-retention achieves the best return in a switching task. We conclude that
-condition-gradient auditing separates cancellation, alignment, and noise, and
-that this separation is necessary before any optimizer-level intervention is
-attempted.
+Learning systems often average gradients over hidden conditions: annotator
+groups with conflicting preferences, clients with different objectives,
+teammates with unobserved roles. It is unclear when such averaging merely
+aggregates useful signal and when it systematically suppresses it. We ask what
+survives the averaging, and how to measure it. We show that gradient
+cancellation is governed by more than the presence of hidden heterogeneity. In
+an analytically tractable mirror model, elementwise parameter-independent
+weight fields cancel exactly under a symmetric condition mixture, while a
+field with a differentiable baseline retains a nonzero component. For K-way
+mixtures, retention depends on the direction of the condition mixture in the
+probability simplex even at fixed distance from uniform, and
+objective-induced gradient channels can interfere, making retention
+non-monotone in the entropy weight. We separate these structural effects from
+finite-sample noise with a measurement protocol: deterministic rollouts can
+collapse retention into a weight ratio, and episode-noise readouts can
+understate structural retention by an order of magnitude. Under a single
+bounded definition, value fields align with hidden conditions in Overcooked
+and 510K while policy-gradient fields remain near-orthogonal (about 1.9x, not
+the 30-65x suggested by noisy readouts). A controlled capacity experiment
+shows that severe cancellation can coexist with poor worst-condition
+performance; in contrast, on a real three-group preference dataset the
+condition-contrast energy is dominated by item-level noise and
+group-conditioned capacity yields no gain. In a switching task, retention need
+not predict return when the measured condition is not the variable the task
+relies on. Retention is a structural audit of the specified condition signal,
+not a general performance metric, and it indicates when condition-aware
+capacity is likely worth its cost.
 
 ---
 
@@ -68,36 +73,45 @@ data*, not of the optimizer. We therefore fix the measurement basis: same
 network, same rollout distribution, same condition definition, and change only
 the scalar objective whose gradient defines the field.
 
+**Thesis.** When hidden conditions are averaged, what survives is determined
+not only by symmetry between conditions, but by the geometry of the condition
+mixture and by the objective-induced structure of the gradient field. The
+results below are chapters of that one question.
+
 **Contributions.**
-1. **Exact cancellation criteria.** For the mirror bandit, any elementwise,
-   parameter-independent weight field has `g_B = -g_A`, hence zero shared
-   gradient under the symmetric mixture. The same normalization yields exact
-   cancellation for K-way matching mixtures at every K. We state the
-   boundaries of this result: it is about expected gradients on the stated
-   model, not about arbitrary neural environments.
-2. **Objective-dependent alignment with exact formulas.** We give a closed
-   form for the soft-Q field, `kappa = Delta^2 / (Delta^2 + 4 r^2)` with
-   `Delta = alpha log(p/(1-p))`, verified against autograd to machine
-   precision, and we isolate the advantage-weighted field with a
-   differentiable baseline as the only policy-gradient-style field that
-   survives the symmetric mixture through an implicit even coupling.
-3. **K-way geometry.** Uniform mixtures cancel for K = 2, 3, 4; direction
-   dependence at fixed distance from uniform appears at K >= 3, and entropy
-   and mixture channels interfere with a computable minimum. These are
-   properties of the condition simplex, not of a non-abelian group.
-4. **Measurement audit.** Deterministic rollouts reduce the retention score to
-   a single-action weight ratio on the mirror model; a measured example gives
-   0.633 where the correct protocol gives 0.001. Episode-noise scores can be
-   an order of magnitude below structural scores, so both must be reported.
-5. **Refreshed real-environment evidence.** Under one bounded definition of
-   structural retention, value fields align strongly with hidden conditions
+1. **Structure: which fields survive, and why.**
+   (a) In the mirror bandit, any elementwise, parameter-independent weight
+   field has `g_B = -g_A`, hence zero shared gradient under the symmetric
+   mixture; the same normalization cancels K-way matching mixtures at every K.
+   (b) The soft-Q field has an exact closed form,
+   `kappa = Delta^2 / (Delta^2 + 4 r^2)` with `Delta = alpha log(p/(1-p))`,
+   verified against autograd to machine precision. (c) The advantage-weighted
+   field with a differentiable baseline is the only policy-gradient-style
+   field that survives the symmetric mixture, through an implicit even
+   coupling. (d) Direction dependence appears at K >= 3, and entropy and
+   mixture channels interfere with a computable minimum. These are properties
+   of the condition simplex, not of a non-abelian group.
+2. **Measurement: what a retention score can and cannot be.**
+   The bounded mixture-reference retention separates structural retention
+   from episode noise. Deterministic rollouts reduce the score to a
+   single-action weight ratio on the mirror model (0.633 where the correct
+   protocol gives 0.001), and episode-noise readouts can sit an order of
+   magnitude below structural scores. Two fields must be compared on the same
+   episode batch, and the condition-contrast energy must be read against the
+   within-condition noise before any conclusion is drawn.
+3. **Boundaries: when the audit recommends capacity.**
+   Under one bounded definition, value fields align with hidden conditions
    (Overcooked dynamic 0.999, 510K 0.95-0.98) while policy-gradient fields
-   remain near-orthogonal (about 0.51-0.53). The gap is about `1.9x`, not the
-   `30-65x` implied by noise-dominated readouts.
-6. **A boundary result.** The retention score is not a performance score. In a
-   switching task, the TD field has the lowest measured retention and the
-   highest return, while a high-retention soft-Q field does worse. We explain
-   the decoupling by variable mismatch and use it to scope the diagnostic.
+   remain near-orthogonal (about 0.51-0.53); the gap is about `1.9x`, not the
+   `30-65x` implied by noisy readouts. A controlled capacity experiment shows
+   that severe cancellation with contrast energy dominating noise is fixed by
+   condition-aware capacity (worst condition 0.003 to 1.97), whereas a real
+   three-group preference dataset with contrast dominated by item-level noise
+   gains nothing from conditional capacity. A switching task shows retention
+   need not predict return when the measured condition differs from the
+   variable the task relies on. The audit therefore recommends intervention
+   only when low retention coincides with contrast energy above noise and a
+   task-relevant condition.
 
 ---
 
@@ -365,7 +379,35 @@ for worst-condition performance in the shared model (`0.752` average, `0.517`
 worst), a Pareto movement rather than a fix. The intervention suggested by the
 audit is conditional information or capacity, not an arbitrary gradient rule.
 
-### 5.5 Kappa is not a performance score
+### 5.5 Real three-group preference data (DICES-350)
+
+To test whether the audit extends beyond RL bandits, we use DICES-350: 350
+adversarial conversations, each rated by all 123 raters, with rater
+demographics. We treat a demographic attribute as the hidden condition, use
+the binary perceived-harm judgment (`Yes` vs `No`, `Unsure` dropped), split by
+`item_id` (245 train / 105 test items), and fit a TF-IDF plus logistic model
+shared across raters. Three seeds; the shared model reaches 0.73 train
+accuracy.
+
+| Axis (groups) | kappa_mix | E_contrast | sigma2 | shared avg/worst | conditional avg/worst |
+|---|---|---|---|---|---|
+| race (3) | 0.116 ± 0.025 | 0.0020 | 0.0113 | 0.656 / 0.609 | 0.654 / 0.607 |
+| age (3) | 0.033 ± 0.005 | 0.0003 | 0.0064 | 0.640 / 0.623 | 0.638 / 0.624 |
+| gender (2) | 0.001 ± 0.000 | 0.0005 | 0.0035 | 0.641 / 0.623 | 0.640 / 0.625 |
+
+The race axis carries the strongest condition signal, yet its contrast energy
+is about six times smaller than the within-group item noise
+(`E_contrast/sigma2 ~ 0.17`), and group-conditioned models do not improve
+average or worst-group accuracy. The audit therefore predicts that this is not
+a capacity problem, and the held-out comparison confirms it. This complements
+the bandit capacity experiment: there, contrast dominates noise and
+condition-aware capacity raises the worst condition from `0.003` to `1.97`;
+here, contrast is noise-dominated and conditional capacity buys nothing.
+Caveats: `Q_overall` is perceived harm, not objective harm; `Unsure` labels
+are dropped; the model is a linear bag-of-ngrams classifier, and no group-DRO
+or reweighting baseline is included.
+
+### 5.6 Kappa is not a performance score
 
 In a switching hidden-matching task with four objectives trained from scratch
 under an identical budget, final returns and final structural retention are
@@ -395,7 +437,11 @@ differentiable-baseline exception; (iii) K-way direction dependence and
 channel interference as geometry; (iv) protocol and noise separation as
 methodology; (v) structural alignment of value fields versus near-orthogonality
 of policy-gradient fields in two environments; (vi) decoupling from
-performance. We explicitly do not claim that value methods are universally
+performance. The operational reading is a conditional rule: when retention is
+low, contrast energy exceeds within-condition noise, and the measured
+condition is the variable the task relies on, condition-aware capacity is the
+intervention; when any of the three fails, the audit recommends no
+intervention. We explicitly do not claim that value methods are universally
 better, that policy-gradient fields always die, that direction dependence is
 group-specific, that the retention score predicts return, or that memory or
 entropy interventions fix cancellation.
@@ -410,12 +456,12 @@ counts (three seeds for the Overcooked field axis). The value field is a
 diagnostic `-sum V`, not a TD residual; its alignment is a property of the
 fitted value function on the measured distribution. The 510K environment has
 weak relational drive and is used as a supporting measurement, not as the
-primary demonstration. No real-world heterogeneity dataset is included; a
-natural next step is a three-group data setting with a shared model and a
-condition-aware routing baseline, reporting average and worst-group metrics.
-The finite-sample analysis reports a deterministic surrogate; a
-high-probability guarantee for the ratio estimator would require an explicit
-distributional assumption.
+primary demonstration. The real-data check uses a single dataset (DICES-350),
+a linear TF-IDF model, and binary perceived-harm labels; it includes no
+conditional-routing, group-DRO, or reweighting baseline, and replication on a
+second dataset (e.g. WVS) is left to future work. The finite-sample analysis
+reports a deterministic surrogate; a high-probability guarantee for the ratio
+estimator would require an explicit distributional assumption.
 
 ---
 
