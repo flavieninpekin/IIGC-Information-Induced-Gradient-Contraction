@@ -28,16 +28,19 @@ pre-submission checks.
 
 ## Recommended Thesis
 
-> Under hidden heterogeneous conditions, condition-gradient aggregation is a
-> measurable projection problem. Symmetric mixtures exactly cancel condition-
-> specific components; objective-dependent shared components and sampling noise
-> must be separated. A bounded mixture-reference kappa diagnoses retention of
-> the specified condition signal, but is not a general performance predictor.
+> When hidden conditions are averaged, what survives is determined not only by
+> symmetry between conditions, but by the geometry of the condition mixture and
+> by the objective-induced structure of the gradient field. Retention is a
+> structural audit of the specified condition signal, and the audit recommends
+> condition-aware capacity only when low retention coincides with contrast
+> energy above noise and a task-relevant condition.
 
 This is stronger and safer than claiming that policy-gradient methods are bad
-and value methods are good. It also gives the paper one coherent connection
-between the exact bandit analysis, the measurement-protocol audit, and the
-negative performance result.
+and value methods are good. The contributions are organized as three chapters
+of this one question: structure (exact cancellation, soft-Q closed form,
+$K$-way geometry and interference), measurement (bounded mixture-reference
+retention, protocol and noise separation), and boundaries (real-environment
+alignment, DICES-350 negative capacity check, kappa/performance decoupling).
 
 ## Novelty Positioning
 
@@ -186,6 +189,7 @@ Evidence: `notes/rollout_protocol_artifact.md`,
 | A | `det_vs_stoch.json` | Measurement-protocol failure mode |
 | A | `o4_adaptive/aggregate.json` | Kappa/performance decoupling boundary |
 | A | `notes/canonical_metric_results.md` | Refreshed structural numbers for all real-environment tables |
+| A | `data/kappa/dices350/audit.json` | Real three-group supervised check: race axis kappa_mix 0.116, contrast dominated by item noise, no conditional-capacity gain |
 | B | `oc_field_axis.json` | Structural `kappa_mix`: dynamic value 0.999 vs reinforce 0.529; static weak |
 | B | `510k_field_axis.json` | Paired protocol, keys `s*_paired`: value 0.95-0.98 vs reinforce 0.51 |
 | B | `overcooked_slice` | Controlled option-level witness, not primitive-action PG proof |

@@ -14,7 +14,8 @@
 | K-way 数据（刷新） | `data/kappa/toy_fields/kway_geometry.json` | `kappa_mix` 主键 + `_metadata`；K=2/3/4 方向与干涉 |
 | Z2 闭式（刷新） | `data/kappa/toy_fields/o1_closed_forms.json` | `_metadata` + 命题 A/B/C 三路互证 |
 | K=3 几何（刷新） | `data/kappa/toy_fields/s3_survival.json` | 方向扫描与 softq 干涉，按 `kappa_mix` 口径 |
-| 结构指标结果汇总 | `notes/canonical_metric_results.md` | Toy/Overcooked/510K 的 `kappa_mix` 数字与旧口径对照 |
+| 结构指标结果汇总 | `notes/canonical_metric_results.md` | Toy/Overcooked/510K/DICES 的 `kappa_mix` 数字与旧口径对照 |
+| DICES-350 监督审计 | `data/kappa/dices350/audit.json` | 三群体（race/age/gender）条件梯度与容量对照；数据缓存在 `data/external/`（不入库） |
 | 510K paired 结果 | `data/kappa/server_tasks/results/510k_field_axis.json` | 新键 `s<seed>_paired`；旧键未配对，勿混用 |
 | Overcooked 分量回填 | `oc_field_axis.json` / `oc_switch_kappa.json` | 由 `backfill_kappa_mix.py` 从已存分量补 `kappa_mix` |
 

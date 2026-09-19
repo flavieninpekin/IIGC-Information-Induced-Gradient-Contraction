@@ -79,7 +79,31 @@ policy gradient is near-orthogonal, and the effect is stable across visibility
 levels. There is no evidence for a hiddenness trend in `p`; the small
 monotone decrease of the value score with `p` should not be over-read.
 
-## 5. What Changed Relative to the Old Tables
+## 5. Supervised cross-setting check: DICES-350 (three seeds)
+
+Source: `data/kappa/dices350/audit.json`,
+`experiments/common_basis/supervised/run_dices_group_audit.py`. The dataset is
+cached under `data/external/dices/` (not committed). Setup: 350 adversarial
+conversations, all 123 raters rate every item, binary perceived-harm label
+(Yes vs No, Unsure dropped), split by `item_id` (245/105), TF-IDF plus shared
+logistic model.
+
+| Axis (groups) | `kappa_mix` | `kappa_ep` | `E_contrast` | `sigma2` | shared avg/worst | conditional avg/worst |
+|---|---|---|---|---|---|---|
+| race (3) | 0.116 ± 0.025 | 0.019 ± 0.004 | 0.0020 | 0.0113 | 0.656 / 0.609 | 0.654 / 0.607 |
+| age (3) | 0.033 ± 0.005 | 0.001 ± 0.000 | 0.0003 | 0.0064 | 0.640 / 0.623 | 0.638 / 0.624 |
+| gender (2) | 0.001 ± 0.000 | 0.000 ± 0.000 | 0.0005 | 0.0035 | 0.641 / 0.623 | 0.640 / 0.625 |
+
+Interpretation: the race axis carries the strongest condition signal, but its
+contrast energy is dominated by within-group item noise
+(`E_contrast / sigma2 ~ 0.17`) and conditional models do not improve held-out
+average or worst-group accuracy. This is the "no-intervention" side of the
+audit, complementing the bandit capacity experiment where contrast dominates
+noise and conditional capacity raises the worst condition from 0.003 to 1.97.
+Caveats: perceived harm is not objective harm; linear TF-IDF model; no
+group-DRO or reweighting baseline; single dataset.
+
+## 6. What Changed Relative to the Old Tables
 
 | Old statement | Canonical reading |
 |---|---|
@@ -99,4 +123,8 @@ python experiments/common_basis/toy/verify_kway_geometry.py
 python experiments/common_basis/toy/verify_s3_survival.py
 python experiments/common_basis/server_tasks/run_510k_field_axis.py
 python experiments/common_basis/server_tasks/backfill_kappa_mix.py
+python experiments/common_basis/supervised/run_dices_group_audit.py
 ```
+
+The DICES-350 CSV is downloaded from the public dataset repository into
+`data/external/dices/` (gitignored) and is not redistributed here.
