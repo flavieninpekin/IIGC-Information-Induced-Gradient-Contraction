@@ -1,0 +1,717 @@
+{
+  "_metadata": {
+    "kappa_schema": "mixture-v1",
+    "gradient_definition": "binary cross-entropy gradient of a TF-IDF logistic model",
+    "condition_weights": "equal_condition_weights",
+    "rollout_protocol": "supervised_split_by_item",
+    "parameter_space": "parameter_space_euclidean",
+    "noise_treatment": "episode_noise_separate"
+  },
+  "dataset": {
+    "name": "DICES-350",
+    "rows_used": 40356,
+    "rows_dropped_unsure": 2694,
+    "items": 350,
+    "raters": 123,
+    "label": "Q_overall: Yes (harmful) vs No; Unsure dropped",
+    "test_fraction": 0.3,
+    "seeds": [
+      41,
+      42,
+      43
+    ]
+  },
+  "per_seed": [
+    {
+      "seed": 41,
+      "n_train_items": 245,
+      "n_test_items": 105,
+      "n_features": 10706,
+      "shared_train_accuracy": 0.7313125576772911,
+      "axes": {
+        "race": {
+          "groups": [
+            "White",
+            "Black/African American",
+            "Asian/Asian subcontinent"
+          ],
+          "gradient_audit": {
+            "kappa_mix": 0.08855194424732156,
+            "kappa_ep": 0.014604429261947846,
+            "E_shared": 0.00020235251957029574,
+            "E_contrast": 0.002082775393659191,
+            "sigma2": 0.011641129214801158,
+            "n_items_per_group": [
+              245,
+              245,
+              245
+            ]
+          },
+          "capacity": {
+            "shared": {
+              "average_accuracy": 0.6431940757640616,
+              "worst_group_accuracy": 0.5976034016235021,
+              "per_group": {
+                "White": {
+                  "n": 3023,
+                  "accuracy": 0.6821038703274892
+                },
+                "Black/African American": {
+                  "n": 2799,
+                  "accuracy": 0.6498749553411933
+                },
+                "Asian/Asian subcontinent": {
+                  "n": 2587,
+                  "accuracy": 0.5976034016235021
+                }
+              }
+            },
+            "group_conditioned": {
+              "average_accuracy": 0.6399157163134439,
+              "worst_group_accuracy": 0.6080402010050251,
+              "per_group": {
+                "White": {
+                  "n": 3023,
+                  "accuracy": 0.6854118425405227
+                },
+                "Black/African American": {
+                  "n": 2799,
+                  "accuracy": 0.6262951053947838
+                },
+                "Asian/Asian subcontinent": {
+                  "n": 2587,
+                  "accuracy": 0.6080402010050251
+                }
+              }
+            }
+          }
+        },
+        "age": {
+          "groups": [
+            "gen z",
+            "millenial",
+            "gen x+"
+          ],
+          "gradient_audit": {
+            "kappa_mix": 0.03346641922176171,
+            "kappa_ep": 0.0016662767311384553,
+            "E_shared": 9.83501672945665e-06,
+            "E_contrast": 0.0002840421580075819,
+            "sigma2": 0.006283467646753931,
+            "n_items_per_group": [
+              245,
+              245,
+              245
+            ]
+          },
+          "capacity": {
+            "shared": {
+              "average_accuracy": 0.6241837132565876,
+              "worst_group_accuracy": 0.6142625607779578,
+              "per_group": {
+                "gen z": {
+                  "n": 5518,
+                  "accuracy": 0.6279449075752084
+                },
+                "millenial": {
+                  "n": 3579,
+                  "accuracy": 0.6303436714165969
+                },
+                "gen x+": {
+                  "n": 3085,
+                  "accuracy": 0.6142625607779578
+                }
+              }
+            },
+            "group_conditioned": {
+              "average_accuracy": 0.623197030861048,
+              "worst_group_accuracy": 0.6100486223662885,
+              "per_group": {
+                "gen z": {
+                  "n": 5518,
+                  "accuracy": 0.6230518303733237
+                },
+                "millenial": {
+                  "n": 3579,
+                  "accuracy": 0.6364906398435317
+                },
+                "gen x+": {
+                  "n": 3085,
+                  "accuracy": 0.6100486223662885
+                }
+              }
+            }
+          }
+        },
+        "gender": {
+          "groups": [
+            "Woman",
+            "Man"
+          ],
+          "gradient_audit": {
+            "kappa_mix": 0.0006130585074247253,
+            "kappa_ep": 8.945760335447263e-05,
+            "E_shared": 3.179774070373216e-07,
+            "E_contrast": 0.0005183558574493603,
+            "sigma2": 0.003510658455049702,
+            "n_items_per_group": [
+              245,
+              245
+            ]
+          },
+          "capacity": {
+            "shared": {
+              "average_accuracy": 0.6250260089680297,
+              "worst_group_accuracy": 0.6056944214534018,
+              "per_group": {
+                "Woman": {
+                  "n": 6041,
+                  "accuracy": 0.6056944214534018
+                },
+                "Man": {
+                  "n": 6141,
+                  "accuracy": 0.6443575964826576
+                }
+              }
+            },
+            "group_conditioned": {
+              "average_accuracy": 0.6212087051783501,
+              "worst_group_accuracy": 0.6068531700049661,
+              "per_group": {
+                "Woman": {
+                  "n": 6041,
+                  "accuracy": 0.6068531700049661
+                },
+                "Man": {
+                  "n": 6141,
+                  "accuracy": 0.6355642403517342
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": 42,
+      "n_train_items": 245,
+      "n_test_items": 105,
+      "n_features": 11424,
+      "shared_train_accuracy": 0.7341651011944849,
+      "axes": {
+        "race": {
+          "groups": [
+            "White",
+            "Black/African American",
+            "Asian/Asian subcontinent"
+          ],
+          "gradient_audit": {
+            "kappa_mix": 0.11162956792902895,
+            "kappa_ep": 0.018680001105367928,
+            "E_shared": 0.00023852927995170317,
+            "E_contrast": 0.0018982637254942522,
+            "sigma2": 0.010791128560998326,
+            "n_items_per_group": [
+              245,
+              245,
+              245
+            ]
+          },
+          "capacity": {
+            "shared": {
+              "average_accuracy": 0.6698341370143357,
+              "worst_group_accuracy": 0.6218847352024922,
+              "per_group": {
+                "White": {
+                  "n": 2996,
+                  "accuracy": 0.7026034712950601
+                },
+                "Black/African American": {
+                  "n": 2816,
+                  "accuracy": 0.6850142045454546
+                },
+                "Asian/Asian subcontinent": {
+                  "n": 2568,
+                  "accuracy": 0.6218847352024922
+                }
+              }
+            },
+            "group_conditioned": {
+              "average_accuracy": 0.6646781145904977,
+              "worst_group_accuracy": 0.6055295950155763,
+              "per_group": {
+                "White": {
+                  "n": 2996,
+                  "accuracy": 0.7109479305740988
+                },
+                "Black/African American": {
+                  "n": 2816,
+                  "accuracy": 0.6775568181818182
+                },
+                "Asian/Asian subcontinent": {
+                  "n": 2568,
+                  "accuracy": 0.6055295950155763
+                }
+              }
+            }
+          }
+        },
+        "age": {
+          "groups": [
+            "gen z",
+            "millenial",
+            "gen x+"
+          ],
+          "gradient_audit": {
+            "kappa_mix": 0.026933725112649232,
+            "kappa_ep": 0.0009440699846860164,
+            "E_shared": 5.425277418732649e-06,
+            "E_contrast": 0.0001960053600456969,
+            "sigma2": 0.0062537859302900164,
+            "n_items_per_group": [
+              245,
+              245,
+              245
+            ]
+          },
+          "capacity": {
+            "shared": {
+              "average_accuracy": 0.6528996161811333,
+              "worst_group_accuracy": 0.6334310850439883,
+              "per_group": {
+                "gen z": {
+                  "n": 5512,
+                  "accuracy": 0.6632801161103048
+                },
+                "millenial": {
+                  "n": 3562,
+                  "accuracy": 0.6619876473891072
+                },
+                "gen x+": {
+                  "n": 3069,
+                  "accuracy": 0.6334310850439883
+                }
+              }
+            },
+            "group_conditioned": {
+              "average_accuracy": 0.6456727153251004,
+              "worst_group_accuracy": 0.6272401433691757,
+              "per_group": {
+                "gen z": {
+                  "n": 5512,
+                  "accuracy": 0.6500362844702468
+                },
+                "millenial": {
+                  "n": 3562,
+                  "accuracy": 0.6597417181358787
+                },
+                "gen x+": {
+                  "n": 3069,
+                  "accuracy": 0.6272401433691757
+                }
+              }
+            }
+          }
+        },
+        "gender": {
+          "groups": [
+            "Woman",
+            "Man"
+          ],
+          "gradient_audit": {
+            "kappa_mix": 0.0006809483036923082,
+            "kappa_ep": 8.942391330140067e-05,
+            "E_shared": 3.414973220594833e-07,
+            "E_contrast": 0.0005011610693306238,
+            "sigma2": 0.0034671349235706602,
+            "n_items_per_group": [
+              245,
+              245
+            ]
+          },
+          "capacity": {
+            "shared": {
+              "average_accuracy": 0.6551121657700762,
+              "worst_group_accuracy": 0.6354236157438292,
+              "per_group": {
+                "Woman": {
+                  "n": 5996,
+                  "accuracy": 0.6354236157438292
+                },
+                "Man": {
+                  "n": 6147,
+                  "accuracy": 0.6748007157963234
+                }
+              }
+            },
+            "group_conditioned": {
+              "average_accuracy": 0.65453254015773,
+              "worst_group_accuracy": 0.6345897264843229,
+              "per_group": {
+                "Woman": {
+                  "n": 5996,
+                  "accuracy": 0.6345897264843229
+                },
+                "Man": {
+                  "n": 6147,
+                  "accuracy": 0.6744753538311371
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": 43,
+      "n_train_items": 245,
+      "n_test_items": 105,
+      "n_features": 11603,
+      "shared_train_accuracy": 0.7310129943702864,
+      "axes": {
+        "race": {
+          "groups": [
+            "White",
+            "Black/African American",
+            "Asian/Asian subcontinent"
+          ],
+          "gradient_audit": {
+            "kappa_mix": 0.1486550944170072,
+            "kappa_ep": 0.02382501593155577,
+            "E_shared": 0.000333776969512478,
+            "E_contrast": 0.0019115343722984313,
+            "sigma2": 0.011574295263996236,
+            "n_items_per_group": [
+              245,
+              245,
+              245
+            ]
+          },
+          "capacity": {
+            "shared": {
+              "average_accuracy": 0.6543932037468186,
+              "worst_group_accuracy": 0.6084594489716725,
+              "per_group": {
+                "White": {
+                  "n": 2994,
+                  "accuracy": 0.6963927855711423
+                },
+                "Black/African American": {
+                  "n": 2798,
+                  "accuracy": 0.6583273766976412
+                },
+                "Asian/Asian subcontinent": {
+                  "n": 2577,
+                  "accuracy": 0.6084594489716725
+                }
+              }
+            },
+            "group_conditioned": {
+              "average_accuracy": 0.6558669031629324,
+              "worst_group_accuracy": 0.6076833527357393,
+              "per_group": {
+                "White": {
+                  "n": 2994,
+                  "accuracy": 0.6987307949231797
+                },
+                "Black/African American": {
+                  "n": 2798,
+                  "accuracy": 0.6611865618298784
+                },
+                "Asian/Asian subcontinent": {
+                  "n": 2577,
+                  "accuracy": 0.6076833527357393
+                }
+              }
+            }
+          }
+        },
+        "age": {
+          "groups": [
+            "gen z",
+            "millenial",
+            "gen x+"
+          ],
+          "gradient_audit": {
+            "kappa_mix": 0.037880233575135494,
+            "kappa_ep": 0.0016072838131819984,
+            "E_shared": 1.0428852785048926e-05,
+            "E_contrast": 0.0002648823531071556,
+            "sigma2": 0.006626941038380925,
+            "n_items_per_group": [
+              245,
+              245,
+              245
+            ]
+          },
+          "capacity": {
+            "shared": {
+              "average_accuracy": 0.6417857961248439,
+              "worst_group_accuracy": 0.6223386832623649,
+              "per_group": {
+                "gen z": {
+                  "n": 5489,
+                  "accuracy": 0.6443796684277646
+                },
+                "millenial": {
+                  "n": 3571,
+                  "accuracy": 0.6586390366844022
+                },
+                "gen x+": {
+                  "n": 3053,
+                  "accuracy": 0.6223386832623649
+                }
+              }
+            },
+            "group_conditioned": {
+              "average_accuracy": 0.6444778968196976,
+              "worst_group_accuracy": 0.633147723550606,
+              "per_group": {
+                "gen z": {
+                  "n": 5489,
+                  "accuracy": 0.6416469302240845
+                },
+                "millenial": {
+                  "n": 3571,
+                  "accuracy": 0.6586390366844022
+                },
+                "gen x+": {
+                  "n": 3053,
+                  "accuracy": 0.633147723550606
+                }
+              }
+            }
+          }
+        },
+        "gender": {
+          "groups": [
+            "Woman",
+            "Man"
+          ],
+          "gradient_audit": {
+            "kappa_mix": 0.0005559598371157157,
+            "kappa_ep": 8.71238085703723e-05,
+            "E_shared": 3.383920329973626e-07,
+            "E_contrast": 0.0006083243393486779,
+            "sigma2": 0.0036350076916613176,
+            "n_items_per_group": [
+              245,
+              245
+            ]
+          },
+          "capacity": {
+            "shared": {
+              "average_accuracy": 0.6428704635851725,
+              "worst_group_accuracy": 0.6270847231487658,
+              "per_group": {
+                "Woman": {
+                  "n": 5996,
+                  "accuracy": 0.6270847231487658
+                },
+                "Man": {
+                  "n": 6117,
+                  "accuracy": 0.6586562040215792
+                }
+              }
+            },
+            "group_conditioned": {
+              "average_accuracy": 0.6451302121418638,
+              "worst_group_accuracy": 0.6324216144096064,
+              "per_group": {
+                "Woman": {
+                  "n": 5996,
+                  "accuracy": 0.6324216144096064
+                },
+                "Man": {
+                  "n": 6117,
+                  "accuracy": 0.6578388098741214
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "summary": {
+    "race": {
+      "groups": [
+        "White",
+        "Black/African American",
+        "Asian/Asian subcontinent"
+      ],
+      "gradient_audit": {
+        "kappa_mix": {
+          "mean": 0.11627886886445256,
+          "std": 0.024756267414819004,
+          "n": 3
+        },
+        "kappa_ep": {
+          "mean": 0.019036482099623848,
+          "std": 0.00377271905989894,
+          "n": 3
+        },
+        "E_shared": {
+          "mean": 0.00025821958967815897,
+          "std": 5.5430904337406775e-05,
+          "n": 3
+        },
+        "E_contrast": {
+          "mean": 0.0019641911638172914,
+          "std": 8.402655212113074e-05,
+          "n": 3
+        },
+        "sigma2": {
+          "mean": 0.011335517679931906,
+          "std": 0.0003859070085353108,
+          "n": 3
+        }
+      },
+      "capacity": {
+        "shared": {
+          "average_accuracy": {
+            "mean": 0.6558071388417387,
+            "std": 0.01092161847572887,
+            "n": 3
+          },
+          "worst_group_accuracy": {
+            "mean": 0.6093158619325556,
+            "std": 0.009931293049857588,
+            "n": 3
+          }
+        },
+        "group_conditioned": {
+          "average_accuracy": {
+            "mean": 0.6534869113556248,
+            "std": 0.010248328737246175,
+            "n": 3
+          },
+          "worst_group_accuracy": {
+            "mean": 0.6070843829187803,
+            "std": 0.0011090113434300908,
+            "n": 3
+          }
+        }
+      }
+    },
+    "age": {
+      "groups": [
+        "gen z",
+        "millenial",
+        "gen x+"
+      ],
+      "gradient_audit": {
+        "kappa_mix": {
+          "mean": 0.03276012596984881,
+          "std": 0.004496713577573004,
+          "n": 3
+        },
+        "kappa_ep": {
+          "mean": 0.001405876843002157,
+          "std": 0.0003274336796799438,
+          "n": 3
+        },
+        "E_shared": {
+          "mean": 8.563048977746074e-06,
+          "std": 2.2319450534822023e-06,
+          "n": 3
+        },
+        "E_contrast": {
+          "mean": 0.00024830995705347813,
+          "std": 3.78030217669205e-05,
+          "n": 3
+        },
+        "sigma2": {
+          "mean": 0.006388064871808291,
+          "std": 0.00016934504872279506,
+          "n": 3
+        }
+      },
+      "capacity": {
+        "shared": {
+          "average_accuracy": {
+            "mean": 0.6396230418541883,
+            "std": 0.011822546249135247,
+            "n": 3
+          },
+          "worst_group_accuracy": {
+            "mean": 0.6233441096947704,
+            "std": 0.007857745324098346,
+            "n": 3
+          }
+        },
+        "group_conditioned": {
+          "average_accuracy": {
+            "mean": 0.6377825476686153,
+            "std": 0.0103250463509237,
+            "n": 3
+          },
+          "worst_group_accuracy": {
+            "mean": 0.6234788297620234,
+            "std": 0.009798051810414342,
+            "n": 3
+          }
+        }
+      }
+    },
+    "gender": {
+      "groups": [
+        "Woman",
+        "Man"
+      ],
+      "gradient_audit": {
+        "kappa_mix": {
+          "mean": 0.0006166555494109164,
+          "std": 5.108968080790099e-05,
+          "n": 3
+        },
+        "kappa_ep": {
+          "mean": 8.866844174208186e-05,
+          "std": 1.092307185510913e-06,
+          "n": 3
+        },
+        "E_shared": {
+          "mean": 3.326222540313892e-07,
+          "std": 1.0432780474688718e-08,
+          "n": 3
+        },
+        "E_contrast": {
+          "mean": 0.0005426137553762207,
+          "std": 4.699167173810749e-05,
+          "n": 3
+        },
+        "sigma2": {
+          "mean": 0.00353760035676056,
+          "std": 7.113234668537726e-05,
+          "n": 3
+        }
+      },
+      "capacity": {
+        "shared": {
+          "average_accuracy": {
+            "mean": 0.6410028794410928,
+            "std": 0.012353410073895814,
+            "n": 3
+          },
+          "worst_group_accuracy": {
+            "mean": 0.6227342534486656,
+            "std": 0.012520681244727678,
+            "n": 3
+          }
+        },
+        "group_conditioned": {
+          "average_accuracy": {
+            "mean": 0.6402904858259814,
+            "std": 0.014028226486687933,
+            "n": 3
+          },
+          "worst_group_accuracy": {
+            "mean": 0.6246215036329651,
+            "std": 0.012595248771634595,
+            "n": 3
+          }
+        }
+      }
+    }
+  }
+}

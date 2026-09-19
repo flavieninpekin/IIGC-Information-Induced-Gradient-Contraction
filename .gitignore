@@ -3,6 +3,9 @@
 AAAI2027-510k-clear/
 AAAI2027-510k-clear.zip
 
+# External datasets (downloaded, not redistributed).
+data/external/
+
 # Python
 __pycache__/
 *.py[cod]
