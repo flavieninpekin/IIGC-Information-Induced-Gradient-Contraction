@@ -3,7 +3,8 @@
 Scatter: x = kappa_mean(reinforce field), y = kappa_mean(value/soft field).
 y=x diagonal separates "value survives" (above) from "fields agree" (on line).
 Points: filled = hidden condition, hollow = visible condition; color = env.
-Arrow from visible to hidden within each env shows hidden strengthens the gap.
+The figure plots reinforce against value; the differentiable-baseline awr
+field is reported in the paper table, not here.
 """
 import json
 import os
@@ -13,8 +14,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-RES = r"C:\Users\Flavi\opencode\IIGC\data\kappa\server_tasks\results"
-OUTDIR = r"C:\Users\Flavi\opencode\IIGC\paper\figures"
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+RES = os.path.join(ROOT, "data", "kappa", "server_tasks", "results")
+OUTDIR = os.path.join(ROOT, "paper", "figures")
 os.makedirs(OUTDIR, exist_ok=True)
 
 
@@ -50,9 +52,10 @@ def toy():
 
     Hidden: exact reinforce cancellation (0.0); the soft field anchor is the
     canonical softq closed form at alpha=10 (0.903). Revealed: all fields
-    degenerate to ~0.41 on the mirror bandit (`toy_fields/results.json`).
+    degenerate to ~0.44 under the controlled same-policy protocol
+    (`toy_fields/visibility_control.json`).
     """
-    return (0.0, 0.903), (0.412, 0.412)
+    return (0.0, 0.903), (0.44, 0.44)
 
 
 def main():

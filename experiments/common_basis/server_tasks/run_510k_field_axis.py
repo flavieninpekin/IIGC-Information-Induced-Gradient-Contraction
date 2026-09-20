@@ -25,8 +25,11 @@ from sb3_contrib import MaskablePPO  # noqa: E402
 from iigc.envs._510k.env import FiveTenKEnv  # noqa: E402
 from iigc.metrics.kappa import episode_decomposition, measurement_metadata  # noqa: E402
 
-MODEL_DIR = r"C:\Users\Flavi\opencode\IIGC\data\models_reveal"
-OUT = r"C:\Users\Flavi\opencode\IIGC\data\kappa\server_tasks\results\510k_field_axis.json"
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+MODEL_DIR = os.environ.get(
+    "IIGC_510K_MODELS", os.path.join(ROOT, "data", "models_reveal"))
+OUT = os.path.join(ROOT, "data", "kappa", "server_tasks", "results",
+                   "510k_field_axis.json")
 N_EPS = 60
 LEVELS = [0.0, 0.5, 1.0]
 SEEDS = [41, 42, 43, 44, 45, 46]
@@ -53,8 +56,11 @@ def model_path(level, seed):
 
 
 def _flat_policy_grad(model):
-    return torch.cat([p.grad.detach().clone().flatten()
-                      for p in model.policy.parameters() if p.grad is not None])
+    parts = []
+    for p in model.policy.parameters():
+        g = p.grad if p.grad is not None else torch.zeros_like(p)
+        parts.append(g.detach().clone().flatten())
+    return torch.cat(parts)
 
 
 def episode_gradients_both(model, env):
