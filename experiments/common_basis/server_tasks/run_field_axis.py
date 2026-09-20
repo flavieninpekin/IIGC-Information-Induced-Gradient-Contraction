@@ -6,9 +6,14 @@ residual and should not be labelled as a universal mean-seeking field.
 Protocol: one episode batch per (checkpoint, partner, seed) is collected and
 shared by every field; only the scalar objective changes. ``awr`` keeps the
 policy-dependent baseline ``V(s)`` in the autograd graph (the
-differentiable-baseline field of the main text). Every per-episode gradient is
-zero-padded to the full policy parameter vector, so all fields live in one
-coordinate system. The metadata block records this protocol.
+differentiable-baseline field of the main text) with one weight per step,
+``exp((G_t - V(s_t) - shift) / tau)``; the value head must return shape
+``[T, 1]`` and is squeezed to ``[T]`` before the subtraction. The shift is a
+dataset-level stop-gradient constant shared by both conditions: it multiplies
+the field by ``exp(-shift / tau) > 0``, so kappa is unchanged while the
+float32 exponential stays finite. Every per-episode gradient is zero-padded
+to the full policy parameter vector, so all fields live in one coordinate
+system. The metadata block records this protocol.
 
 Pass ``--force`` to recompute cached entries.
 """
@@ -90,7 +95,7 @@ def flat_full_grad(model):
     return torch.cat(parts)
 
 
-def ep_grad_field(model, obs_l, act_l, rew_l, field, tau=AWR_TAU):
+def ep_grad_field(model, obs_l, act_l, rew_l, field, tau=AWR_TAU, shift=0.0):
     G = np.cumsum(rew_l[::-1])[::-1].copy()
     obs = torch.FloatTensor(np.array(obs_l))
     act = torch.tensor(act_l)
@@ -101,9 +106,13 @@ def ep_grad_field(model, obs_l, act_l, rew_l, field, tau=AWR_TAU):
     if field == "reinforce":
         loss = -(lp * torch.FloatTensor(G)).sum()
     elif field == "awr":
-        v = model.policy.predict_values(obs)  # differentiable baseline
+        v = model.policy.predict_values(obs).squeeze(-1)  # differentiable baseline
         adv = torch.FloatTensor(G) - v
-        w = torch.exp(torch.clamp(adv / tau, -20.0, 20.0))
+        assert adv.shape == lp.shape, (adv.shape, lp.shape)
+        # ``shift`` is a stop-gradient constant shared by both conditions; it
+        # multiplies the whole field by exp(-shift / tau) > 0, so kappa is
+        # unchanged while the float32 exponential stays representable.
+        w = torch.exp((adv - shift) / tau)
         loss = -(lp * w).sum()
     elif field == "value":
         vv = model.policy.predict_values(obs)
@@ -123,6 +132,24 @@ def collect_batch(model, env, partner, n=N_EPS):
         batch.append(rollout(model, env))
     env._force_start = None
     return batch
+
+
+def advantage_shift(model, batches):
+    """Global stop-gradient shift for the AWR weights.
+
+    One constant shared by both conditions multiplies every per-episode
+    gradient by ``exp(-shift / tau) > 0``; kappa is scale invariant, so the
+    measured field is unchanged while the float32 exponential stays finite.
+    """
+    max_adv = -float("inf")
+    with torch.no_grad():
+        for batch in batches.values():
+            for (obs_l, act_l, rew_l) in batch:
+                G = np.cumsum(rew_l[::-1])[::-1].copy()
+                obs = torch.FloatTensor(np.array(obs_l))
+                v = model.policy.predict_values(obs).squeeze(-1)
+                max_adv = max(max_adv, float((torch.FloatTensor(G) - v).max()))
+    return max_adv
 
 
 def components(gA, gB):
@@ -152,15 +179,18 @@ def main():
             env = SwitchStartEnv(mode=mode)
             batches = {pt: collect_batch(model, env, pt)
                        for pt in ("chef", "waiter")}
+            shift = advantage_shift(model, batches)
             for field in FIELDS:
                 key = f"{mode}_s{s}_{field}"
                 if key in out:
                     continue
-                gA = torch.stack([ep_grad_field(model, *r, field)
+                gA = torch.stack([ep_grad_field(model, *r, field, shift=shift)
                                   for r in batches["chef"]])
-                gB = torch.stack([ep_grad_field(model, *r, field)
+                gB = torch.stack([ep_grad_field(model, *r, field, shift=shift)
                                   for r in batches["waiter"]])
                 comp = components(gA, gB)
+                if field == "awr":
+                    comp["awr_shift"] = shift
                 out[key] = comp
                 print(f"{mode} s{s} {field:9s}: kappa_mix={comp['kappa_mix']:.3f} "
                       f"E_shared={comp['E_shared']:10.1f} sigma2={comp['sigma2']:12.1f}",
