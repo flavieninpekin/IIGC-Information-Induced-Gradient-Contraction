@@ -19,6 +19,12 @@ Fields (same policy params, same data, only the objective changes):
 Prediction: REVEALED kappa high for all fields; HIDDEN kappa low. Whether the
 mode/mean axis modulates the HIDDEN contraction is an open question the data
 answers.
+
+NOTE: the REVEALED row uses a trained ``ScaledPolicy`` (obs_dim=2) while the
+HIDDEN row uses random-init ``PolicyNet(1)`` policies, so their contrast is
+not controlled by policy parameters. ``verify_visibility_control.py``
+evaluates one policy under revealed vs masked observations with identical
+parameters and seeds; use that script for visibility claims.
 """
 import os, json
 import numpy as np
