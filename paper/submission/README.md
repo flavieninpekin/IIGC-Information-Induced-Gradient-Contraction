@@ -35,7 +35,8 @@ paper/submission/iclr2027/
 latexmk -pdf main.tex
 ```
 
-or manually:
+requires a Perl runtime; on the current Windows/MiKTeX setup use the manual
+chain instead:
 
 ```text
 pdflatex main.tex
@@ -66,3 +67,7 @@ python experiments/common_basis/supervised/run_dices_group_audit.py
    statement.
 5. Rebuild and confirm the main text is at most 9 pages; references and
    appendix do not count toward the limit.
+6. If any field definition changed, regenerate the controlled visibility
+   contrast and the Overcooked field axis:
+   `python experiments/common_basis/toy/verify_visibility_control.py` and
+   `python experiments/common_basis/server_tasks/run_field_axis.py --force`.

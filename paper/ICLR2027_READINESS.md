@@ -1,6 +1,6 @@
 # ICLR 2027 Readiness and Canonical Claim Registry
 
-Status date: 2026-09-16
+Status date: 2026-09-20
 
 ## Decision
 
@@ -22,9 +22,9 @@ are retained as provenance only. The current working main text is
 `paper/drafts/main_text_v1.md` with a Chinese reading companion at
 `paper/drafts/main_text_v1_zh.md`; both use only canonical definitions and the
 refreshed numbers. The anonymous ICLR 2027 LaTeX submission is in
-`paper/submission/iclr2027/` (`main.tex`), compiled to a 9-page PDF with the
-official style files; see `paper/submission/README.md` for build steps and
-pre-submission checks.
+`paper/submission/iclr2027/` (`main.tex`), compiled to a 10-page PDF with the
+bibliography starting on page 9 (the main text fits the 9-page limit); see
+`paper/submission/README.md` for build steps and pre-submission checks.
 
 ## Recommended Thesis
 
@@ -100,9 +100,10 @@ default Euclidean score.
 
 ### C1. Exact cancellation under symmetric hidden conditions
 
-In the two-action mirror bandit, `Q_A=(r,-r)` and `Q_B=(-r,r)`. For an
-elementwise, parameter-independent weight field, the expected policy-gradient
-fields satisfy `g_B=-g_A`, so the equal mixture has zero shared gradient.
+In the two-action mirror bandit, `Q_A=(r,-r)` and `Q_B=(-r,r)`. For a weight
+field that is elementwise in `Q_r` and independent of the policy parameters,
+`w_r(a)=f(Q_r(a))`, the expected policy-gradient fields satisfy `g_B=-g_A`,
+so the equal mixture has zero shared gradient.
 The same cancellation extends to the K-way matching construction under a
 uniform condition mixture. This is an exact theorem for the stated model, not
 a claim about every neural RL environment.
@@ -164,7 +165,10 @@ artifact: it can disable partner switching and create an OOD zero-reward readout
 
 Evidence: `notes/rollout_protocol_artifact.md`,
 `data/kappa/toy_fields/det_vs_stoch.json`, and
-`paper/resources/overcooked_slice.md`.
+`paper/resources/overcooked_slice.md`. A controlled visibility contrast on the
+mirror bandit (same policy, same parameters, same seeds, only the observation
+mask changes) confirms the hidden/revealed gap without the earlier policy
+confound: `data/kappa/toy_fields/visibility_control.json`.
 
 ## Claims To Remove or Downgrade
 
@@ -190,7 +194,7 @@ Evidence: `notes/rollout_protocol_artifact.md`,
 | A | `o4_adaptive/aggregate.json` | Kappa/performance decoupling boundary |
 | A | `notes/canonical_metric_results.md` | Refreshed structural numbers for all real-environment tables |
 | A | `data/kappa/dices350/audit.json` | Real three-group supervised check: race axis kappa_mix 0.116, contrast dominated by item noise, no conditional-capacity gain |
-| B | `oc_field_axis.json` | Structural `kappa_mix`: dynamic value 0.999 vs reinforce 0.529; static weak |
+| B | `oc_field_axis.json` | Structural `kappa_mix` on a shared episode batch: dynamic value 0.998, differentiable-baseline awr 0.854, reinforce 0.529; static weak |
 | B | `510k_field_axis.json` | Paired protocol, keys `s*_paired`: value 0.95-0.98 vs reinforce 0.51 |
 | B | `overcooked_slice` | Controlled option-level witness, not primitive-action PG proof |
 | C | `theory_toy.json`, `theory_toy2.json` | Historical CE-fit/definition-split records; appendix only |
@@ -223,8 +227,9 @@ protocol-sensitive results in an appendix or artifact note.
 1. Recompute the main tables with one definition registry and metadata for seed,
    rollout protocol, denominator, parameter space, and commit.
    Progress: `src/iigc/metrics/kappa.py` is the single implementation, result
-   files can carry `measurement_metadata`, and the K=3/4 tables have been
-   regenerated under `kappa_mix`. Real-environment tables still need a rerun.
+   files carry `measurement_metadata`, and the K=3/4 tables have been
+   regenerated under `kappa_mix`. Real-environment tables (Overcooked,
+   510K, DICES) are now regenerated with metadata.
 2. Resolve the softq optimization-direction claim and remove the unsupported
    mode-seeking/peaking language.
    Progress: `paper/resources/canonical_theory.md` and
@@ -233,8 +238,8 @@ protocol-sensitive results in an appendix or artifact note.
 3. Decide whether the main metric is `kappa_mix`; if yes, recompute all K-way
    direction and interference tables under that denominator.
    Progress: decided and implemented for the Toy scripts; the K-way JSON has
-   been regenerated. The 510K paired rerun and Overcooked tables still need
-   regeneration with the canonical fields.
+   been regenerated. The 510K paired rerun and Overcooked tables have been
+   regenerated with the canonical fields.
 4. Either remove the Fisher/KL proposition or repair its parameter-space and
    Fisher-matrix derivation.
    Progress: repaired in `canonical_theory.md` (logit-space KL, full Fisher
@@ -243,12 +248,12 @@ protocol-sensitive results in an appendix or artifact note.
    current field code collects separate rollouts for the fields.
    Progress: `run_510k_field_axis.py` now computes both fields on one paired
    episode batch and stores results under `s<seed>_paired` with metadata; the
-   paired rerun over the 18 checkpoints is pending compute.
+   paired rerun over the 18 checkpoints is complete (six seeds per level).
 6. Write an anonymous 9-page ICLR paper and an anonymous reproducibility bundle.
 7. Check OpenReview profiles, author order, quota, reciprocal-reviewer status,
    double-blind citations, and the required AI-use statement.
 
-## Current Session Status (2026-09-16)
+## Current Session Status (2026-09-20)
 
 - Canonical metric module: `src/iigc/metrics/kappa.py` with
   `condition_decomposition`, `episode_decomposition`, and
@@ -259,18 +264,22 @@ protocol-sensitive results in an appendix or artifact note.
 - Corrected theory: `paper/resources/canonical_theory.md`.
 - Correction log for superseded claims:
   `notes/paper1_propositions_corrections.md`.
-- Active scripts now use the canonical decomposition: field axis, switch
-  kappa, memory eval, 510K reveal/field axis, K-way geometry, shared vs
-  conditional, and the historical interpolation/SAC splits.
-- Remaining compute-dependent work: paired 510K rerun, refreshed Overcooked
-  tables under the canonical metric, and the real-environment robustness
-  checks.
+- Active scripts use the canonical decomposition: field axis, switch kappa,
+  memory eval, 510K reveal/field axis, K-way geometry, shared vs conditional,
+  and the historical interpolation/SAC splits.
+- Resolved this session: controlled visibility contrast (one policy, masked vs
+  revealed) fixes the toy hidden/revealed confound; the Overcooked field axis
+  was re-measured on shared episode batches with the differentiable-baseline
+  `awr` and full-parameter zero-padded gradients (dynamic awr 0.854); the 510K
+  zero-padding preserves the archived numbers; ICLR PDFs and drafts are synced
+  to the new tables.
+- Remaining: submission logistics (OpenReview profile, quota, double-blind
+  citations), a final read of `main.tex` against `main_text_v1.md`, and the
+  discussant questions in `main_discussion.tex`.
 
 ## Recommendation
 
-If the compute-dependent items cannot be resolved before 2026-09-25, do not
-submit a placeholder or internally inconsistent paper. Keep the exact kappa
-formulas as the mathematical core and target the next cycle with a real
-three-group heterogeneity experiment and a corrected finite-sample analysis. A
-narrow, correct theory-and-measurement paper is plausible; the current broad
-PG/value/S3 story is not submission-ready.
+If any submission logistics cannot be resolved before 2026-09-25, do not
+submit a placeholder or internally inconsistent paper. The compute-dependent
+items are resolved; the remaining risk is only packaging and final proofing. A
+narrow, correct theory-and-measurement paper is now in place.

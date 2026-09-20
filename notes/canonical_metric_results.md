@@ -23,27 +23,37 @@ full decomposition.
 - softq interference: minimum `kappa_mix` at `alpha = 1.78` (K=2, p=(0.8,0.2))
   and `alpha = 1.41` (K=3, p=(0.7,0.2,0.1)), confirming that the numerator
   channel cancellation and the ratio minimum are distinct phenomena.
+- Controlled visibility contrast (`visibility_control.json`): one policy,
+  identical parameters and evaluation seeds, only the observation protocol
+  changes. Masked (partner slot zeroed): expq `0`, reinforce `0.0025`, softq
+  `0.0045`, softmaxq `0.0005`, differentiable-baseline awr `0.0091`. Revealed:
+  all five fields collapse to `0.4397`--`0.4402`. Five random-init policies of
+  the same architecture show the same pattern.
 
 ## 2. Overcooked field axis (fresh models, switching-preserving)
 
-Source: `data/kappa/server_tasks/results/oc_field_axis.json`, now carrying
-`kappa_mix` fields backfilled from the stored components
-(`backfill_kappa_mix.py`).
+Source: `data/kappa/server_tasks/results/oc_field_axis.json`, produced by
+`run_field_axis.py` with a shared episode batch per checkpoint, the
+differentiable-baseline `awr` field, and gradients zero-padded to the full
+policy parameter vector.
 
 | Mode | Field | kappa_mix (n=3) |
 |---|---|---|
 | dynamic | reinforce | 0.529 ± 0.034 |
-| dynamic | awr | 0.573 ± 0.015 |
-| dynamic | value | **0.999 ± 0.000** |
+| dynamic | awr | 0.854 ± 0.033 |
+| dynamic | value | **0.998 ± 0.000** |
 | static | reinforce | 0.515 ± 0.021 |
-| static | awr | 0.516 ± 0.023 |
+| static | awr | 0.498 ± 0.003 |
 | static | value | 0.568 ± 0.027 |
 
 Interpretation: the value field is strongly aligned with the hidden condition
-on dynamic (its condition-mean gradients nearly coincide), while the
-policy-gradient-style fields are near-orthogonal (`~0.5`). The separation is
-about `1.9x`, not the `~65x` implied by comparing noise-dominated `kappa_ep`
-readouts. Static shows only a weak separation.
+on dynamic (its condition-mean gradients nearly coincide), and the
+differentiable-baseline advantage field also survives the switch (`0.854`),
+while the plain policy gradient is near-orthogonal (`0.529`). This matches the
+theory: among policy-gradient-style fields, only the differentiable baseline
+survives the symmetric mixture. The value--policy separation is about `1.9x`,
+not the `~65x` implied by comparing noise-dominated `kappa_ep` readouts.
+Static shows only a weak separation.
 
 ## 3. Overcooked switch kappa (start-partner protocol)
 
@@ -108,8 +118,10 @@ group-DRO or reweighting baseline; single dataset.
 | Old statement | Canonical reading |
 |---|---|
 | Toy: reinforce/expt cancellation is exact | Unchanged (exact, mirror model) |
+| Toy: hidden/revealed contrast `0` vs `0.41` | Re-measured under one policy and seed schedule (`0.0025` vs `0.4397`--`0.4402`); the old contrast mixed a random hidden policy with a trained revealed policy |
 | Overcooked dynamic: reinforce `kappa ~ 0.015` (dead) | `kappa_ep` noise readout; structural `kappa_mix ~ 0.53` |
-| Overcooked dynamic: value `kappa ~ 0.98` | Unchanged (structural `~0.999`) |
+| Overcooked dynamic: value `kappa ~ 0.98` | Unchanged (structural `~0.998`) |
+| Overcooked awr `0.516/0.573` (detached, standardized advantage) | Corrected to the differentiable-baseline field on a shared episode batch: `0.498/0.854` |
 | 510K: reinforce `kappa_ep ~ 0.015` vs value `~0.44` | Paired structural: `0.51` vs `0.95-0.98` |
 | "30x/65x field separation" | About `1.9x` under `kappa_mix`; the rest was noise denominator |
 | S3-specific direction/interference | K-way simplex geometry |
@@ -121,8 +133,9 @@ group-DRO or reweighting baseline; single dataset.
 python experiments/common_basis/toy/verify_closed_forms_o1.py
 python experiments/common_basis/toy/verify_kway_geometry.py
 python experiments/common_basis/toy/verify_s3_survival.py
+python experiments/common_basis/toy/verify_visibility_control.py
+python experiments/common_basis/server_tasks/run_field_axis.py
 python experiments/common_basis/server_tasks/run_510k_field_axis.py
-python experiments/common_basis/server_tasks/backfill_kappa_mix.py
 python experiments/common_basis/supervised/run_dices_group_audit.py
 ```
 

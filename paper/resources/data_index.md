@@ -17,9 +17,10 @@
 | 结构指标结果汇总 | `notes/canonical_metric_results.md` | Toy/Overcooked/510K/DICES 的 `kappa_mix` 数字与旧口径对照 |
 | DICES-350 监督审计 | `data/kappa/dices350/audit.json` | 三群体（race/age/gender）条件梯度与容量对照；数据缓存在 `data/external/`（不入库） |
 | 510K paired 结果 | `data/kappa/server_tasks/results/510k_field_axis.json` | 新键 `s<seed>_paired`；旧键未配对，勿混用 |
-| Overcooked 分量回填 | `oc_field_axis.json` / `oc_switch_kappa.json` | 由 `backfill_kappa_mix.py` 从已存分量补 `kappa_mix` |
+| 受控可见性对照 | `data/kappa/toy_fields/visibility_control.json` | 同一策略、同参数、同 seed，masked vs revealed；取代旧 hidden/revealed 混淆对比 |
+| Overcooked 场轴（共享 batch） | `data/kappa/server_tasks/results/oc_field_axis.json` | `run_field_axis.py` 直接输出 `kappa_mix`；metadata 记录 shared episode batch 与完整参数空间；awr 为可微基线场 |
 
-> 论文所有数字的原始出处。复核引用时从这里进。最后更新：2026-08-19。
+> 论文所有数字的原始出处。复核引用时从这里进。最后更新：2026-09-20。
 
 ## 本轮新证据（新论文核心）
 
@@ -73,6 +74,7 @@
 | 脚本 | 作用 |
 |---|---|
 | `experiments/common_basis/toy/verify_theory_toy.py` | Toy 闭式（exact_kappa，π-加权协议）+ 采样，T1-T3（theory_toy2.json） |
+| `experiments/common_basis/toy/verify_visibility_control.py` | 受控可见性对照（同一策略/参数/seed，masked vs revealed） |
 | `experiments/common_basis/toy/verify_theory_toy_v1_cefit.py` | 08-19 原版 CE-fit 轨计算器，仅复现 `theory_toy.json` |
 | `experiments/common_basis/server_tasks/run_510k_field_axis.py` | 510K reinforce/value 场 κ（team 条件方差分解） |
 | `experiments/common_basis/server_tasks/run_field_axis.py` | Overcooked reinforce/awr/value 场 κ（切换保持） |

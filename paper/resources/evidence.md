@@ -1,5 +1,9 @@
 # 证据表（evidence）
 
+> **历史表（2026-08-19），非当前 claim registry。** 当前 canonical 数字见
+> `notes/canonical_metric_results.md`，可进入投稿的证据优先级见
+> `paper/ICLR2027_READINESS.md`。
+
 > 论文 Results 用的核心表格。每格给出处；**数字未改动**，复核自 data/*.json。
 > 协议与条件见每表下方注记。最后更新：2026-08-19。
 

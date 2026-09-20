@@ -41,7 +41,8 @@ survives the averaging, and how to measure it. We show that gradient
 cancellation is governed by more than the presence of hidden heterogeneity. In
 an analytically tractable mirror model, elementwise parameter-independent
 weight fields cancel exactly under a symmetric condition mixture, while a
-field with a differentiable baseline retains a nonzero component. For $K$-way
+field with a differentiable baseline can retain a nonzero component away from
+uniform policies. For $K$-way
 mixtures, retention depends on the direction of the condition mixture in the
 probability simplex even at fixed distance from uniform, and
 objective-induced gradient channels can interfere, making retention
@@ -50,8 +51,10 @@ finite-sample noise with a measurement protocol: deterministic rollouts can
 collapse retention into a weight ratio, and episode-noise readouts can
 understate structural retention by an order of magnitude. Under a single
 bounded definition, value fields align with hidden conditions in Overcooked
-and 510K while policy-gradient fields remain near-orthogonal (about
-$1.9\times$, not the $30$--$65\times$ suggested by noisy readouts). A
+and 510K, and the differentiable-baseline advantage field survives the
+Overcooked switch, while the plain policy gradient remains near-orthogonal (a
+$1.9\times$ value--policy gap, not the $30$--$65\times$ suggested by noisy
+readouts). A
 controlled capacity experiment shows that severe cancellation can coexist with
 poor worst-condition performance; in contrast, on a real three-group
 preference dataset the condition-contrast energy is dominated by item-level
@@ -128,9 +131,10 @@ are chapters of that one question.
   before a conclusion is drawn.
 \item \textbf{Boundaries: when the audit recommends capacity.}
   Under one bounded definition, value fields align with hidden conditions
-  (Overcooked dynamic $0.999$, 510K $0.95$--$0.98$) while policy-gradient
-  fields remain near-orthogonal (about $0.51$--$0.53$); the gap is about
-  $1.9\times$, not the $30$--$65\times$ implied by noisy readouts. A
+  (Overcooked dynamic $0.998$, 510K $0.95$--$0.98$) and the differentiable-
+  baseline advantage field survives the switch ($0.854$), while the plain
+  policy gradient remains near-orthogonal ($0.529$); the value--policy gap is
+  about $1.9\times$, not the $30$--$65\times$ implied by noisy readouts. A
   controlled capacity experiment shows that severe cancellation with contrast
   energy dominating noise is fixed by condition-aware capacity (worst
   condition $0.003$ to $1.97$), whereas a real three-group preference dataset
@@ -152,7 +156,11 @@ observed quantity to be projected, reweighted, or scheduled away. We study the
 complementary question: when conflict is \emph{structural}, i.e.\ forced by
 hidden-condition symmetry before any optimizer intervenes. Our audit is a
 diagnostic, not another surgery rule, and we do not claim to replace those
-methods.
+methods. The retention score is not a cosine similarity: for two equally
+weighted conditions it reduces to a monotone function of the gradient cosine
+only when the two gradient norms match, and the mixture-reference ratio stays
+defined when the average cancels and extends to $K$ conditions with general
+weights.
 
 \paragraph{Hidden context and preference aggregation.}
 Distributional preference learning \citep{siththaranjan2023distributional}
@@ -262,7 +270,8 @@ reported as a surrogate and is not a high-probability guarantee.
 \begin{proposition}[Mirror cancellation]
 \label{prop:mirror}
 In the two-action mirror bandit with $Q_A=(r,-r)$ and $Q_B=(-r,r)$, any field
-whose weight is elementwise and independent of the policy parameters satisfies
+whose weight is elementwise in $Q_r$ and independent of the policy parameters,
+$w_r(a)=f(Q_r(a))$, satisfies
 $\E[g_B]=-\E[g_A]$. Under the symmetric mixture $p=(1/2,1/2)$,
 $\E[\gbar]=0$ and $\kmix=0$ exactly.
 \end{proposition}
@@ -365,17 +374,22 @@ Appendix~\ref{app:provenance}.
 \subsection{Exact bandit: cancellation and closed forms}
 \label{sec:exp-toy}
 
-On the hidden mirror bandit with a fixed near-uniform policy, \texttt{expq}
-cancels exactly ($\kmix=0$, $E_{\mathrm{shared}}=0$, with
-$E_{\mathrm{mix}}=1.81$) and \texttt{reinforce} is indistinguishable from zero
-within sampling noise ($0.0011\pm0.0013$), while the soft-Q field retains a
-small shared component ($0.016$ at $\alpha=1$) that grows monotonically with
-$\alpha$ and follows Proposition~\ref{prop:softq}. On the revealed policy all
-five fields collapse to the same value ($0.412$--$0.420$), the expected
-degeneracy of a policy that already solves the matching task. The contrast
-between $0$ and $0.41$ on the same parameters and data, with only condition
-visibility changed, is the cleanest demonstration that hidden conditions can
-erase a field.
+On the mirror bandit we evaluate one policy with identical parameters and an
+identical evaluation seed schedule under two observation protocols: revealed
+(the partner one-hot is part of the observation) and masked (the partner slot
+is zeroed, so the relation is hidden while the reward and the analytic $Q$
+still depend on it). Under masking, \texttt{expq} cancels exactly
+($\kmix=0$, $E_{\mathrm{shared}}=0$), \texttt{reinforce} is indistinguishable
+from zero ($0.0025$), \texttt{softmaxq} and \texttt{softq} retain $0.0005$
+and $0.0045$, and the differentiable-baseline \texttt{awr} field retains the
+largest small component ($0.0091$); the soft-Q component follows the closed
+form and grows with $\alpha$ (Proposition~\ref{prop:softq}). Under the
+revealed protocol all five fields collapse to the same value
+($0.4397$--$0.4402$), the expected degeneracy of a policy that already solves
+the matching task. Because parameters, rollouts, and seeds are fixed and only
+the observation mask changes, the contrast isolates condition visibility
+(\texttt{data/kappa/toy\_fields/visibility\_control.json}); five random-init
+policies of the same architecture show the same pattern.
 
 \subsection{Protocol audit: deterministic rollouts invent a field axis}
 \label{sec:exp-protocol}
@@ -394,18 +408,26 @@ weight ratio until recomputed with policy-weighted sampling.
 \label{sec:exp-real}
 
 \paragraph{Overcooked (switching-preserving protocol).}
-With the same fresh policy, the same episode batch, and only the measured
-objective changed, structural retention separates the fields
+One episode batch per checkpoint is shared by all fields, and only the
+measured objective changes, so the comparison is paired by construction
 (Table~\ref{tab:overcooked}). The value field's condition-mean gradients
-nearly coincide on the dynamic model, while the policy-gradient fields are
-near-orthogonal. Under the start-partner protocol the same conclusion appears
-at the level of condition means (static $0.533$, dynamic $0.502$), and a
-memory intervention does not change it (m4 $0.498$, m8 $0.505$, m16 $0.500$):
-supplying memory does not restore alignment, a negative intervention result.
+nearly coincide on the dynamic model ($0.998$), and the differentiable-
+baseline \texttt{awr} field also survives the switch ($0.854$), while the
+plain policy gradient stays near-orthogonal ($0.529$). This ordering matches
+the theory, where the differentiable baseline is the only policy-gradient
+coupling that survives the symmetric mixture. Here \texttt{awr} uses the
+observed return-to-go as the advantage sample and the value head as the
+differentiable baseline. Under the start-partner protocol the same conclusion
+appears at the level of condition means (static $0.533$, dynamic $0.502$),
+and a memory intervention does not change it (m4 $0.498$, m8 $0.505$,
+m16 $0.500$): supplying memory does not restore alignment, a negative
+intervention result.
 
 \begin{table}[t]
-\caption{Overcooked structural retention (three seeds). The value entry is the
-diagnostic field $-\sum_t V(s_t)$; it is not a TD residual.}
+\caption{Overcooked structural retention (three seeds). All fields share one
+episode batch per checkpoint, and the \texttt{awr} entry keeps the value
+baseline in the autograd graph. The value entry is the diagnostic field
+$-\sum_t V(s_t)$; it is not a TD residual.}
 \label{tab:overcooked}
 \begin{center}
 \begin{tabular}{lcc}
@@ -413,8 +435,8 @@ diagnostic field $-\sum_t V(s_t)$; it is not a TD residual.}
 Field & static & dynamic \\
 \midrule
 \texttt{reinforce} & $0.515\pm0.021$ & $0.529\pm0.034$ \\
-\texttt{awr} & $0.516\pm0.023$ & $0.573\pm0.015$ \\
-\texttt{value} ($-\sum V$) & $0.568\pm0.027$ & $\mathbf{0.999\pm0.000}$ \\
+\texttt{awr} & $0.498\pm0.003$ & $0.854\pm0.033$ \\
+\texttt{value} ($-\sum V$) & $0.568\pm0.027$ & $\mathbf{0.998\pm0.000}$ \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -446,13 +468,15 @@ $1.0$ (visible) & $0.513\pm0.092$ & $\mathbf{0.948\pm0.017}$ \\
 \end{table}
 
 \paragraph{Reading.}
-Across the two environments the value fields align with hidden conditions
-while policy-gradient fields sit near $0.5$ (orthogonal). Expressed as a
-ratio this is about $1.9\times$. The previously reported $30$--$65\times$
-separations came from comparing one-episode noise scores ($\kep$, where the
-value field's within-condition variance is small and the policy-gradient
-field's variance is large) rather than structural scores. We report both
-quantities, but only the structural one supports field-level statements.
+Across the two environments the value fields align with hidden conditions,
+and in Overcooked the differentiable-baseline advantage field survives as
+well, while the plain policy-gradient field sits near $0.5$ (orthogonal).
+Expressed as a value--policy ratio this is about $1.9\times$. The previously
+reported $30$--$65\times$ separations came from comparing one-episode noise
+scores ($\kep$, where the value field's within-condition variance is small
+and the policy-gradient field's variance is large) rather than structural
+scores. We report both quantities, but only the structural one supports
+field-level statements.
 
 \begin{figure}[t]
 \begin{center}
@@ -586,7 +610,9 @@ and matching models; (ii) an exact closed form for the soft-Q field and the
 differentiable-baseline exception; (iii) $K$-way direction dependence and
 channel interference as geometry; (iv) protocol and noise separation as
 methodology; (v) structural alignment of value fields versus
-near-orthogonality of policy-gradient fields in two environments; and (vi)
+near-orthogonality of the plain policy gradient in two environments, with the
+differentiable-baseline advantage field surviving the Overcooked switch; and
+(vi)
 decoupling from performance. The operational reading is a conditional rule:
 when retention is low, contrast energy exceeds within-condition noise, and the
 measured condition is the variable the task relies on, condition-aware
@@ -603,7 +629,10 @@ The exact results are bandit-level. Real-environment claims rest on
 condition-mean gradients under one measurement protocol and on small seed
 counts (three seeds for the Overcooked field axis). The value field is the
 diagnostic $-\sum V$, not a TD residual; its alignment is a property of the
-fitted value function on the measured distribution. The 510K environment has
+fitted value function on the measured distribution. The Overcooked
+\texttt{awr} entry uses the observed return-to-go as the advantage sample and
+the learned value head as the differentiable baseline, so it is the practical
+analogue of the analytic field. The 510K environment has
 weak relational drive and is used as a supporting measurement, not as the
 primary demonstration. The real-data check uses a single dataset (DICES-350),
 a linear TF-IDF model, and binary perceived-harm labels; it includes no
@@ -615,8 +644,8 @@ would require an explicit distributional assumption.
 \subsection*{Reproducibility statement}
 
 The metric implementation is \texttt{src/iigc/metrics/kappa.py}; the closed
-forms, protocol audit, $K$-way controls, Overcooked and 510K measurements, and
-the capacity comparison are scripted under
+forms, protocol and visibility controls, $K$-way controls, Overcooked and 510K
+measurements, and the capacity comparison are scripted under
 \texttt{experiments/common\_basis/}. Result files carry a
 \texttt{measurement\_metadata} block recording the gradient definition,
 condition weights, rollout protocol, parameter space, and noise treatment.
@@ -680,7 +709,8 @@ Result & File or script \\
 Cancellation, soft-Q and AWR closed forms & \path{data/kappa/toy_fields/o1_closed_forms.json} \\
 $K$-way cancellation, direction, interference & \path{data/kappa/toy_fields/kway_geometry.json} \\
 Protocol audit (deterministic vs stochastic) & \path{data/kappa/toy_fields/det_vs_stoch.json} \\
-Overcooked field axis & \path{data/kappa/server_tasks/results/oc_field_axis.json} \\
+Controlled visibility contrast (mirror bandit) & \path{data/kappa/toy_fields/visibility_control.json} \\
+Overcooked field axis (shared episode batch) & \path{data/kappa/server_tasks/results/oc_field_axis.json} \\
 Overcooked switch and memory protocol & \path{data/kappa/server_tasks/results/oc_switch_kappa.json} \\
 510K paired protocol & \path{data/kappa/server_tasks/results/510k_field_axis.json} \\
 Shared vs conditional capacity & \path{data/kappa/compromise_training/results.json} \\
