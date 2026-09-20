@@ -194,7 +194,7 @@ confound: `data/kappa/toy_fields/visibility_control.json`.
 | A | `o4_adaptive/aggregate.json` | Kappa/performance decoupling boundary |
 | A | `notes/canonical_metric_results.md` | Refreshed structural numbers for all real-environment tables |
 | A | `data/kappa/dices350/audit.json` | Real three-group supervised check: race axis kappa_mix 0.116, contrast dominated by item noise, no conditional-capacity gain |
-| B | `oc_field_axis.json` | Structural `kappa_mix` on a shared episode batch: dynamic value 0.998, differentiable-baseline awr 0.854, reinforce 0.529; static weak |
+| B | `oc_field_axis.json` | Structural `kappa_mix` on a shared episode batch: dynamic value 0.998, differentiable-baseline awr 0.590, reinforce 0.529; static weak |
 | B | `510k_field_axis.json` | Paired protocol, keys `s*_paired`: value 0.95-0.98 vs reinforce 0.51 |
 | B | `overcooked_slice` | Controlled option-level witness, not primitive-action PG proof |
 | C | `theory_toy.json`, `theory_toy2.json` | Historical CE-fit/definition-split records; appendix only |
@@ -270,7 +270,8 @@ protocol-sensitive results in an appendix or artifact note.
 - Resolved this session: controlled visibility contrast (one policy, masked vs
   revealed) fixes the toy hidden/revealed confound; the Overcooked field axis
   was re-measured on shared episode batches with the differentiable-baseline
-  `awr` and full-parameter zero-padded gradients (dynamic awr 0.854); the 510K
+  `awr` and full-parameter zero-padded gradients (dynamic awr 0.590 after
+  fixing a `[T]`-vs-`[T,1]` shape-broadcast bug in the first rerun); the 510K
   zero-padding preserves the archived numbers; ICLR PDFs and drafts are synced
   to the new tables.
 - Remaining: submission logistics (OpenReview profile, quota, double-blind

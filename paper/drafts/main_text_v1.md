@@ -28,9 +28,10 @@ finite-sample noise with a measurement protocol: deterministic rollouts can
 collapse retention into a weight ratio, and episode-noise readouts can
 understate structural retention by an order of magnitude. Under a single
 bounded definition, value fields align with hidden conditions in Overcooked
-and 510K, and the differentiable-baseline advantage field survives the
-Overcooked switch, while the plain policy gradient remains near-orthogonal (a
-1.9x value-policy gap, not the 30-65x suggested by noisy readouts). A
+and 510K while the plain policy gradient remains near-orthogonal (a
+1.9x value-policy gap, not the 30-65x suggested by noisy readouts); advantage
+weighting with a differentiable baseline improves retention only modestly
+over the plain gradient. A
 controlled capacity experiment
 shows that severe cancellation can coexist with poor worst-condition
 performance; in contrast, on a real three-group preference dataset the
@@ -104,11 +105,11 @@ results below are chapters of that one question.
    within-condition noise before any conclusion is drawn.
 3. **Boundaries: when the audit recommends capacity.**
    Under one bounded definition, value fields align with hidden conditions
-   (Overcooked dynamic 0.998, 510K 0.95-0.98) and the differentiable-baseline
-   advantage field survives the switch (0.854), while the plain policy
-   gradient remains near-orthogonal (0.529); the value-policy gap is about
-   `1.9x`, not the `30-65x` implied by noisy readouts. A controlled capacity
-   experiment shows
+   (Overcooked dynamic 0.998, 510K 0.95-0.98) while the plain policy gradient
+   remains near-orthogonal (0.529); advantage weighting with a differentiable
+   baseline improves retention only modestly (0.590), and the value-policy gap
+   is about `1.9x`, not the `30-65x` implied by noisy readouts. A controlled
+   capacity experiment shows
    that severe cancellation with contrast energy dominating noise is fixed by
    condition-aware capacity (worst condition 0.003 to 1.97), whereas a real
    three-group preference dataset with contrast dominated by item-level noise
@@ -353,15 +354,16 @@ so the comparison is paired by construction:
 | Field | static | dynamic |
 |---|---|---|
 | reinforce | 0.515 ± 0.021 | 0.529 ± 0.034 |
-| awr | 0.498 ± 0.003 | 0.854 ± 0.033 |
+| awr | 0.500 ± 0.000 | 0.590 ± 0.021 |
 | value (`-sum V`) | 0.568 ± 0.027 | **0.998 ± 0.000** |
 
 The value field's condition-mean gradients nearly coincide on the dynamic
-model (`0.998`), and the differentiable-baseline `awr` field also survives the
-switch (`0.854`), while the plain policy gradient stays near-orthogonal
-(`0.529`). This ordering matches the theory, where the differentiable baseline
-is the only policy-gradient coupling that survives the symmetric mixture.
-Here `awr` uses the observed return-to-go as the advantage sample and the
+model (`0.998`). Among policy-gradient-style fields the differentiable-baseline
+`awr` field has the highest retention (`0.590`), but it stays far below the
+value field and only modestly above the plain policy gradient (`0.529`): the
+large policy-gradient/value separation of the mirror model does not transfer
+here as a corresponding advantage-field separation. Here `awr` uses the
+observed return-to-go as the advantage sample and the
 value head as the differentiable baseline. Under the start-partner protocol
 the same conclusion appears at the level of condition means (static
 `0.533`, dynamic `0.502`), and a memory intervention does not change it
@@ -376,9 +378,9 @@ every seed; the visible/hidden difference is small and we do not interpret it
 as a trend.
 
 **Reading.** Across the two environments the value fields align with hidden
-conditions, and in Overcooked the differentiable-baseline advantage field
-survives as well, while the plain policy-gradient field sits near `0.5`
-(orthogonal). Expressed as a value-policy ratio this is about `1.9x`. The
+conditions, while the policy-gradient-style fields sit near `0.5` (orthogonal;
+in Overcooked the differentiable-baseline advantage field is the least
+cancelled, `0.590`). Expressed as a value-policy ratio this is about `1.9x`. The
 previously reported `30-65x` separations came from comparing one-episode noise
 scores (`kappa_ep`, where the value field's within-condition variance is small
 and the policy-gradient field's variance is large) rather than structural
@@ -458,8 +460,8 @@ differentiable-baseline exception; (iii) K-way direction dependence and
 channel interference as geometry; (iv) protocol and noise separation as
 methodology; (v) structural alignment of value fields versus near-orthogonality
 of the plain policy gradient in two environments, with the differentiable-
-baseline advantage field surviving the Overcooked switch; (vi) decoupling from
-performance. The operational reading is a conditional rule: when retention is
+baseline advantage field the least cancelled among the policy-gradient fields
+in Overcooked; (vi) decoupling from performance. The operational reading is a conditional rule: when retention is
 low, contrast energy exceeds within-condition noise, and the measured
 condition is the variable the task relies on, condition-aware capacity is the
 intervention; when any of the three fails, the audit recommends no
@@ -479,7 +481,9 @@ diagnostic `-sum V`, not a TD residual; its alignment is a property of the
 fitted value function on the measured distribution. The Overcooked `awr`
 entry uses the observed return-to-go as the advantage sample and the learned
 value head as the differentiable baseline, so it is the practical analogue of
-the analytic field. The 510K environment has
+the analytic field; a dataset-level stop-gradient shift keeps the float32
+exponential finite and multiplies the field by a positive scalar, leaving
+`kappa_mix` unchanged. The 510K environment has
 weak relational drive and is used as a supporting measurement, not as the
 primary demonstration. The real-data check uses a single dataset (DICES-350),
 a linear TF-IDF model, and binary perceived-harm labels; it includes no

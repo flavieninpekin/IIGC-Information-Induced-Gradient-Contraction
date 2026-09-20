@@ -34,26 +34,28 @@ full decomposition.
 
 Source: `data/kappa/server_tasks/results/oc_field_axis.json`, produced by
 `run_field_axis.py` with a shared episode batch per checkpoint, the
-differentiable-baseline `awr` field, and gradients zero-padded to the full
-policy parameter vector.
+differentiable-baseline `awr` field (one weight per step, with a global
+stop-gradient advantage shift for float32 stability; the shift scales the
+field by a positive constant and leaves `kappa_mix` unchanged), and gradients
+zero-padded to the full policy parameter vector.
 
 | Mode | Field | kappa_mix (n=3) |
 |---|---|---|
 | dynamic | reinforce | 0.529 ± 0.034 |
-| dynamic | awr | 0.854 ± 0.033 |
+| dynamic | awr | 0.590 ± 0.021 |
 | dynamic | value | **0.998 ± 0.000** |
 | static | reinforce | 0.515 ± 0.021 |
-| static | awr | 0.498 ± 0.003 |
+| static | awr | 0.500 ± 0.000 |
 | static | value | 0.568 ± 0.027 |
 
 Interpretation: the value field is strongly aligned with the hidden condition
-on dynamic (its condition-mean gradients nearly coincide), and the
-differentiable-baseline advantage field also survives the switch (`0.854`),
-while the plain policy gradient is near-orthogonal (`0.529`). This matches the
-theory: among policy-gradient-style fields, only the differentiable baseline
-survives the symmetric mixture. The value--policy separation is about `1.9x`,
-not the `~65x` implied by comparing noise-dominated `kappa_ep` readouts.
-Static shows only a weak separation.
+on dynamic (its condition-mean gradients nearly coincide), while the
+differentiable-baseline advantage field, though the least cancelled among
+policy-gradient-style fields (`0.590`), stays far below it and only modestly
+above the plain policy gradient (`0.529`). The value--policy separation is
+about `1.9x`, not the `~65x` implied by comparing noise-dominated `kappa_ep`
+readouts. Static shows only a weak separation; the advantage field is at
+`0.500` there.
 
 ## 3. Overcooked switch kappa (start-partner protocol)
 
@@ -121,7 +123,8 @@ group-DRO or reweighting baseline; single dataset.
 | Toy: hidden/revealed contrast `0` vs `0.41` | Re-measured under one policy and seed schedule (`0.0025` vs `0.4397`--`0.4402`); the old contrast mixed a random hidden policy with a trained revealed policy |
 | Overcooked dynamic: reinforce `kappa ~ 0.015` (dead) | `kappa_ep` noise readout; structural `kappa_mix ~ 0.53` |
 | Overcooked dynamic: value `kappa ~ 0.98` | Unchanged (structural `~0.998`) |
-| Overcooked awr `0.516/0.573` (detached, standardized advantage) | Corrected to the differentiable-baseline field on a shared episode batch: `0.498/0.854` |
+| Overcooked awr `0.516/0.573` (detached, standardized advantage) | Corrected to the differentiable-baseline field on a shared episode batch: `0.500/0.590` |
+| Overcooked awr `0.498/0.854` (first differentiable-baseline rerun) | Shape-broadcast bug (`G` `[T]` minus `V` `[T,1]` produced `[T,T]` weights); fixed to one weight per step with a global stop-gradient shift, giving `0.500/0.590` |
 | 510K: reinforce `kappa_ep ~ 0.015` vs value `~0.44` | Paired structural: `0.51` vs `0.95-0.98` |
 | "30x/65x field separation" | About `1.9x` under `kappa_mix`; the rest was noise denominator |
 | S3-specific direction/interference | K-way simplex geometry |
