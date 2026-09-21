@@ -5,7 +5,10 @@
     "condition_weights": "equal_two_conditions",
     "rollout_protocol": "shared_episode_batch_switch_preserving",
     "parameter_space": "full_policy_parameter_vector_euclidean",
-    "noise_treatment": "episode_noise_separate"
+    "noise_treatment": "episode_noise_separate",
+    "awr_definition": "exp((G_t - V(s_t) - shift)/tau); G_t is the undiscounted return-to-go (gamma=1), the learned value head is kept in the autograd graph, no clipping or normalization, weights computed in float64",
+    "awr_tau": 1.0,
+    "awr_shift_policy": "max advantage across both conditions (positive scale factor)"
   },
   "static_s41_reinforce": {
     "E_shared": 8849979.72821316,
@@ -27,24 +30,30 @@
     "E_total": 487305303.8298682
   },
   "static_s41_awr": {
-    "E_shared": 411.51019908179296,
-    "E_contrast": 411.51019908179296,
-    "E_mixture": 823.0203981635858,
-    "kappa_mix": 0.5000000000000001,
+    "E_shared": 411.5100128660027,
+    "E_contrast": 411.5100128660026,
+    "E_mixture": 823.0200257320054,
+    "kappa_mix": 0.5,
     "weights": [
       0.5,
       0.5
     ],
-    "sigma2": 639.6665290483609,
-    "mean_noise_energy": 7.995831613104511,
-    "kappa_ep": 0.2813385362417779,
-    "kappa_mean_surrogate": 0.495189124275435,
+    "sigma2": 639.6682464618956,
+    "mean_noise_energy": 7.995853080773695,
+    "kappa_ep": 0.28133815023263614,
+    "kappa_mean_surrogate": 0.4951891093271305,
     "n_per_condition": [
       40,
       40
     ],
-    "E_total": 1462.6869272119466,
-    "awr_shift": 167.32554626464844
+    "E_total": 1462.688272193901,
+    "awr_shift": 167.32554626464844,
+    "awr_zero_weight_fraction": 0.0,
+    "awr_zero_weight_fraction_float32": 0.7619062509387732,
+    "awr_adv_min_post_shift": -219.14198303222656,
+    "awr_weight_min": 6.727380867678781e-96,
+    "awr_adv_max_post_shift": 0.0,
+    "awr_weight_max": 1.0
   },
   "static_s41_value": {
     "E_shared": 20079212.001388203,
@@ -85,24 +94,30 @@
     "E_total": 450997195.0604184
   },
   "static_s44_awr": {
-    "E_shared": 299.5207840546483,
-    "E_contrast": 299.5207840546483,
-    "E_mixture": 599.0415681092966,
+    "E_shared": 299.5238623097852,
+    "E_contrast": 299.5238623097853,
+    "E_mixture": 599.0477246195704,
     "kappa_mix": 0.5,
     "weights": [
       0.5,
       0.5
     ],
-    "sigma2": 560.7710091035436,
-    "mean_noise_energy": 7.009637613794295,
-    "kappa_ep": 0.2582492981533537,
-    "kappa_mean_surrogate": 0.4942169592704374,
+    "sigma2": 560.7765837646369,
+    "mean_noise_energy": 7.009707297057962,
+    "kappa_ep": 0.25824934013244005,
+    "kappa_mean_surrogate": 0.4942169611922008,
     "n_per_condition": [
       40,
       40
     ],
-    "E_total": 1159.81257721284,
-    "awr_shift": 168.13330078125
+    "E_total": 1159.8243083842074,
+    "awr_shift": 168.1332950592041,
+    "awr_zero_weight_fraction": 0.0,
+    "awr_zero_weight_fraction_float32": 0.7557812493294478,
+    "awr_adv_min_post_shift": -219.8454189300537,
+    "awr_weight_min": 3.3292598012417227e-96,
+    "awr_adv_max_post_shift": 0.0,
+    "awr_weight_max": 1.0
   },
   "static_s44_value": {
     "E_shared": 24209177.049263135,
@@ -143,24 +158,30 @@
     "E_total": 404717963.398733
   },
   "static_s48_awr": {
-    "E_shared": 60.23941570580432,
-    "E_contrast": 60.23941570580432,
-    "E_mixture": 120.47883141160864,
-    "kappa_mix": 0.5,
+    "E_shared": 60.238939721745105,
+    "E_contrast": 60.23893972174511,
+    "E_mixture": 120.47787944349022,
+    "kappa_mix": 0.49999999999999994,
     "weights": [
       0.5,
       0.5
     ],
-    "sigma2": 718.3630506099191,
-    "mean_noise_energy": 8.97953813262399,
-    "kappa_ep": 0.07181259900928308,
-    "kappa_mean_surrogate": 0.46531881961654126,
+    "sigma2": 718.3574319210873,
+    "mean_noise_energy": 8.97946789901359,
+    "kappa_ep": 0.07181259408804722,
+    "kappa_mean_surrogate": 0.4653188170337805,
     "n_per_condition": [
       40,
       40
     ],
-    "E_total": 838.8418820215278,
-    "awr_shift": 168.23631286621094
+    "E_total": 838.8353113645775,
+    "awr_shift": 168.2363166809082,
+    "awr_zero_weight_fraction": 0.0,
+    "awr_zero_weight_fraction_float32": 0.780749999731779,
+    "awr_adv_min_post_shift": -219.23057174682617,
+    "awr_weight_min": 6.157046391157299e-96,
+    "awr_adv_max_post_shift": 0.0,
+    "awr_weight_max": 1.0
   },
   "static_s48_value": {
     "E_shared": 20638803.38869803,
@@ -201,24 +222,30 @@
     "E_total": 423375156.10240185
   },
   "dynamic_s41_awr": {
-    "E_shared": 11587.762046211179,
-    "E_contrast": 8367.055751876214,
-    "E_mixture": 19954.817798087395,
-    "kappa_mix": 0.5806999674696017,
+    "E_shared": 11587.731027298008,
+    "E_contrast": 8367.033441926018,
+    "E_mixture": 19954.76446922402,
+    "kappa_mix": 0.5806999649216416,
     "weights": [
       0.5,
       0.5
     ],
-    "sigma2": 3803.1007140554807,
-    "mean_noise_energy": 47.538758925693514,
-    "kappa_ep": 0.48774315141659297,
-    "kappa_mean_surrogate": 0.5793198422986995,
+    "sigma2": 3803.090215173199,
+    "mean_noise_energy": 47.53862768966499,
+    "kappa_ep": 0.48774315615745206,
+    "kappa_mean_surrogate": 0.5793198398781374,
     "n_per_condition": [
       40,
       40
     ],
-    "E_total": 23757.918512142875,
-    "awr_shift": 102.45197296142578
+    "E_total": 23757.85468439722,
+    "awr_shift": 102.45197486877441,
+    "awr_zero_weight_fraction": 0.0,
+    "awr_zero_weight_fraction_float32": 0.20362499877810478,
+    "awr_adv_min_post_shift": -138.19124794006348,
+    "awr_weight_min": 9.645029766595566e-61,
+    "awr_adv_max_post_shift": 0.0,
+    "awr_weight_max": 1.0
   },
   "dynamic_s41_value": {
     "E_shared": 31965430.14921108,
@@ -259,24 +286,30 @@
     "E_total": 379398016.4962998
   },
   "dynamic_s44_awr": {
-    "E_shared": 20149.981718131017,
-    "E_contrast": 15140.90759202612,
-    "E_mixture": 35290.88931015714,
-    "kappa_mix": 0.5709683748981529,
+    "E_shared": 20149.893191619412,
+    "E_contrast": 15140.838832346028,
+    "E_mixture": 35290.73202396544,
+    "kappa_mix": 0.5709684111379697,
     "weights": [
       0.5,
       0.5
     ],
-    "sigma2": 10156.58269976741,
-    "mean_noise_energy": 126.95728374709262,
-    "kappa_ep": 0.44336859294903763,
-    "kappa_mean_surrogate": 0.5689217063128573,
+    "sigma2": 10156.538619737152,
+    "mean_noise_energy": 126.9567327467144,
+    "kappa_ep": 0.4433686095165208,
+    "kappa_mean_surrogate": 0.5689217421845666,
     "n_per_condition": [
       40,
       40
     ],
-    "E_total": 45447.472009924546,
-    "awr_shift": 102.98202514648438
+    "E_total": 45447.27064370259,
+    "awr_shift": 102.98202705383301,
+    "awr_zero_weight_fraction": 0.0,
+    "awr_zero_weight_fraction_float32": 0.22071874961256982,
+    "awr_adv_min_post_shift": -137.27961540222168,
+    "awr_weight_min": 2.400051456712803e-60,
+    "awr_adv_max_post_shift": 0.0,
+    "awr_weight_max": 1.0
   },
   "dynamic_s44_value": {
     "E_shared": 29474950.176556975,
@@ -317,24 +350,30 @@
     "E_total": 374014722.11603254
   },
   "dynamic_s48_awr": {
-    "E_shared": 2011.4027707851415,
-    "E_contrast": 1239.1977447211625,
-    "E_mixture": 3250.6005155063044,
-    "kappa_mix": 0.6187788260015861,
+    "E_shared": 2011.3867776647742,
+    "E_contrast": 1239.1886682516954,
+    "E_mixture": 3250.575445916469,
+    "kappa_mix": 0.6187786781542253,
     "weights": [
       0.5,
       0.5
     ],
-    "sigma2": 2854.4365527261707,
-    "mean_noise_energy": 35.68045690907713,
-    "kappa_ep": 0.32946610287617484,
-    "kappa_mean_surrogate": 0.612060498681822,
+    "sigma2": 2854.413925916355,
+    "mean_noise_energy": 35.68017407395443,
+    "kappa_ep": 0.3294660572129581,
+    "kappa_mean_surrogate": 0.6120603538657884,
     "n_per_condition": [
       40,
       40
     ],
-    "E_total": 6105.037068232476,
-    "awr_shift": 102.80194091796875
+    "E_total": 6104.989371832824,
+    "awr_shift": 102.80194473266602,
+    "awr_zero_weight_fraction": 0.0,
+    "awr_zero_weight_fraction_float32": 0.21912500131875276,
+    "awr_adv_min_post_shift": -139.69027709960938,
+    "awr_weight_min": 2.154187393858565e-61,
+    "awr_adv_max_post_shift": 0.0,
+    "awr_weight_max": 1.0
   },
   "dynamic_s48_value": {
     "E_shared": 30832734.70083517,

@@ -34,10 +34,20 @@ full decomposition.
 
 Source: `data/kappa/server_tasks/results/oc_field_axis.json`, produced by
 `run_field_axis.py` with a shared episode batch per checkpoint, the
-differentiable-baseline `awr` field (one weight per step, with a global
-stop-gradient advantage shift for float32 stability; the shift scales the
-field by a positive constant and leaves `kappa_mix` unchanged), and gradients
-zero-padded to the full policy parameter vector.
+differentiable-baseline `awr` field (one weight per step, float64, with a
+global stop-gradient advantage shift; the shift scales the field by a positive
+constant and leaves `kappa_mix` unchanged), and gradients zero-padded to the
+full policy parameter vector.
+
+Definition lock: this `awr` is the sampled-return-to-go differentiable-baseline
+field (undiscounted `G_t`, `gamma=1`, learned value head kept in the autograd
+graph, no clipping, no normalization); the O4 experiment below uses a different
+detached/clipped `awr` arm and the two must not be compared as one field. The
+JSON also records the post-shift advantage range, the minimum weight, and the
+fraction of float32 weights that would underflow to zero
+(`awr_zero_weight_fraction_float32`: 20-22% dynamic, 76-78% static). The
+float64 re-run reproduces every score to within `1.5e-7`; the float64
+computation therefore matters for exact scale invariance, not for the numbers.
 
 | Mode | Field | kappa_mix (n=3) |
 |---|---|---|
@@ -125,6 +135,7 @@ group-DRO or reweighting baseline; single dataset.
 | Overcooked dynamic: value `kappa ~ 0.98` | Unchanged (structural `~0.998`) |
 | Overcooked awr `0.516/0.573` (detached, standardized advantage) | Corrected to the differentiable-baseline field on a shared episode batch: `0.500/0.590` |
 | Overcooked awr `0.498/0.854` (first differentiable-baseline rerun) | Shape-broadcast bug (`G` `[T]` minus `V` `[T,1]` produced `[T,T]` weights); fixed to one weight per step with a global stop-gradient shift, giving `0.500/0.590` |
+| Overcooked awr `0.500/0.590` (float32 weights) | Re-run with float64 weights and underflow diagnostics: scores unchanged (max diff `1.5e-7`); 20-22% of dynamic and 76-78% of static float32 weights underflowed to exactly zero |
 | 510K: reinforce `kappa_ep ~ 0.015` vs value `~0.44` | Paired structural: `0.51` vs `0.95-0.98` |
 | "30x/65x field separation" | About `1.9x` under `kappa_mix`; the rest was noise denominator |
 | S3-specific direction/interference | K-way simplex geometry |

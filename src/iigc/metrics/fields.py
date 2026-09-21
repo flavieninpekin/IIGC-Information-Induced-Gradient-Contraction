@@ -116,6 +116,53 @@ def loss_awr(model, episodes, tau=1.0, q_fn=None):
     return (-lp * w).mean()
 
 
+def awr_weight_stats(returns, values, tau=1.0, shift=None, dtype=torch.float64):
+    """Per-step AWR weights with diagnostics and a differentiable baseline.
+
+    Computes ``w_t = exp((G_t - V_t - shift) / tau)`` in ``dtype`` (float64 by
+    default) so that small weights stay representable instead of silently
+    flushing to zero in float32. ``values`` may carry an autograd graph and is
+    only promoted in dtype. ``returns`` and ``values`` must have the same
+    number of elements; a ``[T, 1]`` value-head output is flattened to ``[T]``.
+    A shape mismatch (for example a ``[T]`` return vector against a ``[T, 1]``
+    value that would otherwise broadcast to ``[T, T]``) raises ``ValueError``.
+
+    ``shift`` is a stop-gradient constant supplied by the caller, shared by the
+    compared conditions. When omitted, the maximum advantage is used. Any shift
+    multiplies every per-step weight by ``exp(-shift / tau) > 0``, so a
+    condition-gradient field is multiplied by a positive scalar and ``kappa_mix``
+    is unchanged up to floating point rounding. The diagnostics report the
+    post-shift advantage range, the weight range, and the fraction of weights
+    that would flush to zero under float32, which quantifies the silent
+    clipping the float64 computation avoids.
+    """
+    g = torch.as_tensor(returns).reshape(-1)
+    v = torch.as_tensor(values).reshape(-1)
+    if g.numel() != v.numel():
+        raise ValueError(
+            "returns and values must have the same number of elements, got "
+            f"{g.numel()} and {v.numel()}")
+    adv = g.to(dtype) - v.to(dtype)
+    if shift is None:
+        shift = float(adv.detach().max())
+    shifted = adv - float(shift)
+    weights = torch.exp(shifted / tau)
+    with torch.no_grad():
+        w32 = torch.exp(shifted.detach().to(torch.float32) / tau)
+        diag = {
+            "awr_shift": float(shift),
+            "awr_adv_min_post_shift": float(shifted.detach().min()),
+            "awr_adv_max_post_shift": float(shifted.detach().max()),
+            "awr_weight_min": float(weights.detach().min()),
+            "awr_weight_max": float(weights.detach().max()),
+            "awr_zero_weight_fraction": float(
+                (weights.detach() == 0).to(torch.float64).mean()),
+            "awr_zero_weight_fraction_float32": float(
+                (w32 == 0).to(torch.float32).mean()),
+        }
+    return weights, diag
+
+
 def loss_softq(model, episodes, q_fn=None):
     """SAC actor objective with detached Q values."""
     trans = _flatten(episodes)

@@ -71,3 +71,5 @@ python experiments/common_basis/supervised/run_dices_group_audit.py
    contrast and the Overcooked field axis:
    `python experiments/common_basis/toy/verify_visibility_control.py` and
    `python experiments/common_basis/server_tasks/run_field_axis.py --force`.
+   The AWR weight contract (shape, float64 weights, shift invariance,
+   underflow diagnostics) is covered by `pytest tests/test_awr_weights.py`.

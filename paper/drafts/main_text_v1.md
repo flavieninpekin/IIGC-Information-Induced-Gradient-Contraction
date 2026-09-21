@@ -448,7 +448,10 @@ reward history, which is orthogonal to the initial partner label that the
 retention score conditions on. The diagnostic answers "how much of the
 specified condition signal survives averaging", not "will training succeed".
 This also means a low retention score must be paired with a check that the
-condition is the variable the task actually relies on.
+condition is the variable the task actually relies on. The `awr` arm in this
+table uses a detached value baseline with advantages clipped to `[-4,4]`; it
+is a different field from the differentiable-baseline `awr` measured in
+Section 5.3 and in the appendix.
 
 ---
 
@@ -481,9 +484,11 @@ diagnostic `-sum V`, not a TD residual; its alignment is a property of the
 fitted value function on the measured distribution. The Overcooked `awr`
 entry uses the observed return-to-go as the advantage sample and the learned
 value head as the differentiable baseline, so it is the practical analogue of
-the analytic field; a dataset-level stop-gradient shift keeps the float32
-exponential finite and multiplies the field by a positive scalar, leaving
-`kappa_mix` unchanged. The 510K environment has
+the analytic field; its per-step weights are computed in float64 under a
+dataset-level stop-gradient shift, a positive scalar multiple that leaves
+`kappa_mix` unchanged (float32 underflowed up to 78% of the steps to exactly
+zero, and the float64 re-run reproduces every score to within 1.5e-7). The
+510K environment has
 weak relational drive and is used as a supporting measurement, not as the
 primary demonstration. The real-data check uses a single dataset (DICES-350),
 a linear TF-IDF model, and binary perceived-harm labels; it includes no

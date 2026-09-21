@@ -274,6 +274,16 @@ protocol-sensitive results in an appendix or artifact note.
   fixing a `[T]`-vs-`[T,1]` shape-broadcast bug in the first rerun); the 510K
   zero-padding preserves the archived numbers; ICLR PDFs and drafts are synced
   to the new tables.
+- Numerical-stability verification (next session): `awr` weights are computed
+  in float64 via `iigc.metrics.fields.awr_weight_stats` with per-entry
+  underflow diagnostics (`awr_zero_weight_fraction_float32`: 20-22% dynamic,
+  76-78% static). The float64 re-run reproduces every `kappa_mix` to within
+  `1.5e-7`. The AWR definition is locked in the result metadata (undiscounted
+  return-to-go, learned differentiable value head, no clipping or
+  normalization); the O4 experiment uses a separate detached/clipped arm and
+  the paper now says so. `tests/test_awr_weights.py` covers shape, shift
+  invariance, and underflow reporting (`pytest`: 13 passed). Both PDFs were
+  recompiled; the main text still ends on page 8 (references start page 9).
 - Remaining: submission logistics (OpenReview profile, quota, double-blind
   citations), a final read of `main.tex` against `main_text_v1.md`, and the
   discussant questions in `main_discussion.tex`.
