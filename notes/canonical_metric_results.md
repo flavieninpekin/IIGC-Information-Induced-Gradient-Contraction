@@ -87,19 +87,22 @@ condition means are near-orthogonal in every group. The previously reported
 ## 4. 510K field axis (paired protocol, ppo_reveal checkpoints)
 
 Source: `data/kappa/server_tasks/results/510k_field_axis.json`, keys
-`s<seed>_paired`, both fields computed from the same episode batch
-(`run_510k_field_axis.py`).
+`s<seed>_paired`, both fields computed from the same episode batch with
+mask-respecting rollouts (`run_510k_field_axis.py`; action masks are passed
+to `get_distribution` so evaluated actions are always legal).
 
 | p | reinforce kappa_mix (n=6) | value kappa_mix (n=6) |
 |---|---|---|
-| 0.00 | 0.514 ± 0.099 | **0.980 ± 0.011** |
-| 0.50 | 0.514 ± 0.084 | **0.974 ± 0.018** |
-| 1.00 | 0.513 ± 0.092 | **0.948 ± 0.017** |
+| 0.00 | 0.646 ± 0.119 | **0.982 ± 0.005** |
+| 0.50 | 0.612 ± 0.223 | **0.985 ± 0.003** |
+| 1.00 | 0.667 ± 0.184 | **0.962 ± 0.011** |
 
-Interpretation: the value field is aligned, the per-step reward-weighted
-policy gradient is near-orthogonal, and the effect is stable across visibility
-levels. There is no evidence for a hiddenness trend in `p`; the small
-monotone decrease of the value score with `p` should not be over-read.
+Interpretation: the value field is aligned and stable; the per-step
+reward-weighted policy gradient is only partially retained, with a large
+seed spread and contrast energy at or below the mean-estimation noise floor
+(`E_contrast / mean_noise` `0.51/0.73/1.34`; mean surrogate `0.45-0.49`).
+There is no evidence for a hiddenness trend in `p`. The value-policy ratio
+on 510K is about `1.5x` (not `1.9x`; see §6).
 
 ## 5. Supervised cross-setting check: DICES-350 (three seeds)
 
@@ -136,8 +139,9 @@ group-DRO or reweighting baseline; single dataset.
 | Overcooked awr `0.516/0.573` (detached, standardized advantage) | Corrected to the differentiable-baseline field on a shared episode batch: `0.500/0.590` |
 | Overcooked awr `0.498/0.854` (first differentiable-baseline rerun) | Shape-broadcast bug (`G` `[T]` minus `V` `[T,1]` produced `[T,T]` weights); fixed to one weight per step with a global stop-gradient shift, giving `0.500/0.590` |
 | Overcooked awr `0.500/0.590` (float32 weights) | Re-run with float64 weights and underflow diagnostics: scores unchanged (max diff `1.5e-7`); 20-22% of dynamic and 76-78% of static float32 weights underflowed to exactly zero |
-| 510K: reinforce `kappa_ep ~ 0.015` vs value `~0.44` | Paired structural: `0.51` vs `0.95-0.98` |
-| "30x/65x field separation" | About `1.9x` under `kappa_mix`; the rest was noise denominator |
+| 510K: reinforce `kappa_ep ~ 0.015` vs value `~0.44` | Paired structural (mask-respecting): `0.61-0.67` vs `0.96-0.99` |
+| 510K rolling out without action masks | Measurement bug: `get_distribution` was called without `action_masks`, so ~90% of executed actions were silently replaced by random legal plays. Masked-protocol rerun gives reinforce `0.61-0.67` (large seed spread, contrast at noise floor) vs value `0.96-0.99`; the value-policy ratio on 510K is about `1.5x`, not `1.9x` |
+| "30x/65x field separation" | About `1.9x` (Overcooked) and `1.5x` (510K) under `kappa_mix`; the rest was noise denominator |
 | S3-specific direction/interference | K-way simplex geometry |
 | softq survives and then devours itself | Retired; entropy term pushes toward uniform under minimization |
 

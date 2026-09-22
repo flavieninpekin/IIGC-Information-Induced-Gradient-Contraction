@@ -116,8 +116,8 @@ def main():
 
     ax.set_xlabel(r"$\kappa_{\mathrm{mix}}$ (reinforce field)", fontsize=11)
     ax.set_ylabel(r"$\kappa_{\mathrm{mix}}$ (value / soft field)", fontsize=11)
-    ax.set_title("Structural field axis: value fields align with hidden conditions,\n"
-                 "policy-gradient fields stay near-orthogonal (kappa_mix, condition means)",
+    ax.set_title("Structural field axis: value fields align with hidden conditions;\n"
+                 "policy-gradient fields are partially cancelled (kappa_mix, condition means)",
                  fontsize=10)
     ax.set_xlim(0, 1.05)
     ax.set_ylim(0, 1.08)

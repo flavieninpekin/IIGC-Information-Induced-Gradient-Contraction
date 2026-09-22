@@ -57,16 +57,18 @@ def episode_gradient(model, env, advantage=True, gamma=0.99):
     """One episode's gradient. advantage=True: per-step advantage-weighted
     (A_t = return_t - V(s_t)) for much lower variance than raw REINFORCE."""
     obs, info = env.reset()
-    olist, alist, rews = [], [], []
+    olist, alist, rews, mlist = [], [], [], []
     done = False
     while not done:
         ot = torch.FloatTensor(obs).unsqueeze(0)
-        d = model.policy.get_distribution(ot)
+        mask = env.env._get_action_mask()
+        d = model.policy.get_distribution(ot, action_masks=mask)
         a = d.get_actions().item()
         next_obs, r, done, trunc, info = env.step(a)
         olist.append(obs)
         alist.append(a)
         rews.append(r)
+        mlist.append(mask)
         obs = next_obs
 
     g = None
@@ -83,7 +85,7 @@ def episode_gradient(model, env, advantage=True, gamma=0.99):
             with torch.no_grad():
                 v = model.policy.predict_values(ot).item()
             adv = rets[t] - v
-            d2 = model.policy.get_distribution(ot)
+            d2 = model.policy.get_distribution(ot, action_masks=mlist[t])
             lp = d2.log_prob(torch.tensor([alist[t]]))
             model.policy.zero_grad()
             (-lp * adv).backward()
@@ -93,7 +95,7 @@ def episode_gradient(model, env, advantage=True, gamma=0.99):
     else:
         for t in range(len(olist)):
             ot = torch.FloatTensor(olist[t]).unsqueeze(0)
-            d2 = model.policy.get_distribution(ot)
+            d2 = model.policy.get_distribution(ot, action_masks=mlist[t])
             lp = d2.log_prob(torch.tensor([alist[t]]))
             model.policy.zero_grad()
             (-lp * rews[t]).backward()

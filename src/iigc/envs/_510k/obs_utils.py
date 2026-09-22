@@ -51,7 +51,7 @@ def action_mask_for_player(game: Game, player_id: int) -> np.ndarray:
         mask[0] = 1
         return mask
     valid = game.get_valid_actions(player_id)
-    mask[0] = 1
+    mask[0] = 1 if game.can_pass(player_id) else 0
     for i in range(len(valid)):
         if i + 1 < MAX_ACTIONS:
             mask[i + 1] = 1

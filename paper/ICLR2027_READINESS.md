@@ -1,6 +1,6 @@
 # ICLR 2027 Readiness and Canonical Claim Registry
 
-Status date: 2026-09-20
+Status date: 2026-09-23
 
 ## Decision
 
@@ -22,8 +22,9 @@ are retained as provenance only. The current working main text is
 `paper/drafts/main_text_v1.md` with a Chinese reading companion at
 `paper/drafts/main_text_v1_zh.md`; both use only canonical definitions and the
 refreshed numbers. The anonymous ICLR 2027 LaTeX submission is in
-`paper/submission/iclr2027/` (`main.tex`), compiled to a 10-page PDF with the
-bibliography starting on page 9 (the main text fits the 9-page limit); see
+`paper/submission/iclr2027/` (`main.tex`), compiled to a PDF whose main text
+ends on page 9 (references begin on page 9; total 11 pages with appendix), so
+the 9-page main-text limit is respected; see
 `paper/submission/README.md` for build steps and pre-submission checks.
 
 ## Recommended Thesis
@@ -195,14 +196,15 @@ confound: `data/kappa/toy_fields/visibility_control.json`.
 | A | `notes/canonical_metric_results.md` | Refreshed structural numbers for all real-environment tables |
 | A | `data/kappa/dices350/audit.json` | Real three-group supervised check: race axis kappa_mix 0.116, contrast dominated by item noise, no conditional-capacity gain |
 | B | `oc_field_axis.json` | Structural `kappa_mix` on a shared episode batch: dynamic value 0.998, differentiable-baseline awr 0.590, reinforce 0.529; static weak |
-| B | `510k_field_axis.json` | Paired protocol, keys `s*_paired`: value 0.95-0.98 vs reinforce 0.51 |
+| B | `510k_field_axis.json` | Paired protocol, keys `s*_paired`, mask-respecting rollouts: value 0.96-0.99 vs reinforce 0.61-0.67 (large seed spread, contrast at noise floor) |
 | B | `overcooked_slice` | Controlled option-level witness, not primitive-action PG proof |
 | C | `theory_toy.json`, `theory_toy2.json` | Historical CE-fit/definition-split records; appendix only |
 | C | `common_basis_interp`, `cross_transfer` | Deterministic 510K measurements; do not use as decisive field-axis evidence |
 
-The "field axis" is real but about `1.9x` under `kappa_mix`, not the `30-65x`
-separation suggested by comparing noise-dominated `kappa_ep` values. Write the
-paper around alignment versus orthogonality, not around "death".
+The "field axis" is real but about `1.9x` in Overcooked and `1.5x` in 510K
+under `kappa_mix`, not the `30-65x` separation suggested by comparing
+noise-dominated `kappa_ep` values. Write the paper around alignment versus
+partial cancellation, not around "death".
 
 ## Minimal Paper Shape
 
@@ -253,7 +255,7 @@ protocol-sensitive results in an appendix or artifact note.
 7. Check OpenReview profiles, author order, quota, reciprocal-reviewer status,
    double-blind citations, and the required AI-use statement.
 
-## Current Session Status (2026-09-20)
+## Current Session Status (2026-09-23)
 
 - Canonical metric module: `src/iigc/metrics/kappa.py` with
   `condition_decomposition`, `episode_decomposition`, and
@@ -283,7 +285,16 @@ protocol-sensitive results in an appendix or artifact note.
   normalization); the O4 experiment uses a separate detached/clipped arm and
   the paper now says so. `tests/test_awr_weights.py` covers shape, shift
   invariance, and underflow reporting (`pytest`: 13 passed). Both PDFs were
-  recompiled; the main text still ends on page 8 (references start page 9).
+  recompiled (main text ended on page 8 at that time).
+- Action-mask correction (2026-09-23): the 510K measurement scripts sampled
+  from `get_distribution` without `action_masks`, so ~90% of executed actions
+  were silently replaced by random legal plays; training was unaffected. Masks
+  are now passed (sampling and log-prob from the same masked distribution), the
+  env gained a strict `allow_illegal_action=False` mode with regression tests
+  (`pytest`: 17 passed), and the upstream `510k_env` repo mirrors both changes
+  (86 passed there). The 510K field axis was rerun: value 0.96-0.99, reinforce
+  0.61-0.67 (large seed spread, contrast at noise floor), value-policy ratio
+  about `1.5x`. PDFs and tables updated.
 - Remaining: submission logistics (OpenReview profile, quota, double-blind
   citations), a final read of `main.tex` against `main_text_v1.md`, and the
   discussant questions in `main_discussion.tex`.

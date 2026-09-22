@@ -78,7 +78,7 @@ def rollout_reveal(model, reveal_fraction, n_eps=30):
                 next_rmask = (np.random.random(4) < reveal_fraction).astype(np.float32)
                 next_obs = np.concatenate([next_obs[:-4], next_team * next_rmask])
 
-            transitions.append((obs, int(action), r))
+            transitions.append((obs, int(action), r, mask))
             obs = next_obs
     env.close()
     return transitions
@@ -87,9 +87,9 @@ def kappa_masked(model, tA, tB):
     grads = []
     for trans in [tA, tB]:
         g = None; n = 0
-        for o, a, r in trans:
+        for o, a, r, m in trans:
             ot = torch.FloatTensor(o).unsqueeze(0)
-            d = model.policy.get_distribution(ot)
+            d = model.policy.get_distribution(ot, action_masks=m)
             lp = d.log_prob(torch.tensor([a]))
             model.policy.zero_grad(); (-lp * r).backward()
             gv = torch.cat([p.grad.detach().clone().flatten()

@@ -9,6 +9,8 @@ stochastic rollout per episode yields the reinforce and value gradients for
 identical observations, actions, and team labels. Paired results are stored
 under keys ``s<seed>_paired`` so that legacy unpaired entries remain readable
 but are never mixed into the paired summary.
+
+Pass ``--force`` to recompute cached entries.
 """
 import json
 import os
@@ -78,13 +80,13 @@ def episode_gradients_both(model, env):
     done = False
     while not done:
         ot = torch.FloatTensor(obs).unsqueeze(0)
-        d = model.policy.get_distribution(ot)
+        mask = env.unwrapped._get_action_mask()
+        d = model.policy.get_distribution(ot, action_masks=mask)
         a = d.get_actions().item()
         next_obs, r, done, trunc, info = env.step(a)
         total_r += r
 
-        d2 = model.policy.get_distribution(ot)
-        lp = d2.log_prob(torch.tensor([a]))
+        lp = d.log_prob(torch.tensor([a]))
         model.policy.zero_grad()
         (-lp * r).backward()
         gv = _flat_policy_grad(model)
@@ -173,7 +175,7 @@ def main():
             "empirical_team_frequency", "stochastic_full_info_eval_paired",
             "euclidean", "episode_noise_separate")
     }
-    if os.path.exists(OUT):
+    if "--force" not in sys.argv and os.path.exists(OUT):
         try:
             previous = json.load(open(OUT))
             for key, value in previous.items():

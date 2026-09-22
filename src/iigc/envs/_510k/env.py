@@ -30,12 +30,17 @@ class FiveTenKEnv(gym.Env):
         Number of players (3 or 4). Default 4.
     render_mode : str or None, optional
         Render mode for ``render()``.
+    allow_illegal_action : bool, optional
+        If True, an illegal action index is silently replaced by a random
+        legal play or pass (legacy behavior). If False (default), an illegal
+        action raises ``ValueError``.
     """
 
     metadata = {'render_modes': ['human', 'ansi']}
 
     def __init__(self, mode: str = 'single', num_players: int = 4,
-                 render_mode: Optional[str] = None):
+                 render_mode: Optional[str] = None,
+                 allow_illegal_action: bool = False):
         super().__init__()
         self.mode = GameMode(mode) if mode != '3p' else GameMode.SINGLE
         self.num_players = num_players
@@ -43,6 +48,7 @@ class FiveTenKEnv(gym.Env):
         self.n_cards = 54 if self.include_jokers else 52
         self.agent_id = 0
         self.render_mode = render_mode
+        self.allow_illegal_action = bool(allow_illegal_action)
 
         obs_dim = self.n_cards * 2 + 1 + 4 + 1 + 1 + 1
         if self.mode == GameMode.OBVIOUS:
@@ -108,7 +114,7 @@ class FiveTenKEnv(gym.Env):
             return mask
 
         valid = self.game.get_valid_actions(self.agent_id)
-        mask[0] = 1
+        mask[0] = 1 if self.game.can_pass(self.agent_id) else 0
         for i, p in enumerate(valid):
             if i + 1 < MAX_ACTIONS:
                 mask[i + 1] = 1
@@ -153,11 +159,20 @@ class FiveTenKEnv(gym.Env):
                 action_taken = self.game.play_cards(pid, valid_card_sets[idx])
 
         if not action_taken:
+            if not self.allow_illegal_action:
+                raise ValueError(
+                    f"illegal action {action}: can_pass="
+                    f"{self.game.can_pass(pid)}, "
+                    f"valid_patterns={len(valid_card_sets)}; "
+                    "pass action_masks to the policy")
             if valid_card_sets:
                 chosen = random.choice(patterns)
                 self.game.play_cards(pid, chosen.cards)
             elif self.game.can_pass(pid):
                 self.game.pass_turn(pid)
+            else:
+                raise RuntimeError(
+                    f"no legal action available for player {pid}")
 
         while not self.game.is_over and self.game.current_player != self.agent_id:
             self._auto_play_next()

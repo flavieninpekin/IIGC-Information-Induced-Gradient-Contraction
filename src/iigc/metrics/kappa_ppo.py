@@ -7,35 +7,39 @@ from iigc.envs._510k.env import FiveTenKEnv
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
 def rollout_ppo(model, env, n_eps=30):
-    """Run episodes, collect (obs, action, reward)."""
+    """Run episodes, collect (obs, action, reward, mask)."""
     trajectories = []
     for ep in range(n_eps):
         obs, _ = env.reset()
         done = False
-        olist, alist, rlist = [], [], []
+        olist, alist, rlist, mlist = [], [], [], []
         while not done:
             mask = env.unwrapped._get_action_mask()
             obs_t = torch.FloatTensor(obs).unsqueeze(0)
             with torch.no_grad():
-                distribution = model.policy.get_distribution(obs_t)
+                distribution = model.policy.get_distribution(
+                    obs_t, action_masks=mask)
             action = distribution.get_actions().item()
             olist.append(obs.copy())
             alist.append(action)
+            mlist.append(mask)
             obs, r, done, trunc, info = env.step(action)
             rlist.append(r)
-        trajectories.append((olist, alist, rlist))
+        trajectories.append((olist, alist, rlist, mlist))
     return trajectories
+
 
 def kappa_ppo(model, traj_A, traj_B):
     """Compute κ from REINFORCE gradients of two trajectory sets."""
     grads = []
     for traj in [traj_A, traj_B]:
         total_grad = None; n = 0
-        for olist, alist, rlist in traj:
+        for olist, alist, rlist, mlist in traj:
             ret = sum(rlist)
-            for obs, act in zip(olist, alist):
+            for obs, act, mask in zip(olist, alist, mlist):
                 obs_t = torch.FloatTensor(obs).unsqueeze(0)
-                distribution = model.policy.get_distribution(obs_t)
+                distribution = model.policy.get_distribution(
+                    obs_t, action_masks=mask)
                 log_prob = distribution.log_prob(torch.tensor([act]))
                 model.policy.zero_grad()
                 (-log_prob * ret).backward()

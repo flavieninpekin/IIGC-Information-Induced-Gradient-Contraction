@@ -61,12 +61,12 @@ def episode_gradient(model, env):
     done = False
     while not done:
         ot = torch.FloatTensor(obs).unsqueeze(0)
-        d = model.policy.get_distribution(ot)
+        mask = env.unwrapped._get_action_mask()
+        d = model.policy.get_distribution(ot, action_masks=mask)
         a = d.get_actions().item()
         next_obs, r, done, trunc, info = env.step(a)
         total_r += r
-        d2 = model.policy.get_distribution(torch.FloatTensor(obs).unsqueeze(0))
-        lp = d2.log_prob(torch.tensor([a]))
+        lp = d.log_prob(torch.tensor([a]))
         model.policy.zero_grad()
         (-lp * r).backward()
         gv = torch.cat([p.grad.detach().clone().flatten()
