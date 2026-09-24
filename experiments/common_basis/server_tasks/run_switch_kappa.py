@@ -9,6 +9,7 @@ between chef-start and waiter-start episode gradients.
 Also computes free mixed-protocol kappa (random partner each episode, two random
 mixes) as in the 510K reveal protocol.
 """
+import argparse
 import json
 import os
 import sys
@@ -18,17 +19,22 @@ import torch
 
 import torch._dynamo  # noqa: F401  pre-import before gym/overcooked
 
-sys.path.insert(0, r"C:\Users\Flavi\AppData\Local\Temp\opencode\flavien-code")
-sys.path.insert(0, r"C:\Users\Flavi\opencode\IIGC\src")
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
-import engine  # noqa: E402
+sys.path.insert(0, os.path.join(ROOT, "src"))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from stable_baselines3 import PPO  # noqa: E402
 from iigc.envs._overcooked.overcooked_v3_env import OvercookedV3Env, PARTNER_TYPES  # noqa: E402
 from iigc.envs._overcooked.overcooked_memory_env import OvercookedMemoryEnv  # noqa: E402
 from iigc.metrics.kappa import episode_decomposition, measurement_metadata  # noqa: E402
 
-CHKPT = r"C:\Users\Flavi\AppData\Local\Temp\opencode\chkpt_clean"
-OUT = r"C:\Users\Flavi\opencode\IIGC\data\kappa\server_tasks\results\oc_switch_kappa.json"
+from episode_grad import ep_grad  # noqa: E402
+
+CHKPT = os.environ.get(
+    "IIGC_OC_CHKPT", os.path.join(ROOT, "data", "models_overcooked"))
+OUT = os.path.join(ROOT, "data", "kappa", "server_tasks", "results",
+                   "oc_switch_kappa.json")
 
 N_EPS = 60
 
@@ -58,6 +64,10 @@ class SwitchStartEnv(OvercookedV3Env):
 class SwitchStartMemoryEnv(OvercookedMemoryEnv):
     """Memory env + fixed START partner, switching kept on."""
 
+    def __init__(self, *a, **kw):
+        super().__init__(*a, **kw)
+        self._force_start = None
+
     def reset(self, seed=None, options=None):
         self._history.clear()
         self.base_env.reset()
@@ -77,7 +87,7 @@ def collect(model, env, partner, n):
     gs = []
     for i in range(n):
         torch.manual_seed(100 + i); np.random.seed(100 + i)
-        gs.append(engine._ep_grad(model, env))
+        gs.append(ep_grad(model, env))
     env._force_start = None
     return torch.stack(gs)
 
@@ -93,7 +103,7 @@ def mixed_kappa(model, env, n=2 * N_EPS, seed=7):
     gs = []
     for i in range(n):
         torch.manual_seed(100 + i); np.random.seed(100 + i)
-        gs.append(engine._ep_grad(model, env))
+        gs.append(ep_grad(model, env))
     g = torch.stack(gs)
     halves = []
     for _ in range(50):
@@ -108,14 +118,23 @@ def mixed_kappa(model, env, n=2 * N_EPS, seed=7):
 
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--out", default=OUT)
+    ap.add_argument("--force", action="store_true",
+                    help="ignore any existing JSON and recompute everything")
+    ap.add_argument("--only", default=None,
+                    help="comma-separated key substrings to recompute")
+    args = ap.parse_args()
+    only = [s for s in (args.only.split(",") if args.only else []) if s]
+
     out = {
         "_metadata": measurement_metadata(
             "episode reinforce gradient by start partner",
             "equal_two_conditions", "stochastic_policy_switch_preserving",
             "euclidean", "episode_noise_separate")
     }
-    if os.path.exists(OUT):
-        previous = json.load(open(OUT))
+    if os.path.exists(args.out) and not args.force:
+        previous = json.load(open(args.out))
         out.update(previous)
 
     def measure(key, model, env):
@@ -132,24 +151,30 @@ def main():
         print(f"{key}: kappa_ep={comp['kappa_ep']:.3f} "
               f"E_shared={comp['E_shared']:.1f} E_contrast={comp['E_contrast']:.1f} "
               f"sigma2={comp['sigma2']:.1f} kappa_mixed={free:.3f}", flush=True)
-        with open(OUT, "w") as f:
+        with open(args.out, "w") as f:
             json.dump(out, f, indent=2, default=float)
 
     for mode in ("static", "dynamic"):
         for s in range(41, 49):
+            key = f"{mode}_s{s}"
+            if only and not any(o in key for o in only):
+                continue
             fp = os.path.join(CHKPT, f"overcookedv3_{mode}_seed{s}_final.zip")
             model = PPO.load(fp, device="cpu"); model.policy.eval()
             env = SwitchStartEnv(mode=mode)
-            measure(f"{mode}_s{s}", model, env)
+            measure(key, model, env)
 
     for m in (4, 8, 16):
         for s in (41, 42, 43):
+            key = f"mem_m{m}_s{s}"
+            if only and not any(o in key for o in only):
+                continue
             fp = os.path.join(CHKPT, f"overcooked_mem_dynamic_m{m}_s{s}.zip")
             model = PPO.load(fp, device="cpu"); model.policy.eval()
             env = SwitchStartMemoryEnv(memory=m)
-            measure(f"mem_m{m}_s{s}", model, env)
+            measure(key, model, env)
 
-    print("saved", OUT, flush=True)
+    print("saved", args.out, flush=True)
 
 
 if __name__ == "__main__":

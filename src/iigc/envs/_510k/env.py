@@ -55,11 +55,15 @@ class FiveTenKEnv(gym.Env):
             obs_dim += 4
         self.obs_dim = obs_dim
         self.action_space = spaces.Discrete(MAX_ACTIONS)
-        self.observation_space = spaces.Box(
-            low=0, high=1,
-            shape=(obs_dim,),
-            dtype=np.float32
-        )
+        low = np.zeros(obs_dim, dtype=np.float32)
+        high = np.ones(obs_dim, dtype=np.float32)
+        i = self.n_cards * 2
+        high[i] = float(max(p.value for p in PatternType))
+        high[i + 1:i + 5] = float(self.n_cards)
+        high[i + 5] = float(max(self.num_players - 1, 1))
+        high[i + 6] = float(max(self.num_players - 1, 1))
+        high[i + 7] = np.inf
+        self.observation_space = spaces.Box(low=low, high=high, dtype=np.float32)
 
         self.game: Optional[Game] = None
         self._bot_fn = self._random_bot

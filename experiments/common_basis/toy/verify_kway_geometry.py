@@ -150,6 +150,7 @@ def main():
         "uniform_cancellation": {},
         "direction_tests": {},
         "alpha_scans": {},
+        "alpha_scan_minima": {},
     }
 
     worst = 0.0
@@ -175,11 +176,22 @@ def main():
     for k in (3, 4):
         out["direction_tests"][str(k)] = summarize_direction_test(z, k)
 
-    alphas = np.logspace(-3, 2, 101)
+    alphas = np.logspace(-3, 2, 1001)
     out["alpha_scans"]["K2_p_0.8_0.2"] = alpha_scan(
         z, np.array([0.8, 0.2]), 2, alphas)
     out["alpha_scans"]["K3_p_0.7_0.2_0.1"] = alpha_scan(
         z, np.array([0.7, 0.2, 0.1]), 3, alphas)
+
+    for name, rows in out["alpha_scans"].items():
+        i_es = min(range(len(rows)), key=lambda i: rows[i]["E_shared"])
+        i_km = min(range(len(rows)), key=lambda i: rows[i]["kappa_mix"])
+        out["alpha_scan_minima"][name] = {
+            "min_E_shared_alpha": rows[i_es]["alpha"],
+            "min_kappa_alpha": rows[i_km]["alpha"],
+            "same_grid_point": i_es == i_km,
+            "min_kappa": rows[i_km]["kappa_mix"],
+            "min_E_shared": rows[i_es]["E_shared"],
+        }
 
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w") as f:
@@ -193,9 +205,11 @@ def main():
               f"softq alpha=1="
               f"{row['softq_alpha1']['kappa_mix']:.4f}")
     for name, rows in out["alpha_scans"].items():
-        best = min(rows, key=lambda x: x["kappa_mix"])
+        m = out["alpha_scan_minima"][name]
         print(f"{name}: min mixture-ref kappa="
-              f"{best['kappa_mix']:.6f} at alpha={best['alpha']:.4g}")
+              f"{m['min_kappa']:.6f} at alpha={m['min_kappa_alpha']:.4g}; "
+              f"min E_shared at alpha={m['min_E_shared_alpha']:.4g} "
+              f"(same grid point: {m['same_grid_point']})")
     print("saved:", OUT)
 
 

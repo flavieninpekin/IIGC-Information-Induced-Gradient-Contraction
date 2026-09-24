@@ -1,6 +1,11 @@
 """
 Continuous Reveal: train on OBVIOUS mode, then mask team bits at eval.
-Shows κ monotonically increases with revealed information.
+
+Legacy script. The earlier claim that kappa increases monotonically with
+revealed information is retired: the reveal grid it produced is marked invalid
+(unmasked measurement; see `data/kappa/510k_reveal/INVALID.md`). The canonical
+metric is `iigc.metrics.kappa`, and visibility measurements use
+`run_510k_reveal.py` with action masks.
 """
 import os, sys, time, numpy as np, torch, multiprocessing
 from stable_baselines3 import PPO

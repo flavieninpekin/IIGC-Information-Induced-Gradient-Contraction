@@ -46,7 +46,7 @@ pdflatex main.tex
 ```
 
 Last verified build: 11 pages total; the main text (through the ethics
-statement) ends on page 9 and references begin on page 9, so the main text
+statement) ends on page 9 and references begin on page 10, so the main text
 stays within the 9-page limit (references and appendix do not count).
 
 The real-data check in Section 5.5 uses DICES-350. The CSV is downloaded from
@@ -71,8 +71,11 @@ python experiments/common_basis/supervised/run_dices_group_audit.py
 6. If any field definition changed, regenerate the controlled visibility
    contrast and the Overcooked field axis:
    `python experiments/common_basis/toy/verify_visibility_control.py`,
-   `python experiments/common_basis/server_tasks/run_field_axis.py --force`, and
+   `python experiments/common_basis/server_tasks/run_field_axis.py --force`,
+   `python experiments/common_basis/server_tasks/run_switch_kappa.py --force`, and
    `python experiments/common_basis/server_tasks/run_510k_field_axis.py --force`
-   (the 510K run stores action masks and passes them to `get_distribution`).
+   (the 510K run stores action masks and passes them to `get_distribution`;
+   the switch-kappa rerun writes a `_metadata` block; the per-episode gradient
+   helper is vendored in `experiments/common_basis/server_tasks/episode_grad.py`).
    The AWR weight contract (shape, float64 weights, shift invariance,
    underflow diagnostics) is covered by `pytest tests/test_awr_weights.py`.

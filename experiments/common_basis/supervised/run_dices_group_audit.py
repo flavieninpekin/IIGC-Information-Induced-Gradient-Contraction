@@ -155,7 +155,9 @@ def audit_axis(df, X, train_mask, test_mask, axis, groups, shared_clf):
         item_g, _ = per_item_gradients(Xg, yg, shared_clf,
                                        train_df.item_id.to_numpy()[mask])
         item_grads.append(item_g)
-    weights = [1.0 / len(groups)] * len(groups)
+    counts = [float((train_df[gcol] == g).sum()) for g in groups]
+    total = float(sum(counts))
+    weights = [c / total for c in counts]
     structural = condition_decomposition(mean_grads, weights)
     noisy = episode_decomposition(item_grads, weights)
 
@@ -180,6 +182,12 @@ def audit_axis(df, X, train_mask, test_mask, axis, groups, shared_clf):
 
     return {
         "groups": groups,
+        "gradient_definition": (
+            "binary cross-entropy data gradient of the trained TF-IDF "
+            "logistic model; the L2 regularizer is excluded because it is "
+            "condition-independent: it shifts every condition mean by the "
+            "same vector and leaves E_contrast and sigma2 unchanged"),
+        "condition_weights": weights,
         "gradient_audit": {
             "kappa_mix": structural["kappa_mix"],
             "kappa_ep": noisy["kappa_ep"],
@@ -289,8 +297,9 @@ def main():
 
     out = {
         "_metadata": measurement_metadata(
-            "binary cross-entropy gradient of a TF-IDF logistic model",
-            "equal_condition_weights", "supervised_split_by_item",
+            "binary cross-entropy data gradient of a TF-IDF logistic model "
+            "(condition-independent L2 regularizer excluded)",
+            "empirical_rater_frequency", "supervised_split_by_item",
             "parameter_space_euclidean", "episode_noise_separate"),
         "dataset": {
             "name": "DICES-350",

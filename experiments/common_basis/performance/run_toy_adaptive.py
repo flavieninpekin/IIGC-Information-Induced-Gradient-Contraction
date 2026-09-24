@@ -5,11 +5,16 @@ same rollout protocol, same step budget, same seeds) — only the objective
 differs:
 
   reinforce : -log pi(a) * G_hat                (G_hat = episode return / n_steps)
-  awr       : -log pi(a) * exp(clip(G_hat - V(s)) / tau),  V differentiable
-              (matches fields.py loss_awr semantics: autograd through baseline)
+  awr       : -log pi(a) * exp(clip(G_hat - V(s)) / tau), V from a separate
+              value head, detached on the actor side. This is a
+              detached-baseline advantage arm; it is NOT the canonical
+              differentiable-baseline field of the main text, where the
+              baseline shares the policy's parameters.
   softq     : actor grad of sum_a pi(a)(alpha*log pi(a) - Q(s,a)), Q detached;
               Q trained by TD(0) on the SAME buffer   (matches fields.py loss_softq)
-  td        : eps-greedy argmax Q; Q trained by TD(0)   (value-field reference)
+  td        : eps-greedy argmax Q; Q trained by TD(0). The reported kappa is a
+              critic-loss (TD) gradient in the Q-network's parameter space: a
+              critic diagnostic, not a policy-gradient field.
 
 Env: AdaptiveHiddenMatchingEnv (modes static/switch x hidden/revealed).
 See notes/o4_performance_design.md for the preregistered predictions P1-P4

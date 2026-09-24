@@ -6,6 +6,10 @@ for some seeds are run on the intersection seeds, then a supplement script
 extends them using the same engine measurement helpers.
 
 Usage: python run_engine_tasks.py <task> [more tasks...]
+
+Historical: requires the external server engine checkout and the archived temp
+checkpoint dir. Superseded by the self-contained `run_switch_kappa.py` and
+`run_field_axis.py`.
 """
 import os
 import sys

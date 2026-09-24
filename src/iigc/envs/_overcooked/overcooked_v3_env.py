@@ -5,7 +5,7 @@ Partner roles:
   chef    - cooks soup; agent should DELIVER
   waiter  - delivers soup; agent should COOK
 
-STATIC: partner type OBSERVABLE (99-dim obs = 96 state + 3 one-hot)
+STATIC: partner type OBSERVABLE (98-dim obs = 96 state + 2 one-hot)
 DYNAMIC: partner type HIDDEN (96-dim obs), switches mid-episode
 
 κ hypothesis: DYNAMIC κ < STATIC κ
@@ -51,7 +51,7 @@ class OvercookedV3Env(gym.Env):
         self.action_space = gym.spaces.Discrete(len(Action.ALL_ACTIONS))
         dummy = self._get_obs()
         self.observation_space = gym.spaces.Box(
-            low=0, high=5, shape=dummy.shape, dtype=np.float32
+            low=-np.inf, high=np.inf, shape=dummy.shape, dtype=np.float32
         )
 
     def _build_mdp_and_env(self):
@@ -80,6 +80,7 @@ class OvercookedV3Env(gym.Env):
     def reset(self, seed=None, options=None):
         if seed is not None:
             self.seed_val = seed
+            np.random.seed(seed)
         self.base_env.reset()
         for a in self.pool.values():
             a.reset(); a.set_agent_index(1); a.set_mdp(self.mdp)
@@ -93,8 +94,9 @@ class OvercookedV3Env(gym.Env):
         return self._get_obs(), {}
 
     def step(self, action):
+        acted_partner = self.ptype
         p_act = Action.INDEX_TO_ACTION[int(action)]
-        other = self.pool[self.ptype].action(self.base_env.state)[0]
+        other = self.pool[acted_partner].action(self.base_env.state)[0]
         joint = (p_act, other)
         _, r, done, info = self.base_env.step(joint)
 
@@ -107,7 +109,7 @@ class OvercookedV3Env(gym.Env):
 
         trunc = self._steps >= self.horizon
         if trunc: done = True
-        info['partner_type'] = self.ptype
+        info['partner_type'] = acted_partner
         return self._get_obs(), r, done, trunc, info
 
     def close(self):

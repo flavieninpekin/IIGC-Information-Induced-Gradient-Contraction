@@ -194,17 +194,19 @@ confound: `data/kappa/toy_fields/visibility_control.json`.
 | A | `det_vs_stoch.json` | Measurement-protocol failure mode |
 | A | `o4_adaptive/aggregate.json` | Kappa/performance decoupling boundary |
 | A | `notes/canonical_metric_results.md` | Refreshed structural numbers for all real-environment tables |
-| A | `data/kappa/dices350/audit.json` | Real three-group supervised check: race axis kappa_mix 0.116, contrast dominated by item noise, no conditional-capacity gain |
-| B | `oc_field_axis.json` | Structural `kappa_mix` on a shared episode batch: dynamic value 0.998, differentiable-baseline awr 0.590, reinforce 0.529; static weak |
-| B | `510k_field_axis.json` | Paired protocol, keys `s*_paired`, mask-respecting rollouts: value 0.96-0.99 vs reinforce 0.61-0.67 (large seed spread, contrast at noise floor) |
+| A | `data/kappa/dices350/audit.json` | Real three-group supervised check: race axis kappa_mix 0.156 (empirical rater weights; BCE data gradient), contrast dominated by item noise, no conditional-capacity gain |
+| B | `oc_field_axis.json` | Joint diagnostic on a shared episode batch: dynamic value `kappa_mix` 0.998 with contrast share 0.1% (condition-blind), differentiable-baseline awr 0.590 with contrast/noise 35-176 (resolvable), reinforce 0.529 with contrast at the noise floor |
+| B | `510k_field_axis.json` | Paired protocol, keys `s*_paired`, mask-respecting rollouts: value 0.96-0.99 (contrast share 1-5%) vs reinforce 0.61-0.67 (large seed spread); no resolvable condition contrast in either field |
 | B | `overcooked_slice` | Controlled option-level witness, not primitive-action PG proof |
 | C | `theory_toy.json`, `theory_toy2.json` | Historical CE-fit/definition-split records; appendix only |
 | C | `common_basis_interp`, `cross_transfer` | Deterministic 510K measurements; do not use as decisive field-axis evidence |
 
-The "field axis" is real but about `1.9x` in Overcooked and `1.5x` in 510K
-under `kappa_mix`, not the `30-65x` separation suggested by comparing
-noise-dominated `kappa_ep` values. Write the paper around alignment versus
-partial cancellation, not around "death".
+The `1.9x`/`1.5x` value-policy ratio framing is retired: the scores compare
+fields with different supports in the padded parameter vector. The paper is
+written around the joint diagnostic (retention, contrast/noise, contrast
+share): a high retention score can be condition-blindness, a contrast at the
+noise floor is unresolvable, and only the differentiable-baseline advantage
+field in Overcooked shows a resolvable, substantial condition contrast.
 
 ## Minimal Paper Shape
 
@@ -295,6 +297,51 @@ protocol-sensitive results in an appendix or artifact note.
   (86 passed there). The 510K field axis was rerun: value 0.96-0.99, reinforce
   0.61-0.67 (large seed spread, contrast at noise floor), value-policy ratio
   about `1.5x`. PDFs and tables updated.
+- Environment-audit corrections (2026-09-23, external review): the Overcooked
+  reveal mask never executed (the script tested `len(obs) == 99` but the static
+  observation is 98-dimensional) and its "reinforce" field is a value field, so
+  `overcooked_reveal/reveal_kappa.json` is invalid; the forced
+  decomposition/memory files are OOD artifacts for dynamic policies, and the
+  pre-fix 510K files (`stuck_detect/forced_decomp.json`,
+  `510k_reveal/results.json`) are stale. All carry `INVALID.md` notes and the
+  correction log §7. `oc_switch_kappa.json` was re-run from the archived
+  checkpoints (`run_switch_kappa.py --force`, metadata attached) and reproduces
+  the stored numbers (`kappa_mix` within `3e-5`). Env contracts fixed:
+  Overcooked observation bounds/seed/info timing and 510K observation-space
+  bounds (`tests/test_env_contracts.py`; `pytest`: 23 passed). The paper labels
+  the Overcooked conditions (episode-start partner, switching preserved, team
+  sparse reward) and notes the 510K legacy training mask; PDFs recompiled
+  (11 pages, main text through page 9).
+- Narrative reframe (2026-09-23, P1): the paper no longer reads a high
+  retention score as condition survival. Value in Overcooked dynamic is
+  condition-blind (contrast share `0.1%`); the plain policy gradient's
+  contrast is at the estimation-noise floor (its near-orthogonality is an
+  upper bound); only the differentiable-baseline advantage field has a
+  resolvable, substantial contrast. The `1.9x`/`1.5x` value-policy ratios are
+  retired and replaced by the joint read (retention, contrast/noise, contrast
+  share). Figure 1 gained a joint-diagnostic panel; abstract, contributions,
+  §5.3, §6, limitations, both tex versions, both drafts, and
+  `notes/canonical_metric_results.md` are synced; PDFs recompiled
+  (11 pages; main text through page 9, references begin on page 10).
+- Correctness pass (2026-09-23, P2-P4 from `gap.json`): the AWR temperature
+  text is corrected to monotone decreasing with supremum `1/2` at `tau -> 0`
+  (regression test in `tests/test_closed_forms.py`); the softq "numerator
+  cancellation point differs from the ratio minimum" claim is retired -- the
+  1001-point scans minimize the shared energy and the ratio on the same grid
+  point and the old values were 101-point grid artifacts; the canonical
+  direction-spread numbers now match the result file (`[0.0704, 0.2165]`,
+  `3.08x`); the O4 `td` entry is documented as a critic diagnostic (script
+  docstring fixed, paper text explicit); the DICES audit uses empirical
+  rater-frequency weights and documents that the condition-independent `L2`
+  term cancels from `E_contrast`/`sigma2` (race `kappa_mix` `0.116` ->
+  `0.156`, ratio unchanged at `0.17`); legacy docstrings
+  (`continuous_reveal`, `kappa_ppo`, `kappa_and_energy`) mark the retired
+  claims. The per-episode gradient helper is vendored in
+  `experiments/common_basis/server_tasks/episode_grad.py`; `run_switch_kappa.py`,
+  `run_field_axis.py`, and `verify_dynamic_learns.py` no longer import the
+  external server engine (single-key rerun is bit-identical, `maxrel 0.0`),
+  and the engine dispatchers are marked historical. `pytest`: 25 passed. PDFs
+  recompiled (main text through page 9; references begin on page 9).
 - Remaining: submission logistics (OpenReview profile, quota, double-blind
   citations), a final read of `main.tex` against `main_text_v1.md`, and the
   discussant questions in `main_discussion.tex`.

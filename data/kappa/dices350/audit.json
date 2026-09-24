@@ -1,8 +1,8 @@
 {
   "_metadata": {
     "kappa_schema": "mixture-v1",
-    "gradient_definition": "binary cross-entropy gradient of a TF-IDF logistic model",
-    "condition_weights": "equal_condition_weights",
+    "gradient_definition": "binary cross-entropy data gradient of a TF-IDF logistic model (condition-independent L2 regularizer excluded)",
+    "condition_weights": "empirical_rater_frequency",
     "rollout_protocol": "supervised_split_by_item",
     "parameter_space": "parameter_space_euclidean",
     "noise_treatment": "episode_noise_separate"
@@ -35,12 +35,18 @@
             "Black/African American",
             "Asian/Asian subcontinent"
           ],
+          "gradient_definition": "binary cross-entropy data gradient of the trained TF-IDF logistic model; the L2 regularizer is excluded because it is condition-independent: it adds a constant to every condition mean and leaves E_contrast and sigma2 unchanged (kappa_mix can only increase)",
+          "condition_weights": [
+            0.357809934318555,
+            0.3358990147783251,
+            0.30629105090311987
+          ],
           "gradient_audit": {
-            "kappa_mix": 0.08855194424732156,
-            "kappa_ep": 0.014604429261947846,
-            "E_shared": 0.00020235251957029574,
-            "E_contrast": 0.002082775393659191,
-            "sigma2": 0.011641129214801158,
+            "kappa_mix": 0.12559671561812855,
+            "kappa_ep": 0.02089640127555888,
+            "E_shared": 0.0002910237715500933,
+            "E_contrast": 0.002026105065122186,
+            "sigma2": 0.01168819536723659,
             "n_items_per_group": [
               245,
               245,
@@ -92,12 +98,18 @@
             "millenial",
             "gen x+"
           ],
+          "gradient_definition": "binary cross-entropy data gradient of the trained TF-IDF logistic model; the L2 regularizer is excluded because it is condition-independent: it adds a constant to every condition mean and leaves E_contrast and sigma2 unchanged (kappa_mix can only increase)",
+          "condition_weights": [
+            0.4538581671044225,
+            0.2941364378505005,
+            0.252005395045077
+          ],
           "gradient_audit": {
-            "kappa_mix": 0.03346641922176171,
-            "kappa_ep": 0.0016662767311384553,
-            "E_shared": 9.83501672945665e-06,
-            "E_contrast": 0.0002840421580075819,
-            "sigma2": 0.006283467646753931,
+            "kappa_mix": 0.0011689394667384336,
+            "kappa_ep": 4.807215097679021e-05,
+            "E_shared": 2.8787558385575005e-07,
+            "E_contrast": 0.00024598286130808817,
+            "sigma2": 0.005682224163062473,
             "n_items_per_group": [
               245,
               245,
@@ -148,12 +160,17 @@
             "Woman",
             "Man"
           ],
+          "gradient_definition": "binary cross-entropy data gradient of the trained TF-IDF logistic model; the L2 regularizer is excluded because it is condition-independent: it adds a constant to every condition mean and leaves E_contrast and sigma2 unchanged (kappa_mix can only increase)",
+          "condition_weights": [
+            0.4953148292752183,
+            0.5046851707247817
+          ],
           "gradient_audit": {
-            "kappa_mix": 0.0006130585074247253,
-            "kappa_ep": 8.945760335447263e-05,
-            "E_shared": 3.179774070373216e-07,
-            "E_contrast": 0.0005183558574493603,
-            "sigma2": 0.003510658455049702,
+            "kappa_mix": 0.0005551033014227706,
+            "kappa_ep": 7.25312895343223e-05,
+            "E_shared": 2.878755838557494e-07,
+            "E_contrast": 0.0005183103440950819,
+            "sigma2": 0.003510861659860509,
             "n_items_per_group": [
               245,
               245
@@ -205,12 +222,18 @@
             "Black/African American",
             "Asian/Asian subcontinent"
           ],
+          "gradient_definition": "binary cross-entropy data gradient of the trained TF-IDF logistic model; the L2 regularizer is excluded because it is condition-independent: it adds a constant to every condition mean and leaves E_contrast and sigma2 unchanged (kappa_mix can only increase)",
+          "condition_weights": [
+            0.358661679561408,
+            0.33452887226520467,
+            0.3068094481733873
+          ],
           "gradient_audit": {
-            "kappa_mix": 0.11162956792902895,
-            "kappa_ep": 0.018680001105367928,
-            "E_shared": 0.00023852927995170317,
-            "E_contrast": 0.0018982637254942522,
-            "sigma2": 0.010791128560998326,
+            "kappa_mix": 0.15085791877633403,
+            "kappa_ep": 0.02556087567816421,
+            "E_shared": 0.00032986953852189293,
+            "E_contrast": 0.0018567544133235936,
+            "sigma2": 0.010861503523070007,
             "n_items_per_group": [
               245,
               245,
@@ -262,12 +285,18 @@
             "millenial",
             "gen x+"
           ],
+          "gradient_definition": "binary cross-entropy data gradient of the trained TF-IDF logistic model; the L2 regularizer is excluded because it is condition-independent: it adds a constant to every condition mean and leaves E_contrast and sigma2 unchanged (kappa_mix can only increase)",
+          "condition_weights": [
+            0.4534434480558608,
+            0.2943323999574664,
+            0.2522241519866728
+          ],
           "gradient_audit": {
-            "kappa_mix": 0.026933725112649232,
-            "kappa_ep": 0.0009440699846860164,
-            "E_shared": 5.425277418732649e-06,
-            "E_contrast": 0.0001960053600456969,
-            "sigma2": 0.0062537859302900164,
+            "kappa_mix": 0.00195368842793334,
+            "kappa_ep": 5.3416420445901224e-05,
+            "E_shared": 3.248159313727264e-07,
+            "E_contrast": 0.00016593297969693256,
+            "sigma2": 0.005762672610061491,
             "n_items_per_group": [
               245,
               245,
@@ -318,12 +347,17 @@
             "Woman",
             "Man"
           ],
+          "gradient_definition": "binary cross-entropy data gradient of the trained TF-IDF logistic model; the L2 regularizer is excluded because it is condition-independent: it adds a constant to every condition mean and leaves E_contrast and sigma2 unchanged (kappa_mix can only increase)",
+          "condition_weights": [
+            0.4962251444369617,
+            0.5037748555630384
+          ],
           "gradient_audit": {
-            "kappa_mix": 0.0006809483036923082,
-            "kappa_ep": 8.942391330140067e-05,
-            "E_shared": 3.414973220594833e-07,
-            "E_contrast": 0.0005011610693306238,
-            "sigma2": 0.0034671349235706602,
+            "kappa_mix": 0.0006477439223811766,
+            "kappa_ep": 8.128173069578889e-05,
+            "E_shared": 3.248159313727268e-07,
+            "E_contrast": 0.0005011325040827901,
+            "sigma2": 0.0034685769706078377,
             "n_items_per_group": [
               245,
               245
@@ -375,12 +409,18 @@
             "Black/African American",
             "Asian/Asian subcontinent"
           ],
+          "gradient_definition": "binary cross-entropy data gradient of the trained TF-IDF logistic model; the L2 regularizer is excluded because it is condition-independent: it adds a constant to every condition mean and leaves E_contrast and sigma2 unchanged (kappa_mix can only increase)",
+          "condition_weights": [
+            0.3585620647275707,
+            0.3352621876280213,
+            0.306175747644408
+          ],
           "gradient_audit": {
-            "kappa_mix": 0.1486550944170072,
-            "kappa_ep": 0.02382501593155577,
-            "E_shared": 0.000333776969512478,
-            "E_contrast": 0.0019115343722984313,
-            "sigma2": 0.011574295263996236,
+            "kappa_mix": 0.19188556961664405,
+            "kappa_ep": 0.031288597127749895,
+            "E_shared": 0.00044199574171921967,
+            "E_contrast": 0.0018614382403267192,
+            "sigma2": 0.011669073631972535,
             "n_items_per_group": [
               245,
               245,
@@ -432,12 +472,18 @@
             "millenial",
             "gen x+"
           ],
+          "gradient_definition": "binary cross-entropy data gradient of the trained TF-IDF logistic model; the L2 regularizer is excluded because it is condition-independent: it adds a constant to every condition mean and leaves E_contrast and sigma2 unchanged (kappa_mix can only increase)",
+          "condition_weights": [
+            0.45377615692383955,
+            0.2937010940764083,
+            0.25252274899975213
+          ],
           "gradient_audit": {
-            "kappa_mix": 0.037880233575135494,
-            "kappa_ep": 0.0016072838131819984,
-            "E_shared": 1.0428852785048926e-05,
-            "E_contrast": 0.0002648823531071556,
-            "sigma2": 0.006626941038380925,
+            "kappa_mix": 0.0013051359131919119,
+            "kappa_ep": 4.741254102202646e-05,
+            "E_shared": 3.0684501673978846e-07,
+            "E_contrast": 0.00023479895020220518,
+            "sigma2": 0.006034715743819061,
             "n_items_per_group": [
               245,
               245,
@@ -488,12 +534,17 @@
             "Woman",
             "Man"
           ],
+          "gradient_definition": "binary cross-entropy data gradient of the trained TF-IDF logistic model; the L2 regularizer is excluded because it is condition-independent: it adds a constant to every condition mean and leaves E_contrast and sigma2 unchanged (kappa_mix can only increase)",
+          "condition_weights": [
+            0.49569804907410686,
+            0.5043019509258931
+          ],
           "gradient_audit": {
-            "kappa_mix": 0.0005559598371157157,
-            "kappa_ep": 8.71238085703723e-05,
-            "E_shared": 3.383920329973626e-07,
-            "E_contrast": 0.0006083243393486779,
-            "sigma2": 0.0036350076916613176,
+            "kappa_mix": 0.0005041932285196732,
+            "kappa_ep": 7.259031484215237e-05,
+            "E_shared": 3.068450167397899e-07,
+            "E_contrast": 0.0006082793068455058,
+            "sigma2": 0.0036349437978079034,
             "n_items_per_group": [
               245,
               245
@@ -542,28 +593,28 @@
       ],
       "gradient_audit": {
         "kappa_mix": {
-          "mean": 0.11627886886445256,
-          "std": 0.024756267414819004,
+          "mean": 0.15611340133703555,
+          "std": 0.02731627248629779,
           "n": 3
         },
         "kappa_ep": {
-          "mean": 0.019036482099623848,
-          "std": 0.00377271905989894,
+          "mean": 0.025915291360490995,
+          "std": 0.004249991491323515,
           "n": 3
         },
         "E_shared": {
-          "mean": 0.00025821958967815897,
-          "std": 5.5430904337406775e-05,
+          "mean": 0.0003542963505970686,
+          "std": 6.400851925227796e-05,
           "n": 3
         },
         "E_contrast": {
-          "mean": 0.0019641911638172914,
-          "std": 8.402655212113074e-05,
+          "mean": 0.0019147659062574995,
+          "std": 7.875189217354598e-05,
           "n": 3
         },
         "sigma2": {
-          "mean": 0.011335517679931906,
-          "std": 0.0003859070085353108,
+          "mean": 0.011406257507426376,
+          "std": 0.000385278330382926,
           "n": 3
         }
       },
@@ -602,28 +653,28 @@
       ],
       "gradient_audit": {
         "kappa_mix": {
-          "mean": 0.03276012596984881,
-          "std": 0.004496713577573004,
+          "mean": 0.001475921269287895,
+          "std": 0.0003423774344362715,
           "n": 3
         },
         "kappa_ep": {
-          "mean": 0.001405876843002157,
-          "std": 0.0003274336796799438,
+          "mean": 4.96337041482393e-05,
+          "std": 2.6883053230060157e-06,
           "n": 3
         },
         "E_shared": {
-          "mean": 8.563048977746074e-06,
-          "std": 2.2319450534822023e-06,
+          "mean": 3.0651217732275494e-07,
+          "std": 1.5082670082512875e-08,
           "n": 3
         },
         "E_contrast": {
-          "mean": 0.00024830995705347813,
-          "std": 3.78030217669205e-05,
+          "mean": 0.0002155715970690753,
+          "std": 3.539551965875123e-05,
           "n": 3
         },
         "sigma2": {
-          "mean": 0.006388064871808291,
-          "std": 0.00016934504872279506,
+          "mean": 0.005826537505647675,
+          "std": 0.00015082356644380944,
           "n": 3
         }
       },
@@ -661,28 +712,28 @@
       ],
       "gradient_audit": {
         "kappa_mix": {
-          "mean": 0.0006166555494109164,
-          "std": 5.108968080790099e-05,
+          "mean": 0.0005690134841078734,
+          "std": 5.942401486368661e-05,
           "n": 3
         },
         "kappa_ep": {
-          "mean": 8.866844174208186e-05,
-          "std": 1.092307185510913e-06,
+          "mean": 7.546777835742119e-05,
+          "std": 4.111155745152416e-06,
           "n": 3
         },
         "E_shared": {
-          "mean": 3.326222540313892e-07,
-          "std": 1.0432780474688718e-08,
+          "mean": 3.0651217732275536e-07,
+          "std": 1.508267008251332e-08,
           "n": 3
         },
         "E_contrast": {
-          "mean": 0.0005426137553762207,
-          "std": 4.699167173810749e-05,
+          "mean": 0.0005425740516744592,
+          "std": 4.698691282113369e-05,
           "n": 3
         },
         "sigma2": {
-          "mean": 0.00353760035676056,
-          "std": 7.113234668537726e-05,
+          "mean": 0.003538127476092083,
+          "std": 7.060240245787022e-05,
           "n": 3
         }
       },

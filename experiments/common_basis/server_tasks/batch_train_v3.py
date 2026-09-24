@@ -1,5 +1,10 @@
 """Batch-train Overcooked V3 static/dynamic x seeds 41-48 with the server-exact
-script, overwriting old (degenerate) checkpoints in the working dir."""
+script, overwriting old (degenerate) checkpoints in the working dir.
+
+Historical: requires the external server checkout and the archived temp
+checkpoint dir; the resulting checkpoints are archived in
+`data/models_overcooked/`.
+"""
 import os
 import subprocess
 import sys

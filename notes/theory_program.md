@@ -28,7 +28,7 @@
 | **IIGC 抵消本体**：共同测量基上隐藏关系把硬场梯度打到精确零 | HIDDEN: reinforce κ=0.000±0.000（能量 371.5 全灭）；同一策略/数据/参数只换分配 | `data/kappa/toy_fields/results.json` |
 | **字段轴**：reinforce < awr < softq/expq | E2 n=4 稳健（0.40/0.50/0.57）+ Toy 极端分化（0.000 / 0.561 / 0.068 / 0.000）。⚠️ 2026-08-19 精确验证：T2 成立；gibbs 定义需澄清（见 C.5） | `data/kappa/common_basis_interp/results.json`、`notes/toy_field_axis_theory.md` |
 | **分解 + 测量学**：P1-P4、N* 定理、N(δ) 闭式 | A/B/C 实验 + 排序翻转 N*=99→100 精确验证 + 1/√N 与实测吻合 | `notes/variance_decomp_theory.md`、`kappa_estimation_theory.md` |
-| **Overcooked 诊断区分卡死/收敛** | ⚠️ 2026-08-19 修正：旧"dynamic E_shared=0.000"来自坏 checkpoint + forced 协议伪影（关切换→OOD→0 奖励）。GPU 重训后 dynamic 能学（reward~120）；真实 κ 分离只在切换保持协议下可见（dynamic κ_ep=0.010 vs static 0.31，σ² 主导） | `data/kappa/stuck_detect/overcooked_decomp.json`、`data/kappa/server_tasks/results/` |
+| **Overcooked 诊断区分卡死/收敛** | ⚠️ 2026-08-19 修正：旧"dynamic E_shared=0.000"来自坏 checkpoint + forced 协议伪影（关切换→OOD→0 奖励）。GPU 重训后 dynamic 能学（reward~120）；真实 κ 分离只在切换保持协议下可见（dynamic κ_ep=0.010 vs static 0.31，σ² 主导） | `data/kappa/server_tasks/results/`；`data/kappa/stuck_detect/overcooked_decomp.json` 已标记 INVALID（forced 协议对 dynamic 为 OOD 伪影，见 `data/kappa/stuck_detect/INVALID.md`） |
 | **伪影解剖**：反转 = 跨估计器比较伪影 | 上表第一行右侧整列 | 这是展品不是损失 |
 
 **核心判断**：不是"没找到现象"，是站在一个真现象上面没低头看。

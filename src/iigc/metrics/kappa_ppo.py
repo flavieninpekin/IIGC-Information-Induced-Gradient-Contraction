@@ -1,4 +1,10 @@
-"""Compute PPO kappa from existing 510K models."""
+"""Compute PPO kappa from existing 510K models.
+
+Legacy alternative kappa formulation (unweighted/uniform-reference variant);
+the canonical bounded mixture-reference metric is `iigc.metrics.kappa`. The
+rollouts here pass action masks explicitly (the earlier unmasked sampling was
+a measurement bug); see `data/kappa/510k_reveal/INVALID.md`.
+"""
 import sys, os, numpy as np, torch
 
 from sb3_contrib import MaskablePPO

@@ -1,4 +1,9 @@
-"""Batch-train Overcooked dynamic+memory models (m=4/8/16 x seeds 41-43)."""
+"""Batch-train Overcooked dynamic+memory models (m=4/8/16 x seeds 41-43).
+
+Historical: requires the external server checkout and the archived temp
+checkpoint dir; the resulting checkpoints are archived in
+`data/models_overcooked/`.
+"""
 import os
 import subprocess
 import sys

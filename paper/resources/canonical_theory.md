@@ -121,9 +121,10 @@ E_mix = sum_i p_i sum_b pi_b^2 *
         (alpha*a_b - 2*R*c_i,b)^2.
 ```
 
-Any alpha scan must report this denominator and must distinguish the location
-where the numerator vector cancels from the location where the kappa ratio is
-minimal.
+Any alpha scan must report this denominator. On the 1001-point scans the
+numerator-energy minimum and the kappa-ratio minimum coincide on the same grid
+point (`alpha_scan_minima` in `kway_geometry.json`), so the scan reports a
+single minimum location rather than two distinct cancellation points.
 
 ## 5. Softq Optimization Direction
 

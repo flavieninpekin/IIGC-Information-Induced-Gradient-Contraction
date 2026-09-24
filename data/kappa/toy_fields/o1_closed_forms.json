@@ -441,7 +441,7 @@
     "peaked_match": false
   },
   "awr": {
-    "note": "canonical track: kappa(uniform p) = 0 exactly for all tau; interior max in tau for p != 1/2",
+    "note": "canonical track: kappa(uniform p) = 0 exactly for all tau; monotone decreasing in tau for p != 1/2, supremum 1/2 at tau -> 0",
     "curves": {
       "uniform": {
         "taus": [

@@ -47,6 +47,8 @@ ICLR 缺口（见 `paper_spine.md`）：诊断只在 Toy（2 动作 bandit）验
 - 已有 v3 模型（static/dynamic × 8 seeds）
 
 ### 验证结果（`stuck_detect/run_overcooked_decomp.py`）
+> ⚠️ 2026-09-23：本节数字来自 `_force_partner` 协议（关闭中途切换），dynamic 侧为 OOD 伪影；`overcooked_decomp.json` 已标记 INVALID（见 `data/kappa/stuck_detect/INVALID.md`）。现行结论以切换保持的 `oc_switch_kappa.json` 为准。
+
 强制 chef/waiter 分配 + 分解，4 seeds 全部一致：
 
 | 模型 | E_shared | κ_mean | E_total | 判定 |

@@ -30,8 +30,8 @@
 | Toy 旧测量 | `data/kappa/toy_fields/results.json` | κ+总能量（5 inits，N=30） |
 | Overcooked 分解（切换保持） | `data/kappa/server_tasks/results/oc_switch_kappa.json` | static/dynamic/mem×m 的 E_shared/E_contrast/σ²/κ_ep/κ_mixed，n=8/9 |
 | Overcooked 场轴 | `data/kappa/server_tasks/results/oc_field_axis.json` | reinforce/awr/value 场 κ（3 seeds） |
-| Overcooked 标准 grid | `data/kappa/server_tasks/results/oc_decomp_b1_seed*.json` | forced 协议静态/动态分解（n=8） |
-| Overcooked baselines | `data/kappa/server_tasks/results/oc_baselines_b1*.json` | reward/grad_norm/κ 对比（n=8） |
+| Overcooked 标准 grid | `data/kappa/server_tasks/results/oc_decomp_b1_seed*.json` | forced 协议静态/动态分解（n=8）；⚠️ 2026-09-23：dynamic 侧 OOD 伪影，勿作证据（`stuck_detect/INVALID.md`） |
+| Overcooked baselines | `data/kappa/server_tasks/results/oc_baselines_b1*.json` | reward/grad_norm/κ 对比（n=8）；⚠️ 同上（forced 协议） |
 | Overcooked N-协议 | `data/kappa/server_tasks/results/oc_n_protocol.json` | 1/√N + 排序定理（seed41） |
 | 510K 场轴 | `data/kappa/server_tasks/results/510k_field_axis.json` | reinforce/value 场 κ，p∈{0,0.5,1}×n=6 |
 | O4 自适应实验 | `data/kappa/o4_adaptive/`（96 runs + aggregate.json） | 四目标场 × 关系翻转任务：行为差距、κ-行为解耦、部署再适应 |
@@ -51,12 +51,12 @@
 | 数据 | 路径 | 内容 |
 |---|---|---|
 | 上一篇跨算法 κ | `AAAI2027-510k-clear/data/kappa_summary.json` | A2C/DQN/SAC/REINFORCE/PPO × 510K/Overcooked |
-| Reveal 全网格 | `data/kappa/510k_reveal/results.json` + `figures/` | 21 档 × 6 seeds，κ(p) 平坦（ANOVA F=0.756 p=0.759） |
+| Reveal 全网格 | `data/kappa/510k_reveal/results.json` + `figures/` | 21 档 × 6 seeds，κ(p) 平坦（ANOVA F=0.756 p=0.759）；⚠️ 2026-09-23：未掩码测量，已作废（见 `data/kappa/510k_reveal/INVALID.md`） |
 | E1 actor/critic | `data/kappa/common_basis_sac_split/results.json` | SAC 场分离（n=2） |
 | E2 插值谱 | `data/kappa/common_basis_interp/results.json` | reinforce<awr<softq/expq + gibbs τ |
 | Cross-transfer | `data/kappa/cross_transfer/results.json` | 训练×测试 2×2 |
 | Toy 场测量（stochastic，当前文件） | `data/kappa/toy_fields/results.json` | 当前随机协议结果；旧 `0.561`/`0.068` field-axis 数字是历史/伪影，不用于 Results |
-| 510K stuck_detect | `data/kappa/stuck_detect/` | forced_decomp/sensitivity/memory_eval |
+| 510K stuck_detect | `data/kappa/stuck_detect/` | forced_decomp/sensitivity/memory_eval；⚠️ 2026-09-23：forced_decomp、overcooked_memory_eval 已作废（见该目录 `INVALID.md`），sensitivity 仍有效 |
 | 能量分解 A/B/C | `data/kappa/variance_decomp/` | accuracy/compactness/scale/ranking_flip |
 
 ## 笔记（理论/方法）

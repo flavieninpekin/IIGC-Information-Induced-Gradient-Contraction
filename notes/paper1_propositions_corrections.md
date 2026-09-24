@@ -92,3 +92,27 @@ deterministic surrogate ratio, not the expectation of the estimator.
   the same episode batch and writes paired results under `s<seed>_paired`.
   Legacy unpaired entries remain in the JSON but must not be pooled with paired
   results.
+
+## 7. Environment-audit corrections (2026-09-23)
+
+- `data/kappa/overcooked_reveal/reveal_kappa.json` is invalid. The visibility
+  mask never executed (the script tested `len(obs) == 99`, but the static
+  observation is 98-dimensional: 96 state features plus 2 partner one-hot
+  bits), and the script's `reinforce_grad` computes the value field
+  `-sum_t V(s_t)`, not a REINFORCE field. The flat `kappa(p)` curve must not be
+  cited (`data/kappa/overcooked_reveal/INVALID.md`).
+- `data/kappa/stuck_detect/overcooked_decomp.json` and
+  `overcooked_memory_eval.json` are invalid for dynamic policies: the
+  forced-partner protocol disables mid-episode switching, so the zero readouts
+  are out-of-distribution artifacts (`data/kappa/stuck_detect/INVALID.md`).
+- `data/kappa/stuck_detect/forced_decomp.json` (510K) and
+  `data/kappa/510k_reveal/results.json` were measured before the 510K
+  action-mask fix; the scripts now pass `action_masks`, but these files have
+  not been re-run and are marked invalid.
+- The 510K field-axis measurement samples from mask-respecting distributions
+  (`run_510k_field_axis.py`, commit `1f10f12`); the unmasked table is retired.
+- Environment contracts fixed: the Overcooked observation space now spans the
+  true feature range, `reset(seed=...)` seeds the partner RNG, and
+  `info['partner_type']` reports the partner that acted in the step; the 510K
+  observation-space bounds now match the featurized observation. Regression
+  tests: `tests/test_env_contracts.py`.

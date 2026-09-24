@@ -3,6 +3,10 @@ using the exact engine measurement helpers (_collect, _components, _collect_rew)
 
 Writes oc_decomp_ext_seed{s}.json and oc_baselines_b1_ext.json alongside the
 engine-produced files in the server_tasks results dir.
+
+Historical: requires the external server engine checkout and the archived temp
+checkpoint dir. Superseded by the self-contained `run_switch_kappa.py` and
+`run_field_axis.py`.
 """
 import json
 import os

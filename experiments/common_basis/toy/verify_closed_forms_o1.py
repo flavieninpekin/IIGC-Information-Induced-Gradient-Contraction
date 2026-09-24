@@ -22,7 +22,8 @@ Closed forms derived by hand (see notes, Prop. O1a/O1b/O1c):
       A0 = e^{x q}, A1 = e^{-x p},  M_A = p ln p A0 + q ln q A1
       B0 = e^{-x q}, B1 = e^{x p},  M_B = p ln p B0 + q ln q B1
       c_A = p q (A1 - A0 + x M_A),  c_B = p q (B1 - B0 - x M_B)
-      (kappa = 0 exactly at p = 1/2 for every tau; interior max in tau otherwise)
+      (kappa = 0 exactly at p = 1/2 for every tau; monotone decreasing in
+       tau otherwise, supremum 1/2 at tau -> 0)
 
 Validation: three independent routes must agree.
   (1) closed form (numpy, double)
@@ -274,7 +275,8 @@ def main():
         }
     out['awr'] = {
         'note': ('canonical track: kappa(uniform p) = 0 exactly for all tau; '
-                 'interior max in tau for p != 1/2'),
+                 'monotone decreasing in tau for p != 1/2, supremum 1/2 at '
+                 'tau -> 0'),
         'curves': awr_curves,
     }
 

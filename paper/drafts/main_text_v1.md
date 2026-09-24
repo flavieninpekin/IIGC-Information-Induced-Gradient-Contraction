@@ -27,12 +27,14 @@ non-monotone in the entropy weight. We separate these structural effects from
 finite-sample noise with a measurement protocol: deterministic rollouts can
 collapse retention into a weight ratio, and episode-noise readouts can
 understate structural retention by an order of magnitude. Under a single
-bounded definition, value fields align with hidden conditions in Overcooked
-and 510K, while the plain policy gradient is near-orthogonal in Overcooked
-(0.529) and only partially retained in 510K (0.61-0.67 with a large seed
-spread); the value-policy gap is 1.9x and 1.5x respectively, not the 30-65x
-suggested by noisy readouts. Advantage weighting with a differentiable
-baseline improves retention only modestly over the plain gradient. A
+bounded definition the retention score alone is ambiguous: a high score can be
+produced by condition-blindness rather than survival. In Overcooked the
+dynamic value field scores `0.998` while its condition contrast is only
+`0.1%` of its shared mass; the differentiable-baseline advantage field
+carries a resolvable contrast (`35-176x` the estimation-noise floor, score
+`0.590`) and the plain policy gradient's contrast sits at the noise floor
+(score `0.529`). In 510K no field has a substantial condition contrast. The
+`30-65x` value-policy gap suggested by noisy readouts is retired. A
 controlled capacity experiment
 shows that severe cancellation can coexist with poor worst-condition
 performance; in contrast, on a real three-group preference dataset the
@@ -71,7 +73,10 @@ does and does not tell us.
 
 The companion phenomenon was reported previously: hidden relational variables
 can contract policy-gradient updates while value-based updates appear to
-survive. That report left the mechanism open. Our starting point is that the
+survive. We show that the apparent survival is, in the tested environments,
+condition-blindness of the value field rather than retained condition signal:
+the mechanism is in the objective's condition contrast and in what the
+retention ratio fails to penalize. Our starting point is that the
 mechanism cannot be recovered from algorithm-family labels, because the
 gradient field is a property of the *objective evaluated on a fixed policy and
 data*, not of the optimizer. We therefore fix the measurement basis: same
@@ -102,16 +107,19 @@ results below are chapters of that one question.
    single-action weight ratio on the mirror model (0.633 where the correct
    protocol gives 0.001), and episode-noise readouts can sit an order of
    magnitude below structural scores. Two fields must be compared on the same
-   episode batch, and the condition-contrast energy must be read against the
-   within-condition noise before any conclusion is drawn.
-3. **Boundaries: when the audit recommends capacity.**
-   Under one bounded definition, value fields align with hidden conditions
-   (Overcooked dynamic 0.998, 510K 0.96-0.99) while the plain policy gradient
-   is near-orthogonal in Overcooked (0.529) and only partially retained in
-   510K (0.61-0.67, with contrast energy at the noise floor); advantage
-   weighting with a differentiable baseline improves retention only modestly
-   (0.590), and the value-policy gap is about `1.9x` (Overcooked) and `1.5x`
-   (510K), not the `30-65x` implied by noisy readouts. A controlled
+   episode batch, and the condition-contrast energy must be read jointly with
+   the estimation-noise floor and with the shared component it sits on before
+   any conclusion is drawn.
+3. **Boundaries: what a retention score can and cannot say.**
+   Retention alone is ambiguous: a high score can reflect condition-blindness
+   rather than survival. In Overcooked the dynamic value field retains `0.998`
+   but its condition contrast is `0.1%` of its shared mass, the
+   differentiable-baseline advantage field carries a resolvable contrast
+   (`35-176x` the estimation-noise floor) at `0.590`, and the plain policy
+   gradient's contrast sits at the noise floor (`0.529`). In 510K no field
+   has a substantial condition contrast (value contrast share `1-5%`), and
+   the previously reported
+   `30-65x` value-policy gap came from noisy readouts. A controlled
    capacity experiment shows
    that severe cancellation with contrast energy dominating noise is fixed by
    condition-aware capacity (worst condition 0.003 to 1.97), whereas a real
@@ -276,7 +284,8 @@ policy-gradient-style field that survives the symmetric mixture, because the
 baseline enters the weight through `V = sum_a pi(a) Q(a)` and creates an
 implicit even coupling. We give its closed form in Appendix A; at uniform
 policies it also cancels for every temperature, and for non-uniform policies
-retention is non-monotone in `tau`.
+retention is monotone decreasing in `tau`, with supremum `1/2` as
+`tau -> 0`.
 
 ### 4.3 K-way geometry and channel interference
 
@@ -288,7 +297,7 @@ simplex has dimension at least two (`K >= 3`), the retention at fixed L1
 distance from the uniform mixture varies with direction.
 
 *Measured spread at L1 distance 0.45* (200 directions):
-K = 3: `kappa_mix` in `[0.071, 0.219]` (`3.10x`);
+K = 3: `kappa_mix` in `[0.070, 0.217]` (`3.08x`);
 K = 4: `[0.051, 0.210]` (`4.08x`).
 This is simplex geometry; the archived claim that the effect is specific to
 `S3` or to non-abelian symmetry is withdrawn. Direction dependence is absent
@@ -297,11 +306,14 @@ for `K = 2` because the mixture simplex is one-dimensional.
 **Proposition 5 (channel interference).** The soft-Q field is the sum of an
 entropy channel and a condition-mixture channel in the same weighted tangent
 space. When these two directions have positive weighted inner product, the
-retention is non-monotone in `alpha`: the numerator cancels before the ratio
-recovers. Measured minima: `kappa_mix = 7.8e-4` at `alpha = 1.78` for `K=2`
-with `p = (0.8, 0.2)`, and `kappa_mix = 1.1e-3` at `alpha = 1.41` for `K=3`
-with `p = (0.7, 0.2, 0.1)`. The numerator cancellation point and the ratio
-minimum are distinct and must be reported separately.
+retention is non-monotone in `alpha`: it dips to a minimum where the two
+channels balance, then recovers. Measured minima on a 1001-point scan:
+`kappa_mix = 2.5e-6` at `alpha = 1.72` for `K=2` with `p = (0.8, 0.2)`, and
+`kappa_mix = 4.0e-4` at `alpha = 1.46` for `K=3` with `p = (0.7, 0.2, 0.1)`.
+At both minima the shared energy and the ratio are minimized on the same grid
+point, so the scan reports the ratio minimum together with the denominator
+(`kway_geometry.json`); a separate numerator-cancellation location is not
+resolved.
 
 A dynamical reading of this interference was proposed previously and is
 withdrawn here: under the implemented objective
@@ -352,47 +364,59 @@ policy-weighted sampling.
 
 **Overcooked (switching-preserving protocol).** One episode batch per
 checkpoint is shared by all fields, and only the measured objective changes,
-so the comparison is paired by construction:
+so the comparison is paired by construction. Conditions are the episode-start
+partner (chef vs. waiter); mid-episode switching stays on, and the reward is
+the team-level sparse delivery reward.
 
-| Field | static | dynamic |
-|---|---|---|
-| reinforce | 0.515 ± 0.021 | 0.529 ± 0.034 |
-| awr | 0.500 ± 0.000 | 0.590 ± 0.021 |
-| value (`-sum V`) | 0.568 ± 0.027 | **0.998 ± 0.000** |
+| Field | static | dynamic | static c/n | dynamic c/n |
+|---|---|---|---|---|
+| reinforce | 0.515 ± 0.021 | 0.529 ± 0.034 | 1.4 | 1.1 |
+| awr | 0.500 ± 0.000 | 0.590 ± 0.021 | 34 | 110 |
+| value (`-sum V`) | 0.568 ± 0.027 | 0.998 ± 0.000 | 3830 | 9.6 |
 
-The value field's condition-mean gradients nearly coincide on the dynamic
-model (`0.998`). Among policy-gradient-style fields the differentiable-baseline
-`awr` field has the highest retention (`0.590`), but it stays far below the
-value field and only modestly above the plain policy gradient (`0.529`): the
-large policy-gradient/value separation of the mirror model does not transfer
-here as a corresponding advantage-field separation. Here `awr` uses the
-observed return-to-go as the advantage sample and the
-value head as the differentiable baseline. Under the start-partner protocol
-the same conclusion appears at the level of condition means (static
-`0.533`, dynamic `0.502`), and a memory intervention does not change it
-(m4 `0.498`, m8 `0.505`, m16 `0.500`): supplying memory does not restore
-alignment, a negative intervention result.
+Retention alone (`kappa_mix`) is ambiguous; c/n is the condition contrast
+over the mean-estimation noise floor (c/n `<= 1` is unresolvable, and a high
+retention with a small contrast share is condition-blindness). On the
+dynamic model the value field scores `0.998`,
+but its condition contrast is only `0.1%` of its shared mass (`5-17x` the
+estimation-noise floor): the field is condition-blind, and its high score
+reflects a dominant condition-independent component rather than
+hidden-condition signal. The differentiable-baseline `awr` field is the only
+policy-gradient-style field with a resolvable contrast (`35-176x` the noise
+floor) at a moderate score (`0.590`), while the plain policy gradient's
+contrast sits at the noise floor (`0.85-1.3x`, score `0.529`). Here `awr`
+uses the observed return-to-go as the advantage sample and the value head as
+the differentiable baseline. Under the start-partner protocol the
+plain-gradient contrast is again at the floor in every condition group
+(static `0.533`, dynamic `0.502`), and a memory intervention does not make it
+resolvable (m4 `0.498`, m8 `0.505`, m16 `0.500`; contrast `0.6-2.1x` the
+noise floor): a negative intervention result.
 
 **510K (paired protocol).** Using checkpoints trained with hidden teammate
 visibility `p in {0, 0.5, 1}` and computing both fields from the same episode
 batch with mask-respecting rollouts, per-step reward-weighted policy gradients
 retain `0.646 / 0.612 / 0.667` (large seed spread, `sd` `0.12`-`0.22`) while value
-fields retain `0.982 / 0.985 / 0.962`. The value field is stable at every
-seed; the policy-gradient contrast energy is at or below the mean-estimation
-noise floor, and we do not interpret the visible/hidden difference as a trend.
+fields retain `0.982 / 0.985 / 0.962`. Neither field has a substantial
+condition contrast: the value contrast is `1-5%` of its shared mass at
+`0.7-3.1x` the estimation-noise floor and the policy-gradient contrast is
+`0.25-2.0x` the floor. The value score is stable at every seed, but it again
+tracks a dominant shared component rather than hidden-condition dependence;
+no visible/hidden trend is interpretable.
 
-**Reading.** Across the two environments the value fields align with hidden
-conditions (`0.96-0.99`), while the policy-gradient-style fields are partially
-cancelled: near-orthogonal in Overcooked (`0.529`, where the
-differentiable-baseline advantage field is the least cancelled at `0.590`)
-and partially retained in 510K (`0.61-0.67`, with contrast energy at the noise
-floor). Expressed as a value-policy ratio this is about `1.9x` in Overcooked
-and `1.5x` in 510K. The
-previously reported `30-65x` separations came from comparing one-episode noise
-scores (`kappa_ep`, where the value field's within-condition variance is small
-and the policy-gradient field's variance is large) rather than structural
-scores. We report both quantities, but only the structural one supports
-field-level statements.
+**Reading.** A single retention number cannot order these fields. The value
+field's high score is condition-blindness: a large condition-independent
+component dominates its gradient, so the field changes little across
+conditions (`0.1%` contrast share in Overcooked dynamic, `1-5%` in 510K). The
+plain policy gradient in Overcooked has no resolvable contrast at our sample
+size, so its near-orthogonality is an upper bound, not a cancellation
+measurement. The differentiable-baseline advantage field is the only
+policy-gradient-style field with a resolvable, substantial contrast in
+Overcooked (`35-176x` the noise floor), though it still mixes a large shared
+component into its score. This also retires the previously reported `30-65x`
+separations, which compared one-episode noise scores (`kappa_ep`) rather than
+structural quantities. We report `kappa_mix` jointly with the
+contrast-to-noise ratio and the contrast share, and we do not rank objectives
+by retention alone.
 
 ### 5.4 Capacity, not optimizer
 
@@ -417,12 +441,15 @@ demographics. We treat a demographic attribute as the hidden condition, use
 the binary perceived-harm judgment (`Yes` vs `No`, `Unsure` dropped), split by
 `item_id` (245 train / 105 test items), and fit a TF-IDF plus logistic model
 shared across raters. Three seeds; the shared model reaches 0.73 train
-accuracy.
+accuracy. The audit uses the BCE data gradient at the shared model; the
+condition-independent L2 term is excluded (it shifts every condition mean by
+the same vector and leaves `E_contrast`/`sigma2` unchanged), and condition
+weights are the empirical rater frequencies.
 
 | Axis (groups) | kappa_mix | E_contrast | sigma2 | shared avg/worst | conditional avg/worst |
 |---|---|---|---|---|---|
-| race (3) | 0.116 ± 0.025 | 0.0020 | 0.0113 | 0.656 / 0.609 | 0.654 / 0.607 |
-| age (3) | 0.033 ± 0.005 | 0.0003 | 0.0064 | 0.640 / 0.623 | 0.638 / 0.624 |
+| race (3) | 0.156 ± 0.027 | 0.0019 | 0.0114 | 0.656 / 0.609 | 0.654 / 0.607 |
+| age (3) | 0.002 ± 0.000 | 0.0002 | 0.0058 | 0.640 / 0.623 | 0.638 / 0.624 |
 | gender (2) | 0.001 ± 0.000 | 0.0005 | 0.0035 | 0.641 / 0.623 | 0.640 / 0.625 |
 
 The race axis carries the strongest condition signal, yet its contrast energy
@@ -458,7 +485,10 @@ This also means a low retention score must be paired with a check that the
 condition is the variable the task actually relies on. The `awr` arm in this
 table uses a detached value baseline with advantages clipped to `[-4,4]`; it
 is a different field from the differentiable-baseline `awr` measured in
-Section 5.3 and in the appendix.
+Section 5.3 and in the appendix. The `td` entry is a critic-loss gradient
+measured on the arm's own `epsilon`-greedy rollouts in the Q-network's
+parameter space, a critic diagnostic rather than a policy-gradient field; each
+arm's score is measured on its own trained policy's rollouts.
 
 ---
 
@@ -468,14 +498,19 @@ The retained statements are: (i) exact cancellation conditions on the mirror
 and matching models; (ii) an exact closed form for the soft-Q field and the
 differentiable-baseline exception; (iii) K-way direction dependence and
 channel interference as geometry; (iv) protocol and noise separation as
-methodology; (v) structural alignment of value fields versus near-orthogonality
-of the plain policy gradient in Overcooked and partial retention in 510K, with
-the differentiable-baseline advantage field the least cancelled among the
-policy-gradient fields in Overcooked; (vi) decoupling from performance. The operational reading is a conditional rule: when retention is
-low, contrast energy exceeds within-condition noise, and the measured
+methodology; (v) a joint diagnostic in which a high retention with a
+negligible contrast share is condition-blindness (the Overcooked dynamic value
+field, and value in 510K), a contrast at the estimation-noise floor is
+unresolvable (the plain policy gradient in Overcooked), and in 510K the
+contrast stays at the noise floor or a few percent of the shared mass, and
+only the differentiable-baseline advantage field in
+Overcooked shows a resolvable, substantial contrast; (vi) decoupling from
+performance. The operational reading is a conditional rule: when retention is
+low, contrast energy exceeds the estimation-noise floor, and the measured
 condition is the variable the task relies on, condition-aware capacity is the
-intervention; when any of the three fails, the audit recommends no
-intervention. We explicitly do not claim that value methods are universally
+intervention; when the contrast is unresolvable, when the contrast share is
+negligible, or when the condition is not task-relevant, the audit recommends
+no intervention. We explicitly do not claim that value methods are universally
 better, that policy-gradient fields always die, that direction dependence is
 group-specific, that the retention score predicts return, or that memory or
 entropy interventions fix cancellation.
@@ -487,8 +522,12 @@ entropy interventions fix cancellation.
 The exact results are bandit-level. Real-environment claims rest on
 condition-mean gradients under one measurement protocol and on small seed
 counts (three seeds for the Overcooked field axis). The value field is a
-diagnostic `-sum V`, not a TD residual; its alignment is a property of the
-fitted value function on the measured distribution. The Overcooked `awr`
+diagnostic `-sum V`, not a TD residual; its score is dominated by the fitted
+value function's condition-independent component on the measured
+distribution, which the retention ratio does not penalize. Retention compares
+condition means within one field; ranking `kappa_mix` across objectives with
+different supports in the padded parameter vector is not licensed. The
+Overcooked `awr`
 entry uses the observed return-to-go as the advantage sample and the learned
 value head as the differentiable baseline, so it is the practical analogue of
 the analytic field; its per-step weights are computed in float64 under a
@@ -497,7 +536,9 @@ dataset-level stop-gradient shift, a positive scalar multiple that leaves
 zero, and the float64 re-run reproduces every score to within 1.5e-7). The
 510K environment has
 weak relational drive and is used as a supporting measurement, not as the
-primary demonstration. The real-data check uses a single dataset (DICES-350),
+primary demonstration. Its checkpoints were trained under a legacy action mask
+that always enabled the pass bit; the mask-respecting evaluation corrects the
+measurement side and does not require retraining. The real-data check uses a single dataset (DICES-350),
 a linear TF-IDF model, and binary perceived-harm labels; it includes no
 conditional-routing, group-DRO, or reweighting baseline, and replication on a
 second dataset (e.g. WVS) is left to future work. The finite-sample analysis

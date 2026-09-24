@@ -1,18 +1,26 @@
-"""Verify dynamic actually learns: free-rollout reward across training snapshots."""
+"""Verify dynamic actually learns: free-rollout reward across training snapshots.
+
+Historical check. The 400K/800K training snapshots live only in the archived
+server checkpoint directory; point `IIGC_OC_CHKPT` at it if needed. Uses the
+vendored `episode_grad.ep_grad_rew` helper.
+"""
+import os
 import sys
 import numpy as np
 import torch
 
 import torch._dynamo  # noqa: F401
 
-sys.path.insert(0, r"C:\Users\Flavi\AppData\Local\Temp\opencode\flavien-code")
-sys.path.insert(0, r"C:\Users\Flavi\opencode\IIGC\src")
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+sys.path.insert(0, os.path.join(ROOT, "src"))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-import engine  # noqa: E402
 from stable_baselines3 import PPO  # noqa: E402
 from iigc.envs._overcooked.overcooked_v3_env import OvercookedV3Env  # noqa: E402
+from episode_grad import ep_grad_rew  # noqa: E402
 
-CHKPT = r"C:\Users\Flavi\AppData\Local\Temp\opencode\chkpt_clean"
+CHKPT = os.environ.get(
+    "IIGC_OC_CHKPT", os.path.join(ROOT, "data", "models_overcooked"))
 
 
 def eval_free(mode, s, steps, n=10):
@@ -27,7 +35,7 @@ def eval_free(mode, s, steps, n=10):
     for i in range(n):
         torch.manual_seed(100 + i)
         np.random.seed(100 + i)
-        g, r = engine._ep_grad_rew(model, env)
+        g, r = ep_grad_rew(model, env)
         rews.append(r)
     env.close()
     return float(np.mean(rews))

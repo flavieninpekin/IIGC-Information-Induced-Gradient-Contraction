@@ -31,11 +31,7 @@ import torch
 import torch._dynamo  # noqa: F401  pre-import before gym/overcooked
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-KITCHEN_CODE = os.environ.get(
-    "IIGC_KITCHEN_CODE",
-    r"C:\Users\Flavi\AppData\Local\Temp\opencode\flavien-code")
 
-sys.path.insert(0, KITCHEN_CODE)
 sys.path.insert(0, os.path.join(ROOT, "src"))
 
 from stable_baselines3 import PPO  # noqa: E402

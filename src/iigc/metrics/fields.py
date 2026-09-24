@@ -20,7 +20,8 @@ FIELDS = ['reinforce', 'awr', 'softq', 'expq', 'softmaxq']
 
 
 def kappa_and_energy(gA, gB):
-    """Compatibility wrapper for two equally weighted condition gradients."""
+    """Legacy compatibility wrapper for two equally weighted condition
+    gradients; new code should use `iigc.metrics.kappa.kappa_mix`."""
     return kappa_from_gradients([gA, gB])
 
 

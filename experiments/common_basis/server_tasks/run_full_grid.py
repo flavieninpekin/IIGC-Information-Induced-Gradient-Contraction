@@ -1,6 +1,10 @@
 """Post-training measurement suite on the full 16-model grid (fresh checkpoints).
 
 Runs the exact engine task functions with todos.json configs.
+
+Historical: requires the external server engine checkout and the archived temp
+checkpoint dir. Superseded by the self-contained `run_switch_kappa.py` and
+`run_field_axis.py`.
 """
 import os
 import sys

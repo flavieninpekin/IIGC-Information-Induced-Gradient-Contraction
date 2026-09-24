@@ -4,6 +4,9 @@ Builds a valid but empty optimizer state from the intact checkpoint, then
 rebuilds each corrupted zip: original data/policy/pytorch_variables +
 placeholder optimizer. Works because measurement tasks never touch the
 optimizer state values.
+
+Historical utility that built the archived `data/models_overcooked/` set;
+`DST` points at the (now empty) temp working dir.
 """
 import io
 import os
